@@ -11,6 +11,6 @@
 	<category>content</category>
 	<copyright>e107sk</copyright>
 	<adminLinks>
-		<link url="admin/admin_messages.php" description="" icon="images/icon_64.png" iconSmall="images/icon_32.png"  icon128="images/icon_128.png"  primary="true" >LAN_CONFIGURE</link>
+		<link url="admin/admin_settings.php" description="" icon="images/icon_64.png" iconSmall="images/icon_16.png"  icon128="images/icon_128.png"  primary="true" >LAN_CONFIGURE</link>
 	</adminLinks>	
 </e107Plugin>
