@@ -46,13 +46,9 @@ if (class_exists('efiction')) {
         echo e107::getMessage()->addInfo('efiction class is available')->render();
     }
 
-	$template = e107::getTemplate('efiction', 'storyblock', 'recent');
-
     $blocks = efiction::blocks();
 
     $caption = $blocks['recent']['title'];
-	$var = array('RECENT_MENU_CAPTION' => $caption);
-	$caption = e107::getParser()->simpleParse($template['caption'], $var);
 
     $sc = e107::getScParser()->getScObject('efiction_shortcodes', 'efiction', false);
     $text = '';
@@ -66,9 +62,8 @@ if (class_exists('efiction')) {
 
     $query = _STORYQUERY." ORDER BY stories.updated DESC LIMIT $numupdated";
     $result = e107::getDb()->retrieve($query, true);
- 
-	$start = $template['start']; 
-	$end = $template['end'];
+
+    $template = e107::getTemplate('efiction', 'storyblock', 'recent');
 
     foreach ($result as $stories) {
         if (!isset($blocks['recent']['allowtags'])) {
@@ -86,4 +81,4 @@ if (class_exists('efiction')) {
     }
 }
 
-e107::getRender()->tablerender($caption, $start.$text.$end);
+e107::getRender()->tablerender($caption, $text);

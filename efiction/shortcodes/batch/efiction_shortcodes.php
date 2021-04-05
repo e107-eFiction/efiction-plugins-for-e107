@@ -122,7 +122,7 @@
                 }
                 */
                 $ageconsent = $_SESSION[$session_name];
-                var_dump(e107::getSession()->is($session_name));
+                //var_dump(e107::getSession()->is($session_name));
 
                 $disablepopups = false;
                 $rating = $stories['rid'];
