@@ -6,11 +6,14 @@
 	<keywords>
 		<word>information</word>
 		<word>content</word>
-		<word>menus</word>
+		<word>efiction</word>
 	</keywords>
 	<category>content</category>
 	<copyright>e107sk</copyright>
 	<adminLinks>
-		<link url="admin/admin_settings.php" description="" icon="images/icon_64.png" iconSmall="images/icon_16.png"  icon128="images/icon_128.png"  primary="true" >LAN_CONFIGURE</link>
-	</adminLinks>	
+		<link url="adminarea/admin_settings.php" description="" icon="images/icon_64.png" iconSmall="images/icon_16.png"  icon128="images/icon_128.png"  primary="true" >LAN_CONFIGURE</link>
+	</adminLinks>
+	<extendedFields>
+		<field name="betareader" type='EUF_RADIO' text="Beta-reader" default='0' active="true" system="0" values="LAN_YES,LAN_NO" />
+	</extendedFields>	
 </e107Plugin>

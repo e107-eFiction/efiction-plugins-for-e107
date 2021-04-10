@@ -5,4 +5,4 @@
 if (!defined('TABLEPREFIX')) {
     define('TABLEPREFIX', MPREFIX);
 }
-require_once e_BASE.'includes/queries.php';
+require_once e_PLUGIN."efiction/includes/queries.php";
