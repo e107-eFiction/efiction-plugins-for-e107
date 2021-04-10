@@ -83,9 +83,11 @@ function storyform($stories, $preview = 0){
 		<p><label for=\"storynotes\">"._STORYNOTES.":</label> <br /><textarea class=\"textbox\" rows=\"6\" name=\"storynotes\" id=\"storynotes\" cols=\"58\">$storynotes</textarea></p>";
 	if($tinyMCE) 
 		$output .= "<div class='tinytoggle'><input type='checkbox' name='toggle' onclick=\"toogleEditorMode('storynotes');\" checked><label for='toggle'>"._TINYMCETOGGLE."</label></div>";
-	if(!$multiplecats) $output .= "<input type=\"hidden\" name=\"catid\" id=\"catid\" value=\"1\">";
+	
+ 
+    if(!$multiplecats) $output .= "<input type=\"hidden\" name=\"catid\" id=\"catid\" value=\"1\">";
 	else {
-		include("includes/categories.php");
+		require_once(_BASEDIR."includes/categories.php");
 		$output .= "<input type=\"hidden\" name=\"formname\" value=\"stories\">";
 	}
 	$output .= "<div style='float: left; width: 100%;'>";

@@ -240,7 +240,7 @@ function title_link($stories) {
 	$rating = $stories['rid'];
 	$warningtext = !empty($ratingslist[$rating]['warningtext']) ? addslashes(strip_tags($ratingslist[$rating]['warningtext'])) : "";
 		if(empty($ratingslist[$rating]['ratingwarning']))
-			$title = "<a href=\""._BASEDIR."viewstory.php?sid=".$stories['sid']."\">".$stories['title']."</a>";
+			$title = "<a href=\"viewstory.php?sid=".$stories['sid']."\">".$stories['title']."</a>";
 		else {
 			$warning = "";
 			$warninglevel = sprintf("%03b", $ratingslist[$rating]['ratingwarning']);
@@ -258,9 +258,9 @@ function title_link($stories) {
 			}
 			if(!empty($warning)) {
 				$warning = preg_replace("@'@", "\'", $warning);
-				$title = "<a href=\"javascript:if(confirm('".$warning."')) location = '"._BASEDIR."$location'\">".$stories['title']."</a>";
+				$title = "<a href=\"javascript:if(confirm('".$warning."')) location = '$location'\">".$stories['title']."</a>";
 			}
-			else $title = "<a href=\""._BASEDIR."viewstory.php?sid=".$stories['sid']."\">".$stories['title']."</a>";
+			else $title = "<a href=\"viewstory.php?sid=".$stories['sid']."\">".$stories['title']."</a>";
 		}
 	return $title;
 }
@@ -268,13 +268,13 @@ function title_link($stories) {
 // Same with the author list
 function author_link($stories) {
 	if(is_array($stories['coauthors'])) {
-		$authlink[] = "<a href=\""._BASEDIR."viewuser.php?uid=".$stories['uid']."\">".$stories['penname']."</a>";
+		$authlink[] = "<a href=\"viewuser.php?uid=".$stories['uid']."\">".$stories['penname']."</a>";
 		$coauth = dbquery("SELECT "._PENNAMEFIELD." as penname, co.uid FROM ".TABLEPREFIX."fanfiction_coauthors AS co LEFT JOIN "._AUTHORTABLE." ON co.uid = "._UIDFIELD." WHERE co.sid = '".$stories['sid']."'");
 		foreach($stories['coauthors'] AS $k => $v) {
-			$authlink[] = "<a href=\""._BASEDIR."viewuser.php?uid=".$k."\">".$v."</a>";
+			$authlink[] = "<a href=\"viewuser.php?uid=".$k."\">".$v."</a>";
 		}
 	}
-	return isset($authlink) ? implode(", ", $authlink) : "<a href=\""._BASEDIR."viewuser.php?uid=".$stories['uid']."\">".$stories['penname']."</a>";
+	return isset($authlink) ? implode(", ", $authlink) : "<a href=\"viewuser.php?uid=".$stories['uid']."\">".$stories['penname']."</a>";
 }
 
 // Used to truncate text (summaries in blocks for example) to a set length.  An improvement on the old version as this keeps words intact

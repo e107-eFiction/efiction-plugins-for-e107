@@ -77,7 +77,7 @@ if(!defined("_CHARSET")) exit( );
 	$serieslinks = array( );
 	foreach($seriesresult AS $s) {
 		if(isset($action) && $action == "printable") $serieslinks[] = stripslashes($s['title']);
-		else $serieslinks[] = "<a href=\"".e_HTTP."viewseries.php?seriesid=".$s['seriesid']."\">".stripslashes($s['title'])."</a>";
+		else $serieslinks[] = "<a href=\""._BASEDIR."viewseries.php?seriesid=".$s['seriesid']."\">".stripslashes($s['title'])."</a>";
 	}
 	$tpl->assign("serieslinks", (count($serieslinks) > 0 ? implode(", ", $serieslinks) : _NONE));
 	$tpl->assign("characters", ($stories['charid'] ? charlist($stories['charid']) : _NONE));
@@ -86,9 +86,9 @@ if(!defined("_CHARSET")) exit( );
 	$tpl->assign("completed"   , ($stories['completed'] ? _YES : _NO) );
 	$tpl->assign("roundrobin"   , ($stories['rr'] ?  (!empty($roundrobin) ? $roundrobin : "<img src=\"images/roundrobin.gif\" alt=\""._ROUNDROBIN."\">") : "") );
 	$tpl->assign("ratingpics"   , ratingpics($stories['rating']) );
-	$tpl->assign("reviews"   , ($reviewsallowed ? "<a href=\"".e_HTTP."reviews.php?type=ST&amp;item=".$stories['sid']."\">"._REVIEWS."</a>" : "") );
+	$tpl->assign("reviews"   , ($reviewsallowed ? "<a href=\""._BASEDIR."reviews.php?type=ST&amp;item=".$stories['sid']."\">"._REVIEWS."</a>" : "") );
 	if(isMEMBER && !empty($favorites)) 
-		$tpl->assign("addtofaves", "[<a href=\"".e_HTTP."member.php?action=favst&amp;add=1&amp;sid=".$stories['sid']."\">"._ADDSTORY2FAVES."</a>] [<a href=\"".e_HTTP."member.php?action=favau&amp;add=".$stories['uid'].(count($stories['coauthors']) ? ",".implode(",", array_keys($stories['coauthors'])) : "")."\">"._ADDAUTHOR2FAVES."</a>]");
+		$tpl->assign("addtofaves", "[<a href=\""._BASEDIR."member.php?action=favst&amp;add=1&amp;sid=".$stories['sid']."\">"._ADDSTORY2FAVES."</a>] [<a href=\""._BASEDIR."member.php?action=favau&amp;add=".$stories['uid'].(count($stories['coauthors']) ? ",".implode(",", array_keys($stories['coauthors'])) : "")."\">"._ADDAUTHOR2FAVES."</a>]");
 	
 	$numchapsquery = dbquery("SELECT count(sid) FROM ".TABLEPREFIX."fanfiction_chapters WHERE sid = '".$stories['sid']."' AND validated > 0");
 	list($chapters) = dbrow($numchapsquery);
@@ -98,27 +98,27 @@ if(!defined("_CHARSET")) exit( );
 	$tpl->assign("published"   , date("$dateformat", $stories['date']) );
 	if(!empty($recentdays)) {
 		$recent = time( ) - ($recentdays * 24 * 60 *60);
-		if($stories['updated'] > $recent) $tpl->assign("new", isset($new) ? file_exists(e_HTTP.$new) ? "<img src='$new' alt='"._NEW."'>" : $new : _NEW);
+		if($stories['updated'] > $recent) $tpl->assign("new", isset($new) ? file_exists(_BASEDIR.$new) ? "<img src='$new' alt='"._NEW."'>" : $new : _NEW);
 	}
 	$tpl->assign("wordcount"   , $stories['wordcount'] ? $stories['wordcount'] : "0" );
-	$tpl->assign("numreviews"   , ($reviewsallowed == "1" ? "<a href=\"".e_HTTP."reviews.php?type=ST&amp;item=".$stories['sid']."\">".$stories['reviews']."</a>" : "") );
+	$tpl->assign("numreviews"   , ($reviewsallowed == "1" ? "<a href=\""._BASEDIR."reviews.php?type=ST&amp;item=".$stories['sid']."\">".$stories['reviews']."</a>" : "") );
 	if((isADMIN && uLEVEL < 4) || USERUID == $stories['uid'] || (is_array($stories['coauthors']) && array_key_exists(USERUID, $stories['coauthors'])))
-		$adminlinks .= "[<a href=\"".e_HTTP."stories.php?action=editstory&amp;sid=".$stories['sid'].(isADMIN ? "&amp;admin=1" : "")."\">"._EDIT."</a>] [<a href=\"".e_HTTP."stories.php?action=delete&amp;sid=".$stories['sid'].(isADMIN ? "&amp;admin=1" : "")."\">"._DELETE."</a>]";
+		$adminlinks .= "[<a href=\""._BASEDIR."stories.php?action=editstory&amp;sid=".$stories['sid'].(isADMIN ? "&amp;admin=1" : "")."\">"._EDIT."</a>] [<a href=\""._BASEDIR."stories.php?action=delete&amp;sid=".$stories['sid'].(isADMIN ? "&amp;admin=1" : "")."\">"._DELETE."</a>]";
 	global $featured;
 	if($stories['featured'] == 1) {
 		$tpl->assign("featuredstory", (isset($featured) ? $featured : "<img src=\""._BASEDIR."images/blueribbon.gif\" class=\"featured\" alt=\""._FSTORY."\">"));
 		$tpl->assign("featuredtext", _FSTORY);
-		if(isADMIN && uLEVEL < 4) $adminlinks .= " ["._FEATURED.": <a href=\"".e_HTTP."admin.php?action=featured&amp;retire=".$stories['sid']."\">"._RETIRE."</a> | <a href=\"".e_HTTP."admin.php?action=featured&amp;remove=".$stories['sid']."\">"._REMOVE."</a>]";
+		if(isADMIN && uLEVEL < 4) $adminlinks .= " ["._FEATURED.": <a href=\""._BASEDIR."admin.php?action=featured&amp;retire=".$stories['sid']."\">"._RETIRE."</a> | <a href=\""._BASEDIR."admin.php?action=featured&amp;remove=".$stories['sid']."\">"._REMOVE."</a>]";
 	}
 	else if($stories['featured'] == 2) {
-		$tpl->assign("featuredstory", (isset($retired) ? $retired : "<img src=\"".e_HTTP."images/redribbon.gif\"align=\"left\" class=\"retired\" alt=\""._PFSTORY."\">"));
+		$tpl->assign("featuredstory", (isset($retired) ? $retired : "<img src=\""._BASEDIR."images/redribbon.gif\"align=\"left\" class=\"retired\" alt=\""._PFSTORY."\">"));
 		$tpl->assign("featuredtext", _PFSTORY);
-		if(isADMIN && uLEVEL < 4) $adminlinks .= " [<a href=\"".e_HTTP."admin.php?action=featured&amp;remove=".$stories['sid']."\">"._REMOVE."</a>]";
+		if(isADMIN && uLEVEL < 4) $adminlinks .= " [<a href=\""._BASEDIR."admin.php?action=featured&amp;remove=".$stories['sid']."\">"._REMOVE."</a>]";
 	}
-	else if(isADMIN && uLEVEL < 4) $adminlinks .= " [<a href=\"".e_HTTP."admin.php?action=featured&amp;feature=".$stories['sid']."\">"._FEATURED."</a>]";
-	$tpl->assign("toc", "<a href=\"".e_HTTP."viewstory.php?sid=".$stories['sid']."&amp;index=1\">"._TOC."</a>");
+	else if(isADMIN && uLEVEL < 4) $adminlinks .= " [<a href=\""._BASEDIR."admin.php?action=featured&amp;feature=".$stories['sid']."\">"._FEATURED."</a>]";
+	$tpl->assign("toc", "<a href=\""._BASEDIR."viewstory.php?sid=".$stories['sid']."&amp;index=1\">"._TOC."</a>");
 	$tpl->assign("oddeven", ($count % 2 ? "odd" : "even"));
-	$tpl->assign("reportthis", "[<a href=\"".e_HTTP."report.php?action=report&amp;url=viewstory.php?sid=".$stories['sid']."\">"._REPORTTHIS."</a>]");
+	$tpl->assign("reportthis", "[<a href=\""._BASEDIR."report.php?action=report&amp;url=viewstory.php?sid=".$stories['sid']."\">"._REPORTTHIS."</a>]");
 	if(isADMIN && uLEVEL < 4) $tpl->assign("adminlinks", "<div class=\"adminoptions\"><span class='label'>"._ADMINOPTIONS.":</span> ".$adminlinks."</div>");
 	else if(isMEMBER && (USERUID == $stories['uid'] || array_key_exists(USERUID, $stories['coauthors']))) $tpl->assign("adminlinks", "<div class=\"adminoptions\"><span class='label'>"._OPTIONS.":</span> ".$adminlinks."</div>");
 	$count++;

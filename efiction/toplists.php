@@ -24,17 +24,14 @@ $current = "tens";
 
 include ("header.php");
 
-if(file_exists("$skindir/browse.tpl")) $tpl = new TemplatePower( "$skindir/browse.tpl" );
-else $tpl = new TemplatePower("default_tpls/browse.tpl");
-if(file_exists("$skindir/listings.tpl")) $tpl->assignInclude("listings", "./$skindir/listings.tpl");
-else $tpl->assignInclude( "listings", "./default_tpls/listings.tpl" );
-$tpl->assignInclude( "header", "./$skindir/header.tpl" );
-$tpl->assignInclude( "footer", "./$skindir/footer.tpl" );
-
+$tpl = new TemplatePower(_BASEDIR."default_tpls/browse.tpl"); 
+$tpl->assignInclude( "listings", _BASEDIR."default_tpls/listings.tpl" );
+ 
+ 
 $list = isset($_GET['list']) ? $_GET['list'] : false;
 include("includes/pagesetup.php");
 	if(!$list) {
-		$output = "<div id='pagetitle'>".$pagelinks['tens']['text']."</div>";
+		$caption = $pagelinks['tens']['text'];
 		$lists = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_panels WHERE panel_type = 'L' AND panel_hidden != '1' AND panel_level = '0' ORDER BY panel_order");
 		if(dbnumrows($lists)) $output .= "<div class='tblborder' id='top10list' style='margin: 0 25%;'>";
 		while($l = dbassoc($lists)) {
@@ -47,7 +44,7 @@ include("includes/pagesetup.php");
 		$panelquery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_panels WHERE panel_name = '".escapestring($list)."' AND panel_type = 'L' LIMIT 1");
 		if(dbnumrows($panelquery)) {
 			$panel = dbassoc($panelquery);
-			$output .= "<div id='pagetitle'>".$panel['panel_title']."</div>";
+			$caption = $panel['panel_title'];
 			$numrows = 0;
 			if($panel['panel_url'] && file_exists(_BASEDIR.$panel['panel_url'])) include($panel['panel_url']);
 			else if(file_exists("toplists/{$type}.php")) include("toplists/{$type}.php");
@@ -60,5 +57,6 @@ $tpl->assign("output", $output);
 //$tpl->printToScreen();
 $output = $tpl->getOutputContent( );  
 $output = e107::getParser()->parseTemplate($output, true); 
-echo $output;
-?>
+e107::getRender()->tablerender($caption, $output, 'toplists'); 
+require_once(FOOTERF);				 
+exit; 

@@ -27,14 +27,13 @@ $current = "stories";
 if($_GET['action'] != "newchapter") $displayform = 1;
 if($_GET['action'] == "newstory" || $_GET['action'] == "editstory") $current = "addstory";
 
-include ("header.php");
+require_once("header.php");
 
-$tpl = new TemplatePower( file_exists("$skindir/default.tpl") ?  "$skindir/default.tpl" : "default_tpls/default.tpl");
-$tpl->assignInclude( "header", "./$skindir/header.tpl" );
-$tpl->assignInclude( "footer", "./$skindir/footer.tpl" );
+$tpl = new TemplatePower(_BASEDIR."default_tpls/default.tpl"); 
  
-include("includes/pagesetup.php");
-include("includes/storyform.php");
+ 
+require_once("includes/pagesetup.php");
+require_once("includes/storyform.php");
 
 
 // before doing anything else check if the visitor is logged in.  If they are, check if they're an admin.  If not, check that they're 
@@ -71,14 +70,14 @@ function preview_story($stories) {
 	global $current, $new, $extendcats, $skindir, $catlist, $charlist, $classlist, $featured, $retired, $rr, $reviewsallowed, $star, $halfstar, $classtypelist, $dateformat, $ratingslist, $recentdays;
 
 	$count = 0;
-	if(file_exists("$skindir/listings.tpl")) $tpl = new TemplatePower( "$skindir/listings.tpl" );
-	else $tpl = new TemplatePower("default_tpls/listings.tpl");
+ 
+    $tpl = new TemplatePower(_BASEDIR."default_tpls/listings.tpl"); 
 	if(count($stories['coauthors']) > 0) $stories['coauthors'] = 1;
 	$tpl->prepare( );
 	$tpl->newBlock("listings");
 	$tpl->newBlock("storyblock");
 	$tpl->assignGlobal("skindir", $skindir);
-	include("includes/storyblock.php");
+	require_once("includes/storyblock.php");
 	$text = $tpl->getOutputContent( );
 	$count = 0;
 	if(!empty($stories['storytext'])) {
@@ -86,10 +85,10 @@ function preview_story($stories) {
 		if(isset($_GET['textsize'])) $textsize = $_GET['textsize'];
 		else $textsize = 0;
 		
-		if(file_exists("./$skindir/viewstory.tpl")) $tpl = new TemplatePower("./$skindir/viewstory.tpl");
-		else $tpl = new TemplatePower(_BASEDIR."default_tpls/viewstory.tpl");
+		$tpl = new TemplatePower(_BASEDIR."default_tpls/viewstory.tpl");
+        
 		$tpl->prepare( );			
-		include("includes/storyblock.php");
+		require_once("includes/storyblock.php");
 		$tpl->assign("adminlinks", $adminlinks);
 		if($stories['inorder'] == 1 && !empty($stories['storynotes'])) {
 			$tpl->gotoBlock("_ROOT");
@@ -121,7 +120,7 @@ function newstory( ) {
 
 	global $autovalidate, $sid, $action, $sid, $store, $tpl, $admin, $sitename, $siteemail, $allowed_tags, $admincats, $alertson, $dateformat, $url, $minwords, $maxwords, $charlist, $catlist, $classtypelist;
 	$newchapter = $action == "newchapter";
-	$output = "<div id=\"pagetitle\">".($newchapter ? _ADDNEWCHAPTER : _ADDNEWSTORY)."</div>";
+	$output = $newchapter ? _ADDNEWCHAPTER : _ADDNEWSTORY;
 // to avoid problems with register globals and hackers declare variables and do some clean up.
 	if(isset($admin) && isset($_POST['uid']) && isNumber($_POST['uid'])) {
 		$uid = $_POST['uid'];
@@ -288,7 +287,7 @@ function newstory( ) {
 		}
 		// validate fic, send story alerts, and mail admins
 		if($validated) {
-			include("includes/emailer.php");
+			require_once("includes/emailer.php");
 			if(!isset($storytitle)) $storytitle = $title;
 			if(!$newchapter) {
 				foreach($catid as $cat) { categoryitems($cat, 1); }
@@ -336,7 +335,7 @@ function newstory( ) {
 		else {
 			$adminquery = dbquery("SELECT "._EMAILFIELD." as email, "._PENNAMEFIELD." as penname, contact,categories FROM ".TABLEPREFIX."fanfiction_authorprefs as ap, "._AUTHORTABLE." WHERE "._UIDFIELD." = ap.uid AND level > 0 AND level < 4");
 			if(empty($storytitle)) $storytitle = $title;
-			include("includes/emailer.php");
+			require_once("includes/emailer.php");
 			while($admins = dbassoc($adminquery)) {
 				global $sitename, $siteemail;
 				if($admins['contact'] == 1) {
@@ -423,7 +422,7 @@ function newstory( ) {
 function viewstories( ) {
 	global $storiespath, $ratings, $autovalidate, $reviewsallowed, $sid, $chapid, $up, $down;
 
-	$output = "<div id=\"pagetitle\">"._MANAGESTORIES."</div>";
+	$caption =   _MANAGESTORIES ;
 
 	$go = isset($_GET['go']) ? $_GET['go'] : false;
 	$com = isset($_GET['com']) ? $_GET['com'] : false;
@@ -468,14 +467,16 @@ function viewstories( ) {
 	$output .= "</table></div>";
 	if($stories < 1) $output .= write_message(_NORESULTS);
 	$output .= write_message("<a href='stories.php?action=newstory'>"._ADDNEWSTORY."</a>");
-	return $output;
+	e107::getRender()->tablerender($caption, $output, 'viewstories'); 
+    require_once(FOOTERF);				 
+    exit; 
 }
 // end viewstories function
 
 function editchapter( $chapid ) {
 	global $tpl, $chapid, $store, $alertson, $storiespath, $admin, $tinyMCE, $allowed_tags, $sid, $logging;
 
-	$output = "<div id=\"pagetitle\">"._EDITCHAPTER."</div>";
+	$caption =  _EDITCHAPTER ;
 // get variables from $_POST
 	if(isset($_POST['submit'])) {
 		$chaptertitle = strip_tags(descript($_POST["chaptertitle"]), $allowed_tags);
@@ -604,7 +605,7 @@ function editchapter( $chapid ) {
 function editstory($sid) {
 	global $tpl, $storiespath, $store, $allowed_tags, $uid, $admin, $tinyMCE, $up, $down, $dateformat, $classtypelist, $logging, $alertson;
 
-	$output = "<div id=\"pagetitle\">"._EDITSTORY."</div>";
+	$caption =  _EDITSTORY ;
 	if(isset($admin) && isset($uid)) {
 		$author = dbquery("SELECT "._PENNAMEFIELD." FROM "._AUTHORTABLE." WHERE "._UIDFIELD." = '$uid' LIMIT 1");
 		$authorvalid = 1; // It's an admin edit so it's valid.
@@ -705,7 +706,7 @@ function editstory($sid) {
 			$oldcats = explode(",", $oldcats);
 			if($validated) {
 				if(!$oldvalid) {
-					include("includes/emailer.php");
+					require_once("includes/emailer.php");
 					list($newchapter) = dbrow(dbquery("SELECT validated FROM ".TABLEPREFIX."fanfiction_chapters WHERE sid = '$sid' AND inorder = '1'"));
 					if(!$newchapter) {
 						if($alertson) {
@@ -889,7 +890,7 @@ function delete( ) {
 
 	$confirmed = isset($_GET['confirmed']) ? $_GET['confirmed'] : false;
 	if(!$sid && !$chapid) return write_error(_ERROR);
-	$output = "<div id=\"pagetitle\">".($chapid ? _DELETECHAPTERTITLE : _DELETESTORYTITLE)."</div>";
+	$caption= $chapid ? _DELETECHAPTERTITLE : _DELETESTORYTITLE;
 	if($admin) {
 		if($chapid) $authorquery = dbquery("SELECT uid FROM ".TABLEPREFIX."fanfiction_chapters WHERE chapid = '$chapid' LIMIT 1");
 		else $authorquery = dbquery("SELECT uid FROM ".TABLEPREFIX."fanfiction_stories WHERE sid = '$sid' LIMIT 1");
@@ -931,7 +932,7 @@ function delete( ) {
 			return "<center>"._ACTIONSUCCESSFUL."</center>".editstory( $sid );
 		}
 		else {
-			include("includes/deletefunctions.php");
+			require_once("includes/deletefunctions.php");
 			deleteStory($story);
 		}
 		$output = write_message(_ACTIONSUCCESSFUL."  ".($admin ? _BACK2ADMIN : viewstories( )));	
@@ -970,15 +971,14 @@ switch($action) {
 		$output .= delete( );
 		break;
 	default:
-		$output .= viewstories( );
+		//$output .= viewstories( );
 		break;
 }
 
 	$tpl->assign( "output", $output );
-    //$tpl->printToScreen();
-    $output = $tpl->getOutputContent( );  
-    $output = e107::getParser()->parseTemplate($output, true); 
-    echo $output;
-	dbclose( );
-require_once(FOOTERF);					// render the footer (everything after the main content area)
+
+$output = $tpl->getOutputContent( );  
+$output = e107::getParser()->parseTemplate($output, true); 
+e107::getRender()->tablerender($caption, $output, 'stories'); 
+require_once(FOOTERF);				 
 exit; 

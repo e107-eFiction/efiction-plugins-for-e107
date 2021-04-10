@@ -50,7 +50,7 @@
             $stories = $this->var;
 
             if ($stories['coauthors'] > 0) {
-                $authlink[] = '<a href="'.e_BASE.'viewuser.php?uid='.$stories['uid'].'">'.$stories['penname'].'</a>';
+                $authlink[] = '<a href="'.e_HTTP.'viewuser.php?uid='.$stories['uid'].'">'.$stories['penname'].'</a>';
                 $coauth_query = 'SELECT '._PENNAMEFIELD.' as penname, co.uid FROM #fanfiction_coauthors AS co LEFT JOIN '._AUTHORTABLE.' ON co.uid = '._UIDFIELD." WHERE co.sid = '".$stories['sid']."'" ;
 
                 $records = e107::getDb()->retrieve($coauth_query, true);
@@ -58,13 +58,13 @@
                 foreach ($records as $coauth) {
                     $v = $coauth['penname'];
                     $k = $coauth['uid'];
-                    $authlink[] = '<a href="'.e_BASE.'viewuser.php?uid='.$k.'">'.$v.'</a>';
+                    $authlink[] = '<a href="'.e_HTTP.'viewuser.php?uid='.$k.'">'.$v.'</a>';
                 }
             }
             if (isset($authlink)) {
                 return implode(', ', $authlink);
             } else {
-                return '<a href="'.e_BASE.'viewuser.php?uid='.$stories['uid'].'">'.$stories['penname'].'</a>';
+                return '<a href="'.e_HTTP.'viewuser.php?uid='.$stories['uid'].'">'.$stories['penname'].'</a>';
             }
         }
 
@@ -97,7 +97,11 @@
             
             $tp = e107::getParser();
             $stories = $this->var;
+            
+            $title = title_link($stories);
+            return $title;
  
+            /* too soon */
             $ratingslist = efiction::ratingslist();
 		 
             $rating = $stories['rid'];

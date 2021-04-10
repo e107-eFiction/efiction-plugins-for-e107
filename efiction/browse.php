@@ -26,8 +26,8 @@ $displayform = 1;
 require_once (e_PLUGIN."efiction/header.php");
  
 //make a new TemplatePower object
-$tpl = new TemplatePower(e_PLUGIN."efiction/default_tpls/browse.tpl");  
-$tpl = new TemplatePower(e_PLUGIN."efiction/default_tpls/listings.tpl");  
+$tpl = new TemplatePower(_BASEDIR."default_tpls/browse.tpl"); 
+$tpl->assignInclude( "listings", _BASEDIR."default_tpls/listings.tpl" );  
  
 require_once(e_PLUGIN."efiction/includes/pagesetup.php");
 
@@ -220,13 +220,13 @@ if($type) {  //otherwise just list of available types of browsing see browse fol
     if($panel) { 
 		$numrows = 0;
 	    if($panel['use_panel']) {
-          include($panel['use_panel']);
+          require_once($panel['use_panel']);
         }
 		else $output .= write_error(_ERROR);
 	}
 	else $output .= write_error(_ERROR);
 	
-    echo $pagetitle;
+    echo $caption;
      
     $terms = implode("&amp;", $termsList);
 // Other results

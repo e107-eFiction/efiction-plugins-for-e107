@@ -28,7 +28,7 @@ class efiction_url // plugin-folder + '_url'
 	{
 		$config = array();
 
-		$config['admin'] = array(
+		$config['adminarea'] = array(
 			'alias'         => 'admin.php',
 			'regex'			=> '^{alias}\/?([\?].*)?\/?$', 
 			'sef'			=> '{alias}', 

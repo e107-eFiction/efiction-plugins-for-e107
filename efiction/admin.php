@@ -30,6 +30,7 @@ require_once (e_PLUGIN."efiction/header.php");
 
 //make a new TemplatePower object
 //make a new TemplatePower object
+
 $tpl = new TemplatePower(e_PLUGIN."efiction/default_tpls/default.tpl"); 
 include("includes/pagesetup.php");
 
@@ -84,4 +85,5 @@ e107::lan('efiction',true );
     $output = e107::getParser()->parseTemplate($output, true); 
     echo $output;
 	dbclose( );
-?>
+    require_once(FOOTERF);				 
+    exit; 

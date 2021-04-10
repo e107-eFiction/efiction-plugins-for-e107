@@ -24,7 +24,7 @@
 
 $current = "viewstory";
 
-include ("header.php");
+ require_once("header.php");
  
 e107::lan('efiction');
 if(isset($_GET['action'])) $action = $_GET['action'];
@@ -69,8 +69,8 @@ if(empty($chapter)) $chapter = isset($_GET['chapter']) && isNumber($_GET['chapte
 	if(!empty($warning)) {
 		$current = "storyerror";
 		// load our template files to set up the page.
-		$tpl = new TemplatePower(e_PLUGIN."efiction/default_tpls/default.tpl");
-		include("includes/pagesetup.php");
+		$tpl = new TemplatePower(_BASEDIR."default_tpls/default.tpl");
+		 require_once("includes/pagesetup.php");
 		$tpl->assign("output", "<div id='pagetitle'>".$title."</div>".write_error($warning));
 		$tpl->printToScreen( );
 		//$output = $tpl->getOutputContent( );  
@@ -88,12 +88,12 @@ if($action == "printable") {
 	$settingsresults = dbquery("SELECT store, storiespath FROM ".$settingsprefix."fanfiction_settings WHERE sitekey = '".SITEKEY."'");
 	list($store, $storiespath) = dbrow($settingsresults);
 	$tpl = new TemplatePower(e_PLUGIN."efiction/default_tpls/printstory.tpl");
-	include("includes/pagesetup.php");
+	 require_once("includes/pagesetup.php");
 	$tpl->assign("title", stripslashes($storyinfo['title']));
 	$tpl->assign("author", author_link($storyinfo));
 	if(empty($chapter)) $chapter = "all"; // shouldn't happen but just in case
 	$stories = $storyinfo;
-	include("includes/storyblock.php");
+	 require_once("includes/storyblock.php");
 	unset($stories);
 	if($chapter == "all") {
 		if($storyinfo['storynotes']) {
@@ -197,27 +197,27 @@ if($action == "printable") {
 	while($code = dbassoc($codeblocks)) {
 		eval($code['code_text']);
 	}	
-	$tpl->assign("archivedat", _ARCHIVEDAT." <a href=\"".e_HTTP."$url/viewstory.php?sid=$sid\">$url/viewstory.php?sid=$sid</a>");
+	$tpl->assign("archivedat", _ARCHIVEDAT." <a href=\""._BASEDIR."$url/viewstory.php?sid=$sid\">$url/viewstory.php?sid=$sid</a>");
 	$copyquery = dbquery("SELECT message_text FROM ".TABLEPREFIX."fanfiction_messages WHERE message_name = 'printercopyright' LIMIT 1");
 	list($copyright) = dbrow($copyquery);
 	$tpl->assign("copyright", $copyright);
 }
 else if(($displayindex && empty($chapter)) || !empty($_GET['index'])) {
 	$tpl = new TemplatePower(e_PLUGIN."efiction/default_tpls/storyindex.tpl");
-	include("includes/pagesetup.php");
+	 require_once("includes/pagesetup.php");
 	$stories = $storyinfo;
 	// Hook for adding content to only the index of the story.
 	$codeblocks = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'storyindex'");
 	while($code = dbassoc($codeblocks)) {
 		eval($code['code_text']);
 	}
-	include("includes/storyblock.php");
-	$printicon = "<a href=\"".e_HTTP."viewstory.php?action=printable&amp;textsize=$textsize&amp;sid=$sid&amp;chapter=all\" target=\"_blank\"><img src='".(isset($printer) ? $printer : "images/print.gif")."' border='0' alt='"._PRINTER."'></a>";
+	 require_once("includes/storyblock.php");
+	$printicon = "<a href=\""._BASEDIR."viewstory.php?action=printable&amp;textsize=$textsize&amp;sid=$sid&amp;chapter=all\" target=\"_blank\"><img src='".(isset($printer) ? $printer : "images/print.gif")."' border='0' alt='"._PRINTER."'></a>";
 	if($reviewsallowed && (isMEMBER || $anonreviews))
-			$reviewslink = "<a href=\"".e_HTTP."reviews.php?action=add&amp;item=$sid&amp;next=2&amptype=ST\">"._SUBMITREVIEW."</a>";
+			$reviewslink = "<a href=\""._BASEDIR."reviews.php?action=add&amp;item=$sid&amp;next=2&amptype=ST\">"._SUBMITREVIEW."</a>";
 	$tpl->assign( "reviewslink", $reviewslink );
 	if($storyinfo['rr']) {
-		$tpl->assign("roundrobin", "[<a href=\"".e_HTTP."stories.php?action=newchapter&amp;sid=".$sid."\">"._CONTRIBUTE2RR."</a>]");
+		$tpl->assign("roundrobin", "[<a href=\""._BASEDIR."stories.php?action=newchapter&amp;sid=".$sid."\">"._CONTRIBUTE2RR."</a>]");
 	}
 	$tpl->assign( "printicon", $printicon );
 	$tpl->assign( "reviewform", $form);
@@ -232,16 +232,16 @@ else if(($displayindex && empty($chapter)) || !empty($_GET['index'])) {
 	while($chap = dbassoc($chapterinfo)) {
 		$tpl->newBlock("storyindexblock");
 		$tpl->assign("chapternumber", $chap['inorder']);
-		$tpl->assign("title", "<a href=\"".e_HTTP."viewstory.php?sid=$sid&amp;chapter=".$chap['inorder']."\">".$chap['title']."</a>");
+		$tpl->assign("title", "<a href=\""._BASEDIR."viewstory.php?sid=$sid&amp;chapter=".$chap['inorder']."\">".$chap['title']."</a>");
 		$tpl->assign("author", "<a href='viewuser.php?uid=".$chap['uid']."'>".$chap['penname']."</a>");
-		$tpl->assign("printicon", "<a href=\"".e_HTTP."viewstory.php?action=printable&amp;textsize=$textsize&amp;sid=$sid&amp;chapter=".$chap['inorder']."\" target=\"_blank\"><img src='".(isset($printer) ? $printer : "images/print.gif")."' border='0' alt='"._PRINTER."'></a>");
+		$tpl->assign("printicon", "<a href=\""._BASEDIR."viewstory.php?action=printable&amp;textsize=$textsize&amp;sid=$sid&amp;chapter=".$chap['inorder']."\" target=\"_blank\"><img src='".(isset($printer) ? $printer : "images/print.gif")."' border='0' alt='"._PRINTER."'></a>");
 		$tpl->assign("ratingpics", ratingpics($chap['rating']));
 		if($reviewsallowed) {
-			$tpl->assign("reviews", "<a href=\"".e_HTTP."reviews.php?type=ST&amp;item=$sid&amp;chapid=".$chap['chapid']."\">"._REVIEWS."</a>");
-			$tpl->assign("numreviews", "<a href=\"".e_HTTP."reviews.php?type=ST&amp;item=$sid&amp;chapid=".$chap['chapid']."\">".$chap['reviews']."</a>");
+			$tpl->assign("reviews", "<a href=\""._BASEDIR."reviews.php?type=ST&amp;item=$sid&amp;chapid=".$chap['chapid']."\">"._REVIEWS."</a>");
+			$tpl->assign("numreviews", "<a href=\""._BASEDIR."reviews.php?type=ST&amp;item=$sid&amp;chapid=".$chap['chapid']."\">".$chap['reviews']."</a>");
 		}
 		if(isADMIN) 
-			$tpl->assign("adminoptions", "<div class=\"adminoptions\"><span class='label'>"._ADMINOPTIONS.":</span> <a href=\"".e_HTTP."stories.php?action=editchapter&amp;sid=$sid&amp;chapid=".$chap['chapid']."&amp;admin=1\">"._EDIT."</a> | <a href=\"".e_HTTP."stories.php?action=delete&amp;sid=$sid&amp;chapid=".$chap['chapid']."&amp;admin=1\">"._DELETE."</a> </div>");
+			$tpl->assign("adminoptions", "<div class=\"adminoptions\"><span class='label'>"._ADMINOPTIONS.":</span> <a href=\""._BASEDIR."stories.php?action=editchapter&amp;sid=$sid&amp;chapid=".$chap['chapid']."&amp;admin=1\">"._EDIT."</a> | <a href=\""._BASEDIR."stories.php?action=delete&amp;sid=$sid&amp;chapid=".$chap['chapid']."&amp;admin=1\">"._DELETE."</a> </div>");
 		$tpl->assign("wordcount", $chap['wordcount']);
 		$tpl->assign("chapternotes", format_story($chap['notes']));
 		$tpl->assign("count", ($chap['count'] ? $chap['count'] : 0) );
@@ -252,7 +252,7 @@ else if(($displayindex && empty($chapter)) || !empty($_GET['index'])) {
 }
 else {
 	$tpl = new TemplatePower(e_PLUGIN."efiction/default_tpls/viewstory.tpl");
-	include("includes/pagesetup.php");
+	 require_once("includes/pagesetup.php");
 	$jumpmenu = "";
 	$jumpmenu2 = "";
 	if(empty($chapter) || !$chapter) $chapter = 1;
@@ -260,10 +260,10 @@ else {
 	$chapterinfo = dbquery("SELECT chap.*, "._PENNAMEFIELD." as penname FROM (".TABLEPREFIX."fanfiction_chapters as chap, "._AUTHORTABLE.") WHERE sid = '$sid' AND chap.uid = "._UIDFIELD." ORDER BY inorder");
 	$chapters = dbnumrows($chapterinfo);
 	if($chapters > 1) {
-		$printicon = "<img src='".(isset($printer) ? $printer : "images/print.gif")."' border='0' alt='"._PRINTER."'> <a href=\"".e_HTTP."viewstory.php?action=printable&amp;textsize=$textsize&amp;sid=$sid&amp;chapter=$chapter\" target=\"_blank\">"._CHAPTER."</a> "._OR." <a href=\"".e_HTTP."viewstory.php?action=printable&amp;textsize=$textsize&amp;sid=$sid&amp;chapter=all\" target=\"_blank\">"._STORY."</a>";
+		$printicon = "<img src='".(isset($printer) ? $printer : "images/print.gif")."' border='0' alt='"._PRINTER."'> <a href=\""._BASEDIR."viewstory.php?action=printable&amp;textsize=$textsize&amp;sid=$sid&amp;chapter=$chapter\" target=\"_blank\">"._CHAPTER."</a> "._OR." <a href=\""._BASEDIR."viewstory.php?action=printable&amp;textsize=$textsize&amp;sid=$sid&amp;chapter=all\" target=\"_blank\">"._STORY."</a>";
 		$jumpmenu .= "<form name=\"jump\" action=\"\">";
 		if($chapter > 1) 
-			$prev = "<a href=\"".e_HTTP."viewstory.php?sid=$sid&amp;".($textsize ? "textsize=$textsize&amp;" : "")."chapter=".($chapter-1)."\" class=\"prev\">"._PREVIOUS."</a> ";
+			$prev = "<a href=\""._BASEDIR."viewstory.php?sid=$sid&amp;".($textsize ? "textsize=$textsize&amp;" : "")."chapter=".($chapter-1)."\" class=\"prev\">"._PREVIOUS."</a> ";
 		$jumpmenu .= "<select class=\"textbox\" name=\"chapter\" onchange=\"if(document.jump.chapter.selectedIndex.value != $chapter) document.location = 'viewstory.php?sid=$sid&amp;textsize=$textsize&amp;chapter=' + document.jump.chapter.options[document.jump.chapter.selectedIndex].value\">";
 		while($chap = dbassoc($chapterinfo)) {
 			if($chap['validated']) $jumpmenu .= "<option value='".$chap['inorder']."'".(isset($chapter) && $chap['inorder'] == $chapter ? " selected" : "").">".$chap['inorder'].". ".stripslashes($chap['title'])."</option>";
@@ -282,7 +282,7 @@ else {
 		$jumpmenu .= "</select>";
 		if($chapter < $chapters) {
 			$nextchapter = $chapter + 1;
-			$next = "<a href=\"".e_HTTP."viewstory.php?sid=$sid&amp;textsize=$textsize&amp;chapter=".($chapter+1)."\" class=\"next\">"._NEXT."</a>";
+			$next = "<a href=\""._BASEDIR."viewstory.php?sid=$sid&amp;textsize=$textsize&amp;chapter=".($chapter+1)."\" class=\"next\">"._NEXT."</a>";
 		}
 		else {
 			$nextchapter = "";
@@ -312,7 +312,7 @@ else {
 		while($code = dbassoc($codeblocks)) {
 			eval($code['code_text']);
 		}
-		$printicon = "<a href=\"".e_HTTP."viewstory.php?action=printable&amp;sid=$sid&amp;textsize=$textsize&amp;chapter=1\" target=\"_blank\"><img src='".(isset($printer) ? $priner : "images/print.gif")."' border='0' alt='"._PRINTER."'></a>";
+		$printicon = "<a href=\""._BASEDIR."viewstory.php?action=printable&amp;sid=$sid&amp;textsize=$textsize&amp;chapter=1\" target=\"_blank\"><img src='".(isset($printer) ? $priner : "images/print.gif")."' border='0' alt='"._PRINTER."'></a>";
 	}
 	// if the *CHAPTER* hasn't been validated and the viewer isn't an admin or the author throw them a warning.  
 	if(!$valid && !isADMIN && USERUID != $chapterauthor && !in_array($chapterauthor, $storyinfo['coauthors'])) {
@@ -321,24 +321,24 @@ else {
 	$stories = $storyinfo;
 	$tpl->gotoBlock("_ROOT");
 	$jumpmenu2 = ""; 
-	include("includes/storyblock.php");
+	 require_once("includes/storyblock.php");
 	unset($adminlinks);
 	if(isADMIN && uLEVEL < 3) 
-		$adminlinks = "<div class=\"adminoptions\"><span class='label'>"._ADMINOPTIONS.":</span> "._EDIT." - <a href=\"".e_HTTP."stories.php?action=editstory&amp;sid=$sid&amp;admin=1\">"._STORY."</a> "._OR." <a href=\"".e_HTTP."stories.php?action=editchapter&amp;chapid=$chapid&amp;admin=1\">"._CHAPTER."</a> | "._DELETE." - <a href=\"".e_HTTP."stories.php?action=delete&amp;sid=$sid&amp;admin=1\">"._STORY."</a> "._OR." <a href=\"".e_HTTP."stories.php?action=delete&amp;chapid=$chapid&amp;sid=$sid&amp;admin=1\">"._CHAPTER."</a></div>";
+		$adminlinks = "<div class=\"adminoptions\"><span class='label'>"._ADMINOPTIONS.":</span> "._EDIT." - <a href=\""._BASEDIR."stories.php?action=editstory&amp;sid=$sid&amp;admin=1\">"._STORY."</a> "._OR." <a href=\""._BASEDIR."stories.php?action=editchapter&amp;chapid=$chapid&amp;admin=1\">"._CHAPTER."</a> | "._DELETE." - <a href=\""._BASEDIR."stories.php?action=delete&amp;sid=$sid&amp;admin=1\">"._STORY."</a> "._OR." <a href=\""._BASEDIR."stories.php?action=delete&amp;chapid=$chapid&amp;sid=$sid&amp;admin=1\">"._CHAPTER."</a></div>";
 	if(isMEMBER && $favorites) {
 		$jumpmenu2 .= "<option value=\"member.php?action=favst&amp;add=1&amp;sid=$sid\">"._ADDSTORY2FAVES."</option><option value=\"member.php?action=favau&amp;add=1&amp;author=".$stories['uid'].(count($storyinfo['coauthors']) ? ",".implode(",", array_keys($storyinfo['coauthors'])) : "")."\">"._ADDAUTHOR2FAVES."</option>";
 	}
 	if($reviewsallowed ) {
 		if(isMEMBER || $anonreviews) {
-			$reviewslink = "<a href=\"".e_HTTP."reviews.php?action=add&amp;type=ST&amp;item=$sid&amp;chapid=$chapid&amp;next=$nextchapter\">"._SUBMITREVIEW."</a>";
+			$reviewslink = "<a href=\""._BASEDIR."reviews.php?action=add&amp;type=ST&amp;item=$sid&amp;chapid=$chapid&amp;next=$nextchapter\">"._SUBMITREVIEW."</a>";
 			$jumpmenu2 .= "<option value=\"reviews.php?action=add&amp;type=ST&amp;item=$sid&amp;chapid=$chapid&amp;next=$nextchapter\">"._SUBMITREVIEW."</option>";
 		}
 		else $reviewslink = write_message(sprintf(_LOGINTOREVIEW, strtolower($pagelinks['login']['link']), strtolower($pagelinks['register']['link'])));
 	}
-	$tpl->assign("reportthis", "[<a href=\"".e_HTTP.""._BASEDIR."report.php?action=report&amp;url=viewstory.php?chapid=$chapid\">"._REPORTTHIS."</a>]");
+	$tpl->assign("reportthis", "[<a href=\""._BASEDIR.""._BASEDIR."report.php?action=report&amp;url=viewstory.php?chapid=$chapid\">"._REPORTTHIS."</a>]");
 	$jumpmenu2 .= "<option value=\"report.php?action=report&amp;url=viewstory.php?chapid=$chapid\">"._REPORTTHIS."</option>";
 	if($stories['rr']) {
-		$rr = "[<a href=\"".e_HTTP."stories.php?action=newchapter&amp;sid=".$sid."\">"._CONTRIBUTE2RR."</a>]";
+		$rr = "[<a href=\""._BASEDIR."stories.php?action=newchapter&amp;sid=".$sid."\">"._CONTRIBUTE2RR."</a>]";
 		$jumpmenu2 .= "<option value=\"stories.php?action=newchapter&amp;sid=".$sid."\">"._CONTRIBUTE2RR."</option>";
 	}
 	if(isset($jumpmenu2)) $jumpmenu2 = "<form name=\"jump2\" action=\"\"><select class=\"textbox\" name=\"jump2\" onchange=\"if(this.selectedIndex.value != 'false') document.location = document.jump2.jump2.options[document.jump2.jump2.selectedIndex].value\"><option value=\"false\">"._OPTIONS."</option>".$jumpmenu2."</select></form>";
@@ -346,11 +346,11 @@ else {
 		if(isMEMBER || $anonreviews) {
 			$item = $sid;
 			$type = "ST";
-			include("includes/reviewform.php");
+			 require_once("includes/reviewform.php");
 		}
 		else $form = write_message(sprintf(_LOGINTOREVIEW, strtolower($pagelinks['login']['link']), strtolower($pagelinks['register']['link'])));
 	}
-	$textsizer = "<a href=\"".e_HTTP."viewstory.php?sid=$sid".($inorder ? "&amp;chapter=$inorder" : "")."&amp;textsize=".($textsize - 1)."\">-</a> <strong>". _TEXTSIZE. "</strong> <a href=\"".e_HTTP."viewstory.php?sid=$sid".($inorder ? "&amp;chapter=$inorder" : "")."&amp;textsize=".($textsize + 1)."\">+</a> ";
+	$textsizer = "<a href=\""._BASEDIR."viewstory.php?sid=$sid".($inorder ? "&amp;chapter=$inorder" : "")."&amp;textsize=".($textsize - 1)."\">-</a> <strong>". _TEXTSIZE. "</strong> <a href=\""._BASEDIR."viewstory.php?sid=$sid".($inorder ? "&amp;chapter=$inorder" : "")."&amp;textsize=".($textsize + 1)."\">+</a> ";
 	// okay now that we know they can see the story and the chapter add 1 to the story and chapter counts;
 	if(empty($viewed) || (is_array($viewed) && !in_array($sid, $viewed))) {
 		dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET count = count + 1 WHERE sid = '$sid'  LIMIT 1");
