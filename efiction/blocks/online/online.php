@@ -1,9 +1,9 @@
 <?php
- 
+if(!defined("_CHARSET")) exit( );
 
 	global $dateformat, $tpl;
-    e107::includeLan(e_PLUGIN.'efiction/blocks/online/'.e_LANGUAGE.'.php');
-    
+	if(file_exists(_BASEDIR."blocks/online/{$language}.php")) include(_BASEDIR."blocks/online/{$language}.php");
+	else include(_BASEDIR."blocks/online/en.php");
 	$where = "online_uid=".(USERUID ? USERUID : "0 AND online_ip = INET_ATON('".$_SERVER['REMOTE_ADDR']."')");
 	$result = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_online WHERE $where");
 	if(dbnumrows($result) > 0) dbquery("UPDATE ".TABLEPREFIX."fanfiction_online SET online_timestamp = '".time( )."' WHERE $where");
@@ -20,4 +20,4 @@
 	$tpl->assignGlobal("onlinemembers", count($omlist) ? implode(", ", $omlist) : "");
 	$content = "<div id='who_online'><span class='label'>"._GUESTS.":</span> ".($guests ? $guests : 0)."<br />\n
 		<span class='label'>"._MEMBERS.":</span> ".(count($omlist) ? implode(", ", $omlist) : "")."</div>";
- 
+?>

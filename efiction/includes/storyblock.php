@@ -35,7 +35,6 @@ if(!defined("_CHARSET")) exit( );
 		unset($coauthors);
 	}
 	else if(empty($stories['coauthors'])) $stories['coauthors'] = array( );	
-     
 	$tpl->assign("title"   , stripslashes(title_link($stories)) );
 	$tpl->assign("author"   , author_link($stories));
 	$tpl->assign("summary", stripslashes($stories['summary']) );
@@ -72,10 +71,9 @@ if(!defined("_CHARSET")) exit( );
 	if(count($storycodeblocks)) foreach($storycodeblocks as $c) { eval($c); } 
 	$tpl->assign("classifications", $allclasslist);
 	$seriesquery = "SELECT series.* FROM ".TABLEPREFIX."fanfiction_inseries as list, ".TABLEPREFIX."fanfiction_series as series WHERE list.sid = '".$stories['sid']."' AND series.seriesid = list.seriesid";
-	$seriesresult = e107::getDb()->retrieve($seriesquery, true);  
-    
+	$seriesresult = dbquery($seriesquery) or die(_FATALERROR."<br>Query: $seriesquery<br>Error: (".mysql_errno( ).") ".mysql_error( ));
 	$serieslinks = array( );
-	foreach($seriesresult AS $s) {
+	while($s = dbassoc($seriesresult)) {
 		if(isset($action) && $action == "printable") $serieslinks[] = stripslashes($s['title']);
 		else $serieslinks[] = "<a href=\""._BASEDIR."viewseries.php?seriesid=".$s['seriesid']."\">".stripslashes($s['title'])."</a>";
 	}

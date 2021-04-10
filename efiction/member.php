@@ -19,57 +19,55 @@
 //
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
-  
-require_once("header.php"); 
- 
+if(isset($_GET['action'])) $current = $_GET['action'];
+else $current = "login";
 
-$tpl = new TemplatePower(e_PLUGIN."efiction/default_tpls/default.tpl");
- 
+	if($current == "logout" ) {
+		define("_LOGOUTCHECK", true);		
+		include("user/logout.php");
+	}
+	
+	if(!empty($_POST['submit']) && $current == "login") {
+	session_start();
+	define("_LOGINCHECK", true);		
+		include("user/login.php");
+	}
+
+require_once("header.php");
+//make a new TemplatePower object
+if(file_exists("$skindir/default.tpl")) $tpl = new TemplatePower( "$skindir/default.tpl" );
+else $tpl = new TemplatePower(_BASEDIR."default_tpls/default.tpl");
+if(file_exists("$skindir/listings.tpl")) $tpl->assignInclude( "listings", "./$skindir/listings.tpl" );
+else $tpl->assignInclude( "listings", "./default_tpls/listings.tpl" );
 include("includes/pagesetup.php");
- 
-$action = $_GET['action'];
-e107::lan('efiction');
 
 if($action) $current = $action;
 else $current = "user";
 // end main function 
-
-$pagetitle = _USERACCOUNT;
- 
- 
 if((empty($action) || $action == "login") && isMEMBER) {
-
-	/* $panelquery = "SELECT * FROM ".TABLEPREFIX."fanfiction_panels WHERE panel_hidden != '1' 
-    AND panel_level = '1' AND 
-    (panel_type = 'U' ".(!$submissionsoff || isADMIN ? " OR panel_type = 'S'" : "").($favorites ? " OR panel_type = 'F'" : "").") 
-    ORDER BY panel_type, panel_order, panel_title ASC"; */
-      
-	$output .= "<div class=\"tblborder\" id=\"useropts\" style=\"padding: 5px; width: 50%; margin: 1em 25%;\">";
-        $userlinks = efiction::userpanels();  
-        foreach($userlinks AS $userlink) {
-              $output .= $userlink;
-    } 
+	$output .= "<div id=\"pagetitle\">"._USERACCOUNT."</div>
+		<div class=\"tblborder\" id=\"useropts\" style=\"padding: 5px; width: 50%; margin: 1em 25%;\">";
+	$panelquery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_panels WHERE panel_hidden != '1' AND panel_level = '1' AND (panel_type = 'U' ".(!$submissionsoff || isADMIN ? " OR panel_type = 'S'" : "").($favorites ? " OR panel_type = 'F'" : "").") ORDER BY panel_type, panel_order, panel_title ASC");
+	if(!dbnumrows($panelquery)) $output .= _FATALERROR;
+	while($panel = dbassoc($panelquery)) {
+		if(!$panel['panel_url']) $output .=  "<a href=\"member.php?action=".$panel['panel_name']."\">".$panel['panel_title']."</a><br />\n";
+		else $output .= "<a href=\"".$panel['panel_url']."\">".$panel['panel_title']."</a><br />\n";
+	}
 	$output .= "</div>\n";
-     
 }
 else if(!empty($action)) {
-
-    /*
-    "SELECT * FROM ".TABLEPREFIX."fanfiction_panels WHERE panel_name = '$action' AND 
-    (panel_type='U' ".(!$submissionsoff || isADMIN ? " OR panel_type = 'S'" : "").($favorites ? " OR panel_type = 'F'" : "").") LIMIT 1"
-    */
-   $panel = efiction::panel_byaction($action); 
- 
-    if($panel['use_panel']) { 
-	    require_once($panel['use_panel']);
+	$panelquery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_panels WHERE panel_name = '$action' AND (panel_type='U' ".(!$submissionsoff || isADMIN ? " OR panel_type = 'S'" : "").($favorites ? " OR panel_type = 'F'" : "").") LIMIT 1");
+	if(dbnumrows($panelquery)) {
+		$panel = dbassoc($panelquery);
+		if($panel['panel_level'] > 0 && !isMEMBER) accessDenied( );
+		if($panel['panel_url'] && file_exists(_BASEDIR.$panel['panel_url'])) require_once(_BASEDIR.$panel['panel_url']);
+		else if(file_exists(_BASEDIR."user/{$action}.php")) require_once(_BASEDIR."user/{$action}.php");
+		else $output = write_error(_ERROR);
 	}
 	else $output .= write_error(_ERROR);
 }
 else $output = write_error(_NOTAUTHORIZED);
- 
-$output = e107::getParser()->parseTemplate($output, true); 
-e107::getRender()->tablerender($pagetitle, $output, 'authors-index');
-require_once(FOOTERF);
-dbclose( );				 
-exit; 
- 
+$tpl->assign( "output", $output );
+$tpl->printToScreen();
+dbclose( );
+?>

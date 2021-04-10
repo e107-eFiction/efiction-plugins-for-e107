@@ -1,10 +1,14 @@
 <?php
- 
+if(!defined("_CHARSET")) exit( );
 
-global $tinyMCE, $allowed_tags;
-
-$blocks = eFiction::blocks();
-
+global $language, $tinyMCE, $allowed_tags;
+$blockquery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_blocks WHERE block_name = 'poll'");
+while($block = dbassoc($blockquery)) {
+	$blocks[$block['block_name']] = unserialize($block['block_variables']);
+	$blocks[$block['block_name']]['title'] = $block['block_title'];
+	 $blocks[$block['block_name']]['file'] = $block['block_file'];
+	$blocks[$block['block_name']]['status'] = $block['block_status'];
+}
 include("blocks/".$blocks['poll']['file']);
 	if(isset($_GET['delete']) && isNumber($_GET['delete'])) {
 		$delete = dbquery("DELETE FROM ".TABLEPREFIX."fanfiction_poll WHERE poll_id = '$_GET[delete]' LIMIT 1");
@@ -21,7 +25,18 @@ include("blocks/".$blocks['poll']['file']);
 		if($closepoll) $emptyvotes = dbquery("TRUNCATE TABLE `".TABLEPREFIX."fanfiction_poll_votes`");
 		$output .= write_message(_ACTIONSUCCESSFUL);
 	}
- 
+	if(isset($_POST['submit'])) {
+		$poll_question = escapestring(descript(stripslashes($_POST['poll_question'])));
+		$opts = explode("\r\n", ltrim(strip_tags(preg_replace( '!<p>!iU', "\r\n",  stripslashes(trim($_POST['poll_opts']))), preg_replace("!<p>!iu", "", $allowed_tags))));
+		$new_opts = array( );
+		foreach($opts as $opt) { 
+			if(strlen(trim(preg_replace("!&nbsp;!", " ", $opt))) > 0) $new_opts[] = $opt;
+		}
+		$new_opts = escapestring(implode("|#|", $new_opts));
+		$newpoll = dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_poll(`poll_question`, `poll_opts`, `poll_start`) VALUES('$poll_question', '$new_opts', NOW( ))");
+		include("blocks/".$blocks['poll']['file']);
+		$output .= "<div style='text-align: center;'><b>"._CURRENT.":</b><br /><div class=\"tblborder\" style=\"width: 200px; margin: 0 auto; text-align: left;\">$content</div><br /></div>";
+	}
 	if($currentpoll && !isset($_POST['close_current'])) {
 		include("blocks/".$blocks['poll']['file']);
 		$output .= "<div style='text-align: center;'><b>"._CURRENT.":</b><br /><div class=\"tblborder\" style=\"width: 200px; margin: 0 auto; text-align: left;\">$content</div><br /></div>";
@@ -43,4 +58,4 @@ include("blocks/".$blocks['poll']['file']);
 		}
 		$output .= "</table><br />";
 	}
- 
+?>

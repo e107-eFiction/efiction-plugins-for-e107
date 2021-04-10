@@ -27,16 +27,12 @@ $disablesorts = array("categories");
 
 // Get variables
 	$catid = isset($_GET['catid']) && isNumber($_GET['catid']) ? $_GET['catid'] : -1;
-    $catid = (int) $catid; 
+
 // End variables
-//	if($catid == -1) $output .= "<div id=\"pagetitle\">"._CATEGORIES."</div>";
-    if($catid == -1) $caption  = _CATEGORIES;
-	else $caption  = catlist($catid);
-    
+	if($catid == -1) $output .= "<div id=\"pagetitle\">"._CATEGORIES."</div>";
+	else $output .= "<div id=\"pagetitle\">".catlist($catid)."</div>";
 	$subs = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_categories WHERE parentcatid = '$catid' ORDER BY displayorder ASC");
- 
 	$total = dbnumrows($subs);
-   
 	$list = floor($total / $displaycolumns);
 	if($total % $displaycolumns != 0) $list++;
 	$colwidth = (100/$displaycolumns) -1;
@@ -53,7 +49,8 @@ $disablesorts = array("categories");
 		while($cats = dbassoc($subs)) {
 			unset($catinfo);
 			$count++;
-			$cat = new TemplatePower(e_PLUGIN."efiction/default_tpls/categories.tpl");
+			if(file_exists("$skindir/categories.tpl")) $cat = new TemplatePower( "$skindir/categories.tpl" );
+			else $cat = new TemplatePower(_BASEDIR."default_tpls/categories.tpl");
 			$cat->prepare( );
 			$cat->newBlock("categoryblock");
 			$cat->assign("image", ($cats['image'] && file_exists("$skindir/images/".$cats['image']) ? "<img src=\"$skindir/images/".$cats['image']."\" alt=\"".$cats['category']."\" title=\"".$cats['category']."\">" : ""));
@@ -85,14 +82,9 @@ $disablesorts = array("categories");
 			$output .= "</div>";
 		}
 	}
-    
 	if($catid > 0) {
 		$storyquery .= _ORDERBY;
 		$numrows = search(_STORYQUERY.$storyquery, _STORYCOUNT.$countquery, "browse.php?");
-        
 	}
 	$catid = array($catid);
-    if($output) {
-        e107::getRender()->tablerender($caption, $output, 'browse-categories');
-    }
- 
+?>

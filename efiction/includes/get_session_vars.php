@@ -67,3 +67,4 @@ if(!defined("uLEVEL")) define("uLEVEL", 0);
 if(!defined("isMEMBER")) define("isMEMBER", false);
 if(!defined("isADMIN")) define("isADMIN", false);
  
+ if(empty($siteskin)) $siteskin = $defaultskin;

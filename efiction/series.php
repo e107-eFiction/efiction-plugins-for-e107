@@ -28,7 +28,7 @@ if($_GET['action'] == "add" || $_GET['action'] == "edit") $displayform = 1;
 include ("header.php");
 //make a new TemplatePower object
 if(file_exists("$skindir/default.tpl")) $tpl = new TemplatePower( "$skindir/default.tpl" );
-else $tpl = new TemplatePower("default_tpls/default.tpl");
+else $tpl = new TemplatePower(_BASEDIR."default_tpls/default.tpl");
 if(file_exists("$skindir/listings.tpl")) $tpl->assignInclude( "listings", "./$skindir/listings.tpl" );
 else $tpl->assignInclude( "listings", "./default_tpls/listings.tpl" );
 $tpl->assignInclude( "header", "./$skindir/header.tpl" );
@@ -374,8 +374,5 @@ if($showlist) {
 	}
 }
 $tpl->assign("output", $output);
-//$tpl->printToScreen();
-$output = $tpl->getOutputContent( );  
-$output = e107::getParser()->parseTemplate($output, true); 
-echo $output;
+$tpl->printToScreen( );
 ?>

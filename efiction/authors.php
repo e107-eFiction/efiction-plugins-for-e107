@@ -31,20 +31,21 @@ else $current = "members";
 include ("header.php");
 
 //make a new TemplatePower object
-$tpl = new TemplatePower(e_PLUGIN."efiction/default_tpls/default.tpl");  
+if(file_exists("$skindir/default.tpl")) $tpl = new TemplatePower( "$skindir/default.tpl" );
+else $tpl = new TemplatePower(_BASEDIR."default_tpls/default.tpl");
 include("includes/pagesetup.php");
 
 // end basic page setup
 
-$pagetitle = "<span id=\"pagetitle\">";
+$pagetitle = "<div id=\"pagetitle\">";
 if(isset($_GET['list'])) $list = $_GET['list'];
 else $list = "members";
 if(!$let) {
 	$let = false;
-	$ptitle = "</span>";
+	$ptitle = "</div>";
 }
 else {
-	$ptitle = " -- $let</span>";
+	$ptitle = " -- $let</div>";
 	if($let == _OTHER) {
 		$letter = _PENNAMEFIELD." REGEXP '^[^a-z]'";
 	}
@@ -64,44 +65,26 @@ $listOpts = ""; $countquery = "";
 		$countquery = _MEMBERCOUNT." WHERE ap.level > 0 AND ap.level < 4".(isset($letter) ? " AND $letter" : "");
 		$authorquery = _MEMBERLIST." WHERE ap.level > 0 AND ap.level < 4".(isset($letter) ? " AND $letter" : "")." GROUP BY "._UIDFIELD;
 	}
-    if($list == "beta") {
-    	$countquery = "SELECT COUNT(DISTINCT ai.uid) FROM ".TABLEPREFIX."fanfiction_authorinfo as ai, "._AUTHORTABLE." WHERE ai.field = '$field_id' AND ai.info = '"._YES."' AND "._UIDFIELD." = ai.uid".(isset($letter) ? " AND $letter" : "");
-     
-        $authorquery = "SELECT author.user_name as penname, author.user_id as uid, ue.* FROM e107_user as author LEFT JOIN e107_user_extended AS ue ON author.user_id = ue.user_extended_id
-        WHERE ue.user_plugin_efiction_betareader = 'LAN_NO'  ";
-       
-    	$pagetitle .= $field_title;
-    
-    }   
-
+	$codequery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'membersList'");
+	while($code = dbassoc($codequery)) {
+		eval($code['code_text']);
+	}
 	if(empty($countquery)) {
 		$pagetitle .= _MEMBERS;
 		$countquery = _MEMBERCOUNT.(isset($letter) ? " WHERE $letter" : "");
 		$authorquery = _MEMBERLIST.(isset($letter) ? " WHERE $letter" : "")." GROUP BY "._UIDFIELD;
 	}
 
-    if(e107::getUserExt()->user_extended_field_exist('plugin_efiction_betareader')) {
-        $field_title = e107::getUserExt()->getFieldLabel('plugin_efiction_betareader');
-        $listOpts .= "<option value=\"authors.php?".($let ? "let=$let&amp;" : "")."list=beta\"".($list == "beta" ? " selected" : "").">$field_title</option>";
-    }
 	$output .= $pagetitle.$ptitle;
 	$output .= "<div style=\"text-align: center;\"><form name=\"list\" action=\"\"><select name=\"list\" onchange=\"if(this.selectedIndex.value != 'false') document.location = document.list.list.options[document.list.list.selectedIndex].value\">";
 	$output .= "<option value=\"authors.php?".($let ? "let=$let&amp;" : "")."list=members\"".(empty($list) || $list == "members" ? " selected" : "").">"._ALLMEMBERS."</option>
 		<option value=\"authors.php?".($let ? "let=$let&amp;" : "")."list=authors\"".($list == "authors" ? " selected" : "").">"._AUTHORS."</option>
-		<option value=\"authors.php?".($let ? "let=$let&amp;" : "")."list=admins\"".($list == "admins" ? " selected" : "").">"._SITEADMINS."</option>
-        $listOpts
-        </select></form></div>";
+		<option value=\"authors.php?".($let ? "let=$let&amp;" : "")."list=admins\"".($list == "admins" ? " selected" : "").">"._SITEADMINS."</option>$listOpts
+		</select></form></div>";
 	$pagelink="authors.php?list=".($list ? $list : "members")."&amp;".($let ? "let=$let&amp;" : "");
 	include("includes/members_list.php");
 
 	$tpl->assign( "output", $output );
-	//$tpl->printToScreen();
-    $output = $tpl->getOutputContent( );  
-    $output = e107::getParser()->parseTemplate($output, true); 
-    
-    e107::getRender()->tablerender($pagetitle.$ptitle, $output, 'authors-index');
-    require_once(FOOTERF);
-    dbclose( );				 
-    exit; 
-      
- 
+	$tpl->printToScreen();
+	dbclose( );
+?>

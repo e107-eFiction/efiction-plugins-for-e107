@@ -70,8 +70,4 @@ else {
 	$numrows = 0;
 }	
 	if($charid > 0) $charlist1 = $charid;
-
-    if($output) {
-        e107::getRender()->tablerender($caption, $output, 'browse-characters');
-    }
- 
+?>

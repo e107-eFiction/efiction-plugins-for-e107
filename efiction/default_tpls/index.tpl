@@ -2,10 +2,11 @@
 <div id="leftindex">
       <div class="block">
        <div class="title">{info_title}</div>
-       <div class="content">{WMESSAGE}{info_content}<br>{login_content}</div>
+       <div class="content">{welcome}{info_content}<br>{login_content}</div>
      </div>
      <div class="block">
-       {MENU: path=efiction/efiction_random}
+       <div class="title">{random_title}</div>
+       <div class="content">{random_content}</div>
      </div>
 </div>
 <div id="rightindex">
@@ -14,10 +15,12 @@
        <div class="content">{categories_content}</div>
      </div>
      <div class="block">
-       {MENU: path=efiction/efiction_recent}
+       <div class="title">{recent_title}</div>
+       <div class="content">{recent_content}</div>
      </div>
      <div class="block">
-       {MENU: path=efiction/efiction_random}
+       <div class="title">{news_title}</div>
+       <div class="content">{news_content}</div>
     </div>
 </div>
 <!-- INCLUDE BLOCK : footer -->

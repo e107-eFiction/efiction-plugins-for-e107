@@ -234,21 +234,20 @@ function format_link($text, $title = "", $target = 0) {
 
 // Because this is used in places other than the listings of stories, we're setting it up as a function to be called as needed.
 function title_link($stories) {
-	global  $ageconsent, $disablepopups;
+	global $ratingslist, $ageconsent, $disablepopups;
 
-    $ratingslist = efiction::ratingslist();
 	$rating = $stories['rid'];
 	$warningtext = !empty($ratingslist[$rating]['warningtext']) ? addslashes(strip_tags($ratingslist[$rating]['warningtext'])) : "";
 		if(empty($ratingslist[$rating]['ratingwarning']))
-			$title = "<a href=\"viewstory.php?sid=".$stories['sid']."\">".$stories['title']."</a>";
+			$title = "<a href=\""._BASEDIR."viewstory.php?sid=".$stories['sid']."\">".$stories['title']."</a>";
 		else {
 			$warning = "";
 			$warninglevel = sprintf("%03b", $ratingslist[$rating]['ratingwarning']);
-			if($warninglevel[2] && !e107::getSession()->is(SITEKEY."_warned/{$rating}")) {
+			if($warninglevel[2] && !isset($_SESSION[SITEKEY."_warned"][$rating])) {
 				$location = "viewstory.php?sid=".$stories['sid']."&amp;warning=$rating";
 				$warning = $warningtext;
 			}
-			if($warninglevel[1] && !$ageconsent && !e107::getSession()->is(SITEKEY."_ageconsent")) {
+			if($warninglevel[1] && !$ageconsent && empty($_SESSION[SITEKEY.'_ageconsent'])) {
 				$location = "viewstory.php?sid=".$stories['sid']."&amp;ageconsent=ok&amp;warning=$rating";
 				$warning = _AGECHECK." - "._AGECONSENT." ".$warningtext." -- 1";
 			}
@@ -258,9 +257,9 @@ function title_link($stories) {
 			}
 			if(!empty($warning)) {
 				$warning = preg_replace("@'@", "\'", $warning);
-				$title = "<a href=\"javascript:if(confirm('".$warning."')) location = '$location'\">".$stories['title']."</a>";
+				$title = "<a href=\"javascript:if(confirm('".$warning."')) location = '"._BASEDIR."$location'\">".$stories['title']."</a>";
 			}
-			else $title = "<a href=\"viewstory.php?sid=".$stories['sid']."\">".$stories['title']."</a>";
+			else $title = "<a href=\""._BASEDIR."viewstory.php?sid=".$stories['sid']."\">".$stories['title']."</a>";
 		}
 	return $title;
 }
@@ -268,13 +267,13 @@ function title_link($stories) {
 // Same with the author list
 function author_link($stories) {
 	if(is_array($stories['coauthors'])) {
-		$authlink[] = "<a href=\"viewuser.php?uid=".$stories['uid']."\">".$stories['penname']."</a>";
+		$authlink[] = "<a href=\""._BASEDIR."viewuser.php?uid=".$stories['uid']."\">".$stories['penname']."</a>";
 		$coauth = dbquery("SELECT "._PENNAMEFIELD." as penname, co.uid FROM ".TABLEPREFIX."fanfiction_coauthors AS co LEFT JOIN "._AUTHORTABLE." ON co.uid = "._UIDFIELD." WHERE co.sid = '".$stories['sid']."'");
 		foreach($stories['coauthors'] AS $k => $v) {
-			$authlink[] = "<a href=\"viewuser.php?uid=".$k."\">".$v."</a>";
+			$authlink[] = "<a href=\""._BASEDIR."viewuser.php?uid=".$k."\">".$v."</a>";
 		}
 	}
-	return isset($authlink) ? implode(", ", $authlink) : "<a href=\"viewuser.php?uid=".$stories['uid']."\">".$stories['penname']."</a>";
+	return isset($authlink) ? implode(", ", $authlink) : "<a href=\""._BASEDIR."viewuser.php?uid=".$stories['uid']."\">".$stories['penname']."</a>";
 }
 
 // Used to truncate text (summaries in blocks for example) to a set length.  An improvement on the old version as this keeps words intact
@@ -527,10 +526,8 @@ function charlist($characters) {
 function search($storyquery, $countquery, $pagelink = "searching.php?", $pagetitle = 0) {
 	global $tpl, $new, $ratingslist, $itemsperpage, $reviewsallowed, $output, $dateformat, $current, $featured, $favorites, $retired, $ageconsent, $classtypelist, $classlist, $offset, $recentdays;
      
-	$count = dbquery($countquery);  
-    $result =  dbrow($count) ;   
-    $numrows = $result['count'];
-   
+	$count = dbquery($countquery);
+	list($numrows) = dbrow($count);
 	if($numrows) {
 		$tpl->assign("output", ($pagetitle ? "<div id=\"pagetitle\">$pagetitle</div>" : ""));
 		$tpl->newBlock("listings");
@@ -544,9 +541,9 @@ function search($storyquery, $countquery, $pagelink = "searching.php?", $pagetit
 		$tpl->gotoBlock("listings");
 		$tpl->assign("stories",  "<div class=\"sectionheader\">"._STORIES."</div>");
 		$storyquery .= " LIMIT $offset, $itemsperpage";
-		$result3 = e107::getDb()->retrieve($storyquery, true);     
+		$result3 = dbquery($storyquery);     
 		$count = 0;                     
-		foreach($result3 AS $stories) {    
+		while($stories = dbassoc($result3)) {       
 			$tpl->newBlock("storyblock");
 			include(_BASEDIR."includes/storyblock.php"); 
 		}

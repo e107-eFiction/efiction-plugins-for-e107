@@ -27,9 +27,12 @@ $current = "series";
 
 include ("header.php");
 
-$tpl = new TemplatePower(e_PLUGIN."efiction/default_tpls/default.tpl"); 
-$tpl = new TemplatePower(e_PLUGIN."efiction/default_tpls/listings.tpl"); 
- 
+if(file_exists( "$skindir/default.tpl")) $tpl = new TemplatePower("$skindir/default.tpl" );
+else $tpl = new TemplatePower(_BASEDIR."default_tpls/default.tpl");
+if(file_exists("$skindir/listings.tpl")) $tpl->assignInclude( "listings", "$skindir/listings.tpl" );
+else $tpl->assignInclude( "listings", _BASEDIR."default_tpls/listings.tpl" );
+$tpl->assignInclude( "header", "$skindir/header.tpl" );
+$tpl->assignInclude( "footer", "$skindir/footer.tpl" );
 include(_BASEDIR."includes/pagesetup.php");
 
 
@@ -149,8 +152,6 @@ if($scount > $itemsperpage) {
 }
 $tpl->gotoBlock( "_ROOT" );
 $tpl->assign("output", $output);
-//$tpl->printToScreen();
-$output = $tpl->getOutputContent( );  
-$output = e107::getParser()->parseTemplate($output, true); 
-echo $output;
+$tpl->printToScreen( );
+
 ?>

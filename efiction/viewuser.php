@@ -28,19 +28,21 @@ $current = "viewuser";
 include ("header.php");
 
 //make a new TemplatePower object
-$tpl = new TemplatePower(e_PLUGIN."efiction/default_tpls/user.tpl");
-$tpl = new TemplatePower(e_PLUGIN."efiction/default_tpls/listings.tpl");
-$tpl = new TemplatePower(e_PLUGIN."efiction/default_tpls/profile.tpl");
- 
+if(file_exists("$skindir/user.tpl")) $tpl = new TemplatePower( "$skindir/user.tpl" );
+else $tpl = new TemplatePower(_BASEDIR."default_tpls/user.tpl");
+if(file_exists("$skindir/listings.tpl")) $tpl->assignInclude( "listings", "./$skindir/listings.tpl" );
+else $tpl->assignInclude( "listings", "./default_tpls/listings.tpl" );
+$tpl->assignInclude( "header", "./$skindir/header.tpl" );
+$tpl->assignInclude( "footer", "./$skindir/footer.tpl" );
+if(file_exists("$skindir/profile.tpl")) $tpl->assignInclude("profile", "$skindir/profile.tpl");
+else $tpl->assignInclude("profile", _BASEDIR."default_tpls/profile.tpl");
 include("includes/pagesetup.php");	
-
- 
 // If uid isn't a number kill the script with an error message.  The only way this happens is a hacker.
 if(empty($uid)) {
 	if(!isMEMBER) accessDenied( );
 	else $uid = USERUID;
 }
-if($displayprofile) include("panels/user/profile.php");
+if($displayprofile) include("user/profile.php");
 else if(isADMIN && uLEVEL < 3) {
 	$result2 = dbquery("SELECT * FROM "._AUTHORTABLE." LEFT JOIN ".TABLEPREFIX."fanfiction_authorprefs as ap ON ap.uid = "._UIDFIELD." WHERE "._UIDFIELD." = '$uid' LIMIT 1");
 	$userinfo = dbassoc($result2);
@@ -120,10 +122,6 @@ while($panel = dbassoc($panelquery)) {
 }
 $tpl->gotoBlock("_ROOT");	
 $tpl->assign( "output", $output );
-$output = $tpl->getOutputContent( );  
-$output = e107::getParser()->parseTemplate($output, true); 
-e107::getRender()->tablerender($pagetitle, $output, 'viewuser');
-require_once(FOOTERF);
-dbclose( );				 
-exit; 
- 
+$tpl->printToScreen();
+dbclose( );
+?>

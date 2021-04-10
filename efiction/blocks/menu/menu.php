@@ -1,5 +1,5 @@
 <?php
- 
+if(!defined("_CHARSET")) exit( );
 
 	if(isset($blocks[$block]['content'])) {
 		foreach($blocks[$block]['content'] as $page) {
@@ -19,4 +19,4 @@
 	}
 	if(empty($blocks[$block]['style'])) $content = "<ul>$content</ul>";
 	$content = "<div id=\"$block\">$content</div>";
- 
+?>

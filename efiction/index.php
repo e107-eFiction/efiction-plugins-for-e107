@@ -22,25 +22,19 @@
 
 $current = "home";
 
-require_once(__DIR__ . '/../../header.php'); //inside is class2.php TODO
- 
-$tpl = new TemplatePower(__DIR__ . "/../../default_tpls/index.tpl");
- 
-if(file_exists(__DIR__ . "/../../".$skindir."/index.tpl")) $tpl = new TemplatePower(__DIR__ . "/../../".$skindir."/index.tpl");
-else $tpl = new TemplatePower(__DIR__ . "/../../default_tpls/index.tpl");
+include ("header.php");
 
-include(__DIR__ . "/../../includes/pagesetup.php");
+//make a new TemplatePower object
 
-$welcome = e107::getDb()->retrieve("SELECT message_text FROM ".TABLEPREFIX."fanfiction_messages WHERE message_name = 'welcome'");
- 
+if(file_exists("$skindir/index.tpl")) $tpl = new TemplatePower( "$skindir/index.tpl" );
+else $tpl = new TemplatePower(_BASEDIR."default_tpls/index.tpl");
+//let TemplatePower do its thing, parsing etc.
+
+include("includes/pagesetup.php");
+$query = dbquery("SELECT message_text FROM ".TABLEPREFIX."fanfiction_messages WHERE message_name = 'welcome'");
+list($welcome) = dbrow($query);
 $tpl->assign("welcome", stripslashes($welcome));
 
-$output = $tpl->getOutputContent( );  
-$output = e107::getParser()->parseTemplate($output, true); 
-echo $output;
-require_once(FOOTERF);					// render the footer (everything after the main content area)
-exit; 
-
-
+$tpl->printToScreen();
 dbclose( );
 ?>

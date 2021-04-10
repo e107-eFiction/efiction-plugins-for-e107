@@ -1,7 +1,8 @@
 <?php
- 
+if(!defined("_CHARSET")) exit( );
 
-e107::includeLan(e_PLUGIN.'efiction/blocks/shoutbox/'.e_LANGUAGE.'.php');
+if(file_exists(_BASEDIR."blocks/shoutbox/{$language}.php")) include_once(_BASEDIR."blocks/shoutbox/{$language}.php");
+else include_once(_BASEDIR."blocks/shoutbox/en.php");
 $content = "";
 if(isset($_POST['shout']) && (isMEMBER || !empty($blocks['shoutbox']['guestshouts']))) {
 	if(isMEMBER) $shout_name = USERUID;
@@ -59,7 +60,7 @@ if(dbnumrows($shouts) != 0) {
 		$content .= "</span><br />\n<span class='sbshout'>".stripslashes($shout['shout_message'])."</span><br />";
 	}
 }
-else $content .= "<div class='well'>"._NOSHOUTS."</div>";  
+else $content .= write_message(_NOSHOUTS);
 $content .= "</div>";
-if($totalshouts > $shoutlimit) $content .= "<div class='well'> <a href='"._BASEDIR."blocks/shoutbox/archive.php'>"._SHOUTARCHIVE."</a> </div>";
- 
+if($totalshouts > $shoutlimit) $content .= write_message("<a href='"._BASEDIR."blocks/shoutbox/archive.php'>"._SHOUTARCHIVE."</a>");
+?>

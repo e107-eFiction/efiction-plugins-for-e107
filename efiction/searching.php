@@ -371,8 +371,5 @@ if (isset($_POST['submit']) || isset($_GET['offset'])) {
     }
 }
 $tpl->assign('output', $output);
-//$tpl->printToScreen();
-$output = $tpl->getOutputContent( );  
-$output = e107::getParser()->parseTemplate($output, true); 
-echo $output;
+$tpl->printToScreen();
 dbclose();

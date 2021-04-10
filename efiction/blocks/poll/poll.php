@@ -17,12 +17,12 @@
 //
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
- 
+if(!defined("_CHARSET")) exit( );
 
 global $language;
 
-e107::includeLan(e_PLUGIN.'efiction/blocks/poll/'.e_LANGUAGE.'.php');
-
+if(file_exists(_BASEDIR."blocks/poll/{$language}.php")) include_once(_BASEDIR."blocks/poll/{$language}.php");
+else include_once(_BASEDIR."blocks/poll/en.php");
 $content = "";
 $pollquery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_poll WHERE poll_end IS NULL OR poll_end = '0000-00-00 00:00:00' ORDER BY poll_id DESC LIMIT 1");
 if($pollquery) $currentpoll = dbassoc($pollquery);
@@ -77,4 +77,4 @@ else  {
 	  }
 }
 	$content .= "<div style='text-align: center;'><a href='"._BASEDIR."blocks/poll/pollarchive.php'>"._POLLARCHIVE."</a></div>";
- 
+?>

@@ -1,6 +1,8 @@
 <?php
-  $content = 'In progress...';
- /*
+if(!defined("_CHARSET")) exit( );
+
+if(file_exists(_BASEDIR."blocks/info/{$language}.php")) include_once(_BASEDIR."blocks/info/{$language}.php");
+else include_once(_BASEDIR."blocks/info/en.php");
 	global $noskin, $tpl;
 
 	if(_AUTHORTABLE != TABLEPREFIX."fanfiction_authors") {
@@ -12,7 +14,8 @@
 	list($newmember) = dbrow(dbquery("SELECT "._PENNAMEFIELD." as penname FROM "._AUTHORTABLE." WHERE "._UIDFIELD." = '".$stats['newestmember']."' LIMIT 1"));
 	$adminnotices = "";
 	if(isADMIN) {
-		e107::lan('efiction',true );
+		if(file_exists(_BASEDIR."languages/".$language."_admin.php")) include_once(_BASEDIR."languages/".$language."_admin.php");
+		else include_once(_BASEDIR."languages/en_admin.php");
 		$countquery = dbquery("SELECT COUNT(DISTINCT chapid) FROM ".TABLEPREFIX."fanfiction_chapters WHERE validated = '0'");
 		list($count) = dbrow($countquery);
 		if($count) $adminnotices = sprintf(_QUEUECOUNT, $count);
@@ -60,5 +63,4 @@
 			eval($code['code_text']);
 	}
 	if(empty($blocks['info']['style'])) $content .= "<div>$adminnotices</div><div class='cleaner'>&nbsp;</div></div>";
-	*/
 ?>

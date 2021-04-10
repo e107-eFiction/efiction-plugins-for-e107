@@ -23,13 +23,14 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
+if(!defined("_CHARSET")) exit( );
 
 	if(isset($blocks['news']['num'])) $numupdated = $blocks['news']['num'];
 	else $numupdated = 1;
-    
-    $news = new TemplatePower(e_PLUGIN."efiction/default_tpls/newsbox.tpl" );
- 
-	e107::includeLan(e_PLUGIN.'efiction/blocks/news/'.e_LANGUAGE.'.php');
+	if(file_exists("$skindir/newsbox.tpl")) $news = new TemplatePower( "$skindir/newsbox.tpl" );
+	else $news = new TemplatePower( _BASEDIR."default_tpls/newsbox.tpl" );
+	if(file_exists(_BASEDIR."blocks/news/".$language.".php")) include_once(_BASEDIR."blocks/news/".$language.".php");
+	else include_once(_BASEDIR."blocks/news/en.php");
 
 	$news->prepare();
 	$newsquery = dbquery("SELECT nid, author, title, story, UNIX_TIMESTAMP(time) as date, comments FROM ".TABLEPREFIX."fanfiction_news ORDER BY time DESC LIMIT $numupdated");
@@ -57,4 +58,4 @@
 	}
 	$news->gotoBlock("_ROOT");
 	$content = $news->getOutputContent( );
- 
+?>

@@ -1,6 +1,7 @@
 <?php
-
-e107::includeLan(e_PLUGIN.'efiction/blocks/countdown/'.e_LANGUAGE.'.php');
+if(!defined("_CHARSET")) exit( );
+if(file_exists(_BASEDIR."blocks/countdown/".$language.".php")) include(_BASEDIR."blocks/countdown/".$language.".php");
+else include(_BASEDIR."blocks/countdown/en.php");
 
 if(empty($blocks['countdown']['target'])) {
 	$content = _NOCOUNTDOWN;
@@ -12,7 +13,7 @@ else $CDformat = $blocks['countdown']['CDformat'];
 if(empty($blocks['countdown']['CDfinal'])) $CDfinal = _COUNTDOWNOVER;
 else $CDfinal = $blocks['countdown']['CDfinal'];
 
-$content = '<span id="countdown"></span>
+	$content = '<span id="countdown"></span>
 <script language="JavaScript" type="text/javascript">
 
 TargetDate = "'.$target.'";
@@ -51,4 +52,4 @@ CountBack(gsecs);
 </script>
 ';
 }
- 
+?>

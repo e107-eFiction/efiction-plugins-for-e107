@@ -23,21 +23,20 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-e107::includeLan(e_PLUGIN.'efiction/blocks/categories/'.e_LANGUAGE.'.php');
+if(!defined("_CHARSET")) exit( );
 
 
-	if(true) {
-	//if($multiplecats) {
 
+	if($multiplecats) {
 		$displaycolumns = $displaycolumns ? $displaycolumns : 1;
-		$query = "SELECT * FROM #fanfiction_categories WHERE parentcatid = '-1' ORDER BY displayorder";
-		$result4 = e107::getDb()->retrieve($query, true);
-		$total = count($result4); 
+		$query = "SELECT * FROM ".TABLEPREFIX."fanfiction_categories WHERE parentcatid = '-1' ORDER BY displayorder";
+		$result4 = dbquery($query) or die(_FATALERROR."Query: ".$query."<br />Error: (".mysql_errno( ).") ".mysql_error( ));
+		$total = dbnumrows($result4);
 		$count = 0;
 		$collist = array( );
 		if($total) {
 			if(!empty($blocks['categories']['tpl'])) {
-				foreach($result4 AS $categories) {
+				while($categories = dbassoc($result4)) {
 					$list = floor($total / $displaycolumns);
 					if($total % $displaycolumns != 0) $list++;
 					$tpl->newBlock("categoriesblock");
@@ -52,7 +51,6 @@ e107::includeLan(e_PLUGIN.'efiction/blocks/categories/'.e_LANGUAGE.'.php');
 				}
 			}
 			else {
-				 
 				if(isset($blocks['categories']['columns']) && empty($blocks['categories']['columns'])) $catcolumns = 1;
 				else $catcolumns = $displaycolumns;
 				$colcount = floor(($total / $catcolumns) + ($total % $catcolumns ? 1 : 0));
@@ -61,7 +59,7 @@ e107::includeLan(e_PLUGIN.'efiction/blocks/categories/'.e_LANGUAGE.'.php');
 				$count = 0;
 				$template = (!empty($blocks['categories']['template']) ? stripslashes($blocks['categories']['template']) : "{image} {link} [{count}] {description}"); 
 				$search = array("@\{image\}@", "@\{link\}@", "@\{count\}@", "@\{description\}@");
-				foreach($result4 AS $categories) {
+				while($categories = dbassoc($result4)) {
 					unset($catinfo);
 					$count++;
 					$replace = array(

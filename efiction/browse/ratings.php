@@ -26,15 +26,14 @@ if(!defined("_CHARSET")) exit( );
 $disablesorts = array("ratings");
 $rating = isset($_REQUEST['rating']) ? $_GET['rating'] : false;
 if($rating) {
-	$pagetitle = _RATING.": ".$ratingslist[$rating]['name'];
- 
+	$output .= "<div id='pagetitle'>"._RATING.": ".$ratingslist[$rating]['name']."</div>";
 	$storyquery .= " AND rid = '$rating'";
 	$storyquery .= _ORDERBY;
 	$countquery .= " AND rid = '$rating'";
 	$numrows = search(_STORYQUERY.$storyquery, _STORYCOUNT.$countquery, $pagelink = "browse.php?");
 }
 else {
-	$pagetitle = _RATINGS ;
+	$output .= "<div id='pagetitle'>"._RATINGS."</div>";
 	$total = count($ratingslist);
 	$count = 0;
 	$column = 1;
@@ -56,6 +55,4 @@ else {
 	}
 }
 
-    if($output) {
-        e107::getRender()->tablerender($pagetitle, $output, 'browse-rating');
-    }
+?>

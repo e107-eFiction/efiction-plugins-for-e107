@@ -26,11 +26,14 @@
 
 include ("../../header.php");
 
-$tpl = new TemplatePower(e_PLUGIN."efiction/default_tpls/default.tpl"); 
+if(file_exists("$skindir/default.tpl")) $tpl = new TemplatePower( "$skindir/default.tpl" );
+else $tpl = new TemplatePower("../../default_tpls/default.tpl");
 //let TemplatePower do its thing, parsing etc.
 
 include("../../includes/pagesetup.php");
- 
+
+if(file_exists("{$language}.php")) include_once("{$language}.php");
+else include_once("en.php");
 
 $shouts = dbquery("SELECT shouts.*, "._PENNAMEFIELD." as penname FROM ".TABLEPREFIX."fanfiction_shoutbox as shouts LEFT JOIN "._AUTHORTABLE." ON "._UIDFIELD." = shouts.shout_name ORDER BY shout_datestamp DESC");
 $totalshouts = dbnumrows($shouts);

@@ -41,6 +41,9 @@
     {
         public function __construct()
         {
+        
+          
+        
         }
 
         /* {STORY_AUTHORS_LINK} TODO: TEMPLATE */
@@ -98,7 +101,7 @@
             $tp = e107::getParser();
             $stories = $this->var;
             
-            $title = title_link($stories);
+            $title = $this->title_link($stories);
             return $title;
  
             /* too soon */
@@ -147,6 +150,7 @@
             return $title;
         }
 
+
         /* {STORY_RATING_NAME} */
         public function sc_story_rating_name($parm)
         {
@@ -158,4 +162,40 @@
             }
             return '';
         }
+    
+        // Because this is used in places other than the listings of stories, we're setting it up as a function to be called as needed.
+        function title_link($stories) {
+            
+            $ageconsent =  efiction::settings('ageconsent');
+            $disablepopups =  efiction::settings('disablepopups');
+            
+            $ratingslist = efiction::ratingslist();
+        	$rating = $stories['rid'];
+        	$warningtext = !empty($ratingslist[$rating]['warningtext']) ? addslashes(strip_tags($ratingslist[$rating]['warningtext'])) : "";
+        		if(empty($ratingslist[$rating]['ratingwarning']))
+        			$title = "<a href=\"viewstory.php?sid=".$stories['sid']."\">".$stories['title']."</a>";
+        		else {
+        			$warning = "";
+        			$warninglevel = sprintf("%03b", $ratingslist[$rating]['ratingwarning']);
+        			if($warninglevel[2] && !e107::getSession()->is(SITEKEY."_warned/{$rating}")) {
+        				$location = "viewstory.php?sid=".$stories['sid']."&amp;warning=$rating";
+        				$warning = $warningtext;
+        			}
+        			if($warninglevel[1] && !$ageconsent && !e107::getSession()->is(SITEKEY."_ageconsent")) {
+        				$location = "viewstory.php?sid=".$stories['sid']."&amp;ageconsent=ok&amp;warning=$rating";
+        				$warning = _AGECHECK." - "._AGECONSENT." ".$warningtext." -- 1";
+        			}
+        			if($warninglevel[0] && !isMEMBER) {
+        				$location = "member.php?action=login&amp;sid=".$stories['sid'];
+        				$warning = _RUSERSONLY." - $warningtext";		
+        			}
+        			if(!empty($warning)) {
+        				$warning = preg_replace("@'@", "\'", $warning);
+        				$title = "<a href=\"javascript:if(confirm('".$warning."')) location = '$location'\">".$stories['title']."</a>";
+        			}
+        			else $title = "<a href=\"viewstory.php?sid=".$stories['sid']."\">".$stories['title']."</a>";
+        		}
+        	return $title;
+        }
+    
     }

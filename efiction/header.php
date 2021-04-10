@@ -20,45 +20,57 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
+ 
 if (!defined('e107_INIT'))
 {
 	require_once("../../class2.php");
 }
  
- 
+
 // Defines the character set for your language/location
 define ("_CHARSET", "utf-8");
-define ("_BASEDIR", e_PLUGIN."efiction/"); 
+define ("_BASEDIR", e_PLUGIN."efiction/"); ;
  
-// Locate config.php and set the basedir path
  
-require_once(e_PLUGIN.'efiction/bridges/conversion_db_functions.php'); 
+require_once(_BASEDIR."config.php");
 
 $settings = efiction::settings();
  
+ 
+if(isset($skin)) $globalskin = $skin; 
+ 
+$settings = efiction::settings();
 if(!defined("SITEKEY")) define("SITEKEY", $settings['sitekey']);
 unset($settings['sitekey']);
- 
+if(!defined("TABLEPREFIX")) define("TABLEPREFIX", $settings['tableprefix']);
+unset($settings['tableprefix']);
 define("STORIESPATH", $settings['storiespath']);
 unset($settings['storiespath']);
-
 foreach($settings as $var => $val) {
 	$$var = stripslashes($val);
 	$settings[$var] = htmlspecialchars($val);
 }
  
+if(isset($_GET['debug'])) $debug = 1;
 if(!$displaycolumns) $displaycolumns = 1; // shouldn't happen, but just in case.
 if($words) $words = explode(", ", $words);
 else $words = array( );
+// Fix for sites with 2.0 or 1.1 running as well as 3.0 with register_globals on.
+$defaultskin = 'e107';
+
+if(isset($globalskin)) $skin = $globalskin;
 
 if(isset($_GET['action'])) $action = strip_tags($_GET['action']);
 else $action = false;
 
 e107::lan('efiction');
- 
-require_once(e_PLUGIN.'efiction/includes/queries.php'); 
-require_once(e_PLUGIN.'efiction/includes/corefunctions.php');
 
+//because alphabet
+if(file_exists(_BASEDIR."languages/{$language}.php")) include (_BASEDIR."languages/{$language}.php");
+else include (_BASEDIR."languages/en.php");
+
+require_once(_BASEDIR."includes/queries.php");
+require_once(_BASEDIR."includes/corefunctions.php");
 
 
 // Check and/or set some variables used at various points throughout the script
@@ -72,12 +84,8 @@ if(isset($_REQUEST['uid'])) $uid = $_REQUEST["uid"];
 if(isset($uid) && !isNumber($uid)) unset($uid);
 if(isset($_REQUEST['chapid'])) $chapid = $_REQUEST["chapid"];
 if(isset($chapid) && !isNumber($chapid)) unset($chapid);
-
-//alphabet
 $let = false;
 if(isset($_GET['let'])) $let = $_GET['let'];
-if(file_exists("languages/{$language}.php")) require_once ("languages/{$language}.php");
-else require_once ("languages/en.php");
 if(isset($let) && !in_array($let, $alphabet)) $let = false;
 $output = "";
 
@@ -87,23 +95,48 @@ if(isset($PHP_SELF)) $PHP_SELF = htmlspecialchars(descript($PHP_SELF), ENT_QUOTE
 
 // Set these variables to start.
 $agecontsent = false; $viewed = false; 
- 
-require_once(e_PLUGIN.'efiction/includes/get_session_vars.php');
- 
- 
+
+require_once("includes/get_session_vars.php");
+
+if(isset($_GET['skin'])) {
+	$siteskin = $_GET['skin'];
+	$_SESSION[SITEKEY."_skin"] = $siteskin;
+}
+
+$v = explode(".", $version);
+include("version.php");
+$newV = explode(".", $version);
+//if($v[0] == $newV[0] && ($v[1] < $newV[1] || (isset($newV[2]) && $v[2] < $newV[2]))) {
+foreach($newV AS $k => $l) {
+	if($newV[$k] > $v[$k] || (!empty($newV[$k]) && empty($v[$k]))) {
+		if(isADMIN && basename($_SERVER['PHP_SELF']) != "update.php") {
+			header("Location: update.php");
+			exit( );
+		}
+		else if(!isADMIN && basename($_SERVER['PHP_SELF']) != "maintenance.php" && !(isset($_GET['action']) && $_GET['action'] == "login")) {
+			header("Location: maintenance.php");
+			exit( );
+		}
+	}
+}
+
+if(!empty($_SESSION[SITEKEY."_skin"])) $siteskin = $_SESSION[SITEKEY."_skin"];
+if($maintenance && !isADMIN && basename($_SERVER['PHP_SELF']) != "maintenance.php" && !(isset($_GET['action']) && $_GET['action'] == "login")) {
+	header("Location: maintenance.php");
+	exit( );
+}
+
 $blocks = efiction::blocks();
- 
+
+// This session variable is used to track the story views
 if(e107::getSession()->is(SITEKEY."_viewed")) $viewed = e107::getSession()->get(SITEKEY."_viewed"); 
- 
 if(isset($_GET['ageconsent'])) e107::getSession()->set(SITEKEY."_ageconsent", 1);
 if(isset($_GET['warning'])) e107::getSession()->set(SITEKEY."_warned_{$_GET['warning']}", 1);
+
  
-
-
-//$skindir = _BASEDIR."default_tpls";
-//$skindir = _BASEDIR."skins/Epiphany";
-//$skindir = _BASEDIR."skins/Sommerbrise";
-$skindir = _BASEDIR."skins/e107";
+if(is_dir(_BASEDIR."skins/$siteskin")) $skindir = _BASEDIR."skins/$siteskin";
+else if(is_dir(_BASEDIR."skins/".$settings['skin'])) $skindir = _BASEDIR."skins/".$defaultskin;
+else $skindir = _BASEDIR."default_tpls";
 
 
 if(USERUID) {
@@ -139,20 +172,20 @@ if($current == "viewuser" && isNumber($uid)) {
 	list($penname) = dbrow($author);
 	$titleinfo = "$sitename :: $penname";
 }
+ 
+ 
 if(!isset($_GET['action']) || $_GET['action'] != "printable") {
-        
+  e107::js('url',  _BASEDIR."includes/javascript.js" , 'jquery' );
+  if(!empty($tinyMCE)) {
+      //e107::js('url', _BASEDIR."tinymce/js/tinymce/tinymce.min.js" , 'jquery' );
+   
+  }
 }
-if(!isset($_GET['action']) || $_GET['action'] != "printable") {
-e107::js('url',  e_PLUGIN."efiction/includes/javascript.js" , 'jquery' );
-}
 
+if(isset($displayform) && $displayform == 1) {
 
-
-//if(isset($displayform) && $displayform == 1) { 
-if(true) {
-e107::js('url',  e_PLUGIN."efiction/includes/xmlhttp.js" , 'jquery' );
-
-    $inlinecode = "
+e107::js('url',  _BASEDIR."includes/xmlhttp.js" , 'jquery' );
+  $inlinecode = "
     lang = new Array( );
 
 lang['Back2Cats'] = '"._BACK2CATS."';
@@ -169,18 +202,18 @@ characters = new Array( );
 \n";
       
    e107::js('inline', $inlinecode); 
-   
 }
-
-/*
-<link rel=\"alternate\" type=\"application/rss+xml\" title=\"$sitename RSS Feed\" href=\""._BASEDIR."rss.php\">";
-*/
+ 
 
 if(!$displaycolumns) $displaycolumns = 1;
 $colwidth = floor(100/$displaycolumns);
-if(!empty($_GET['action']) && $_GET['action'] == "printable") {
 
-    e107::css('plugin', 'default_tpls/printable.css');   
+
+if(!empty($_GET['action']) && $_GET['action'] == "printable") {
+	if(file_exists("$skindir/printable.css")) echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"$skindir/printable.css\">";
+	else echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"default_tpls/printable.css\">";
+    
+    e107::css('url', _BASEDIR.'default_tpls/printable.css');
     
     $inlinescript = "
     if (window.print) {
@@ -191,96 +224,97 @@ if(!empty($_GET['action']) && $_GET['action'] == "printable") {
           WebBrowser1.ExecWB(6, 2);//Use a 1 vs. a 2 for a prompting dialog box    WebBrowser1.outerHTML = \"\";  
       }";
       
-   e107::js('footer-inline', $inlinescript);    
-      
+   e107::js('footer-inline', $inlinescript);  
 }
-
-if(!empty($_GET['action']) && $_GET['action'] == "printable") {
-e107::js('url', e_PLUGIN."efiction/includes/javascript.js" );
-}
-else {
+else { 
 
 $inlinestyle = '
-#columncontainer { margin: 1em auto; width: auto; padding: 5%;}
-#browseblock, #memberblock { width: 100%; padding: 0; margin: 0; float: left; border: 0px solid transparent; }
-.column { float: left; width: '.($colwidth - 1).'%; }
-html>body .column { width: '.$colwidth.'%; }
-.cleaner { clear: both; height: 1px; font-size: 1px; margin: 0; padding: 0; background: transparent; }
-#settingsform { margin: 0; padding: 0; border: none; }
-#settingsform FORM { width: 100%; margin: 0 10%; }
-#settingsform LABEL { float: left; display: block; width: 30%; text-align: right; padding-right: 10px; clear: left; }
-#settingsform DIV { clear: both;}
-#settingsform .fieldset SPAN { float: left; display: block; width: 30%; text-align: right; padding-right: 10px; clear: left;}
-#settingsform .fieldset LABEL { float: none; width: auto; display: inline; text-align: left; clear: none; }
-#settingsform { float: left; margin: 1ex 10%; }
-#settingsform .tinytoggle { text-align: center; }
-#settingsform .tinytoggle LABEL { float: none; display: inline; width: auto; text-align: center; padding: 0; clear: none; }
-#settingsform #submitdiv { text-align: center; width: 100%;clear: both; height: 3em; }
-#settingsform #submitdiv #submit { position: absolute; z-index: 10001; margin: 1em; }
-a.pophelp{
-    position: relative; /* this is the key*/
-    vertical-align: super;
-}
-
-a.pophelp:hover{z-index:100; border: none; text-decoration: none;}
-
-a.pophelp span{display: none; position: absolute; top: -25em; left: 20em; }
-
-a.pophelp:hover span{ /*the span will display just on :hover state*/
-    display:block;
-    position: absolute;
-    top: -3em; left: 8em; width: 225px;
-    border:1px solid #000;
-    background-color:#CCC; color:#000;
-    text-decoration: none;
-    text-align: left;
-    padding: 5px;
-    font-weight: normal;
-    visibility: visible;
-}
-.required { color: red; }
-.shim {
-	position: absolute;
-	display: none;
-	height: 0;
-	width:0;
-	margin: 0;
-	padding: 0;
-	z-index: 100;
-}
-
-.ajaxOptList {
-	background: #CCC;
-	border: 1px solid #000;
-	margin: 0;
-	position: absolute;
-	padding: 0;
-	z-index: 1000;
-	text-align: left;
-}
-.ajaxListOptOver {
-	padding: 4px;
-	background: #CCC;
-	margin: 0;
-}
-.ajaxListOpt {
-	background: #EEE;
-	padding: 4px;
-	margin: 0;
-}
-.multiSelect {
-	width: 300px;
-} ;';
+    #columncontainer { margin: 1em auto; width: auto; padding: 5%;}
+    #browseblock, #memberblock { width: 100%; padding: 0; margin: 0; float: left; border: 0px solid transparent; }
+    .column { float: left; width: '.($colwidth - 1).'%; }
+    html>body .column { width: '.$colwidth.'%; }
+    .cleaner { clear: both; height: 1px; font-size: 1px; margin: 0; padding: 0; background: transparent; }
+    #settingsform { margin: 0; padding: 0; border: none; }
+    #settingsform FORM { width: 100%; margin: 0 10%; }
+    #settingsform LABEL { float: left; display: block; width: 30%; text-align: right; padding-right: 10px; clear: left; }
+    #settingsform DIV { clear: both;}
+    #settingsform .fieldset SPAN { float: left; display: block; width: 30%; text-align: right; padding-right: 10px; clear: left;}
+    #settingsform .fieldset LABEL { float: none; width: auto; display: inline; text-align: left; clear: none; }
+    #settingsform { float: left; margin: 1ex 10%; }
+    #settingsform .tinytoggle { text-align: center; }
+    #settingsform .tinytoggle LABEL { float: none; display: inline; width: auto; text-align: center; padding: 0; clear: none; }
+    #settingsform #submitdiv { text-align: center; width: 100%;clear: both; height: 3em; }
+    #settingsform #submitdiv #submit { position: absolute; z-index: 10001; margin: 1em; }
+    a.pophelp{
+        position: relative; /* this is the key*/
+        vertical-align: super;
+    }
+    
+    a.pophelp:hover{z-index:100; border: none; text-decoration: none;}
+    
+    a.pophelp span{display: none; position: absolute; top: -25em; left: 20em; }
+    
+    a.pophelp:hover span{ /*the span will display just on :hover state*/
+        display:block;
+        position: absolute;
+        top: -3em; left: 8em; width: 225px;
+        border:1px solid #000;
+        background-color:#CCC; color:#000;
+        text-decoration: none;
+        text-align: left;
+        padding: 5px;
+        font-weight: normal;
+        visibility: visible;
+    }
+    .required { color: red; }
+    .shim {
+    	position: absolute;
+    	display: none;
+    	height: 0;
+    	width:0;
+    	margin: 0;
+    	padding: 0;
+    	z-index: 100;
+    }
+    
+    .ajaxOptList {
+    	background: #CCC;
+    	border: 1px solid #000;
+    	margin: 0;
+    	position: absolute;
+    	padding: 0;
+    	z-index: 1000;
+    	text-align: left;
+    }
+    .ajaxListOptOver {
+    	padding: 4px;
+    	background: #CCC;
+    	margin: 0;
+    }
+    .ajaxListOpt {
+    	background: #EEE;
+    	padding: 4px;
+    	margin: 0;
+    }
+    .multiSelect {
+    	width: 300px;
+    };
+';
 
 e107::css('inline', $inlinestyle);
  
+e107::css('url', _BASEDIR.$skindir."/style.css");
+ 
 }
-
-
+ 
 require_once(HEADERF);
- 
- 
+
 $headerSent = true;
- 
-require_once(e_PLUGIN.'efiction/includes/class.TemplatePower.inc.php');
+include (_BASEDIR."includes/class.TemplatePower.inc.php");
+if($debug == 1) {
+	@ error_reporting(E_ALL);
+	echo "\n<!-- \$_SESSION \n"; print_r($_SESSION); echo " -->";
+	echo "\n<!-- \$_COOKIE \n"; print_r($_COOKIE); echo " -->";
+	echo "\n<!-- \$_POST \n"; print_r($_POST); echo " -->";
+}
 ?>

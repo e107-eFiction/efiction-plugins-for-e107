@@ -25,12 +25,14 @@ $current = "contactus";
 
 include ("header.php");
 
-//make a new TemplatePower object
-$tpl = new TemplatePower(e_PLUGIN."efiction/default_tpls/default.tpl");    
- 
+	//make a new TemplatePower object
+if(file_exists("$skindir/default.tpl")) $tpl = new TemplatePower( "$skindir/default.tpl" );
+else $tpl = new TemplatePower(_BASEDIR."default_tpls/default.tpl");
+$tpl->assignInclude( "header", "./$skindir/header.tpl" );
+$tpl->assignInclude( "footer", "./$skindir/footer.tpl" );
 include("includes/pagesetup.php");
 
-	$pagetitle = _CONTACTUS;
+	$output .= "<h1>"._CONTACTUS."</h1>";
 
 	if(isset($_POST['submit'])) {
 		if($captcha && !isMEMBER && !captcha_confirm()) $output .= write_error(_CAPTCHAFAIL);
@@ -60,7 +62,5 @@ include("includes/pagesetup.php");
 	$tpl->assign( "output", $output );	
 $output = $tpl->getOutputContent( );  
 $output = e107::getParser()->parseTemplate($output, true); 
-e107::getRender()->tablerender($pagetitle, $output, 'viewuser');
-require_once(FOOTERF);
-dbclose( );				 
-exit; 
+echo $output;
+dbclose( );

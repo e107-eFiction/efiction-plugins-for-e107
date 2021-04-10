@@ -24,8 +24,8 @@ if(!defined("_CHARSET")) exit( );
 
 // Page Setup
 $current = "series";
-$caption =  _SERIES.($let ? " - $let" : "")  ;
-//$output .= "<div id=\"pagetitle\">"._SERIES.($let ? " - $let" : "")."</div>".build_alphalinks("browse.php?$terms&amp;", $let);
+
+$output .= "<div id=\"pagetitle\">"._SERIES.($let ? " - $let" : "")."</div>".build_alphalinks("browse.php?$terms&amp;", $let);
 
 if($let) {
 	$seriesquery .= (empty($seriesquery) ? "" : " AND ").($let == _OTHER ? " series.title REGEXP '^[^a-z]'" : "series.title LIKE '$let%'");

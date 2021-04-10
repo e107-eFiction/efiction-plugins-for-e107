@@ -26,7 +26,8 @@ include ("header.php");
 
 //make a new TemplatePower object
 
-$tpl = new TemplatePower(e_PLUGIN."efiction/default_tpls/default.tpl"); 
+if(file_exists("$skindir/default.tpl")) $tpl = new TemplatePower( "$skindir/default.tpl" );
+else $tpl = new TemplatePower(_BASEDIR."default_tpls/default.tpl");
 //let TemplatePower do its thing, parsing etc.
 
 include("includes/pagesetup.php");
@@ -39,9 +40,6 @@ else {
 	eval("?>".$text."<?php ");
 	$tpl->assign("output", "<div id='pagetitle'>$title</div>\n\n$text");
 }
-//$tpl->printToScreen();
-$output = $tpl->getOutputContent( );  
-$output = e107::getParser()->parseTemplate($output, true); 
-echo $output;
+$tpl->printToScreen();
 dbclose( );
 ?>

@@ -158,7 +158,7 @@
 		<item>
 			<field name="link_id">18</field>
 			<field name="link_name">rss</field>
-			<field name="link_text"><![CDATA[<img src='images/xml.gif' alt='RSS' border='0'>]]></field>
+			<field name="link_text"><![CDATA[<img src='{e_PLUGIN}efiction/images/xml.gif' alt='RSS' border='0'>]]></field>
 			<field name="link_key"></field>
 			<field name="link_url">rss.php</field>
 			<field name="link_target">0</field>

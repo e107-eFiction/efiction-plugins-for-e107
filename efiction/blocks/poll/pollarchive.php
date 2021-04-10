@@ -25,8 +25,8 @@ $current = "pollarchive";
 
 include ("../../header.php");
 
-e107::includeLan(e_PLUGIN.'efiction/blocks/poll/'.e_LANGUAGE.'.php');
-
+if(file_exists(_BASEDIR."blocks/poll/{$language}.php")) include(_BASEDIR."blocks/poll/{$language}.php");
+else include(_BASEDIR."blocks/poll/en.php");
 if(file_exists("$skindir/default.tpl")) $tpl = new TemplatePower( "$skindir/default.tpl" );
 else $tpl = new TemplatePower(_BASEDIR."default_tpls/default.tpl");
 $tpl->assignInclude( "header", "./$skindir/header.tpl" );

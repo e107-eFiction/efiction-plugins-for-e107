@@ -1,5 +1,6 @@
 <?php
- 
+if(!defined("_CHARSET")) exit( );
+
 /* Start block configuration */
 
 // The text that will appear under your image.  
@@ -42,4 +43,4 @@ $img = $images[mt_rand(0, count($images) - 1)];
 
 $content = "<div style='text-align: center;'><a href='$codepage' alt='$link2us'><img src='$imgfolder$img' alt='$sitename' /></a><br /><a href='$codepage'>$link2us</a></div>";
 unset($images, $img);
- 
+?>
