@@ -108,8 +108,8 @@ if(empty($favorites)) accessDenied( );
 				$list = dbquery($query."  LIMIT $offset, $itemsperpage");
 				while($author = dbassoc($list)) { 
 					$output .= "<span class='label'>$x.</span> <a href=\"viewuser.php?uid=".$author['uid']."\">".$author['penname']."</a><br />";
-					if(file_exists("./$skindir/favcomment.tpl")) $cmt = new TemplatePower( "./$skindir/favcomment.tpl" );
-					else $cmt = new TemplatePower( "./default_tpls/favcomment.tpl" );
+					if(file_exists("$skindir/favcomment.tpl")) $cmt = new TemplatePower( "$skindir/favcomment.tpl" );
+					else $cmt = new TemplatePower( _BASEDIR."default_tpls/favcomment.tpl" );
 					$cmt->prepare( );
 					$cmt->newBlock("comment");
 					$cmt->assign("comment", format_story($author['comments']));

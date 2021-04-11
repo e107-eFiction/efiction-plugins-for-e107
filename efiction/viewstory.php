@@ -24,7 +24,11 @@
 
 $current = "viewstory";
 
+// Include some files for page setup and core functions
 include ("header.php");
+require_once(HEADERF);
+
+
 if(isset($_GET['action'])) $action = $_GET['action'];
 else $action = false;
 if(isset($_GET['textsize']) && isNumber($_GET['textsize'])) $textsize = $_GET['textsize'];

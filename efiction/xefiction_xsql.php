@@ -26,7 +26,7 @@ CREATE TABLE `fanfiction_authors` (
   `website` varchar(200) NOT NULL default '',
   `bio` text NOT NULL,
   `image` varchar(200) NOT NULL default '',
-  `date` datetime NOT NULL default '0000-00-00 00:00:00',
+  `date` int(11) NOT NULL default '0',
   `admincreated` int(11) NOT NULL default '0',
   `password` varchar(40) NOT NULL default '0',
   `user_id` int(11) NOT NULL

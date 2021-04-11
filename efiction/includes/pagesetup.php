@@ -59,10 +59,7 @@ unset($catresult, $result, $classresults, $classtyperesults, $ratlist, $type, $r
 $action = escapestring($action);
 // Set up the page template
 
-if($action != "printable") {
-	$tpl->assignInclude( "header", "./$skindir/header.tpl" );
-	$tpl->assignInclude( "footer", "./$skindir/footer.tpl" );
-}
+ 
 $tpl->prepare( );
 // End page template setup
 

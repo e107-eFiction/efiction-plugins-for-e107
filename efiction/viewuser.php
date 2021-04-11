@@ -24,18 +24,19 @@
 $current = "viewuser";
 
 // Include some files for page setup and core functions
-
 include ("header.php");
+require_once(HEADERF);
+
 
 //make a new TemplatePower object
 if(file_exists("$skindir/user.tpl")) $tpl = new TemplatePower( "$skindir/user.tpl" );
 else $tpl = new TemplatePower(_BASEDIR."default_tpls/user.tpl");
-if(file_exists("$skindir/listings.tpl")) $tpl->assignInclude( "listings", "./$skindir/listings.tpl" );
-else $tpl->assignInclude( "listings", "./default_tpls/listings.tpl" );
-$tpl->assignInclude( "header", "./$skindir/header.tpl" );
-$tpl->assignInclude( "footer", "./$skindir/footer.tpl" );
+if(file_exists("$skindir/listings.tpl")) $tpl->assignInclude( "listings", "$skindir/listings.tpl" );
+else $tpl->assignInclude( "listings", _BASEDIR."default_tpls/listings.tpl" );
+ 
 if(file_exists("$skindir/profile.tpl")) $tpl->assignInclude("profile", "$skindir/profile.tpl");
 else $tpl->assignInclude("profile", _BASEDIR."default_tpls/profile.tpl");
+
 include("includes/pagesetup.php");	
 // If uid isn't a number kill the script with an error message.  The only way this happens is a hacker.
 if(empty($uid)) {

@@ -306,10 +306,8 @@ e107::css('inline', $inlinestyle);
 e107::css('url', _BASEDIR.$skindir."/style.css");
  
 }
- 
-require_once(HEADERF);
 
-$headerSent = true;
+ 
 include (_BASEDIR."includes/class.TemplatePower.inc.php");
 if($debug == 1) {
 	@ error_reporting(E_ALL);

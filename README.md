@@ -46,7 +46,15 @@ _Important_: Don't use e107 EUA in any case. It complicates things.
 - [x] e107::css() 
 - [x] e107::js() 
 
-
+#### Header Fix
+- [x] fixed header.php
+- [x] paths to default .tpls files (originally in root) _BASEDIR."default_tpls/default.tpl"  
+- [x] using HEADERF directly after including header.php - because admin part
+- [x] removing any mention of header.tpl (+footer.tpl)
+- [x] check and fix: "./default_tpls/ 
+- [x] check and fix: ./$skindir/ 
+- [x] check and fix: space+"default_tpls
+DONE.
 
 **user panels list**
 - [ ] contact

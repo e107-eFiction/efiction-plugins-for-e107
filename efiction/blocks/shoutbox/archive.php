@@ -24,10 +24,12 @@
 // ----------------------------------------------------------------------
 
 
+// Include some files for page setup and core functions
 include ("../../header.php");
+require_once(HEADERF);
 
 if(file_exists("$skindir/default.tpl")) $tpl = new TemplatePower( "$skindir/default.tpl" );
-else $tpl = new TemplatePower("../../default_tpls/default.tpl");
+else $tpl = new TemplatePower(_BASEDIR."default_tpls/default.tpl");
 //let TemplatePower do its thing, parsing etc.
 
 include("../../includes/pagesetup.php");

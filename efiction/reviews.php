@@ -23,15 +23,18 @@
 //Begin basic page setup
 
 $current = "reviews";
+
+// Include some files for page setup and core functions
 include ("header.php");
+require_once(HEADERF);
+
 
 //make a new TemplatePower object
 if(file_exists("$skindir/reviews.tpl")) $tpl = new TemplatePower( "$skindir/reviews.tpl" );
 else $tpl = new TemplatePower(_BASEDIR."default_tpls/reviews.tpl");
 if(file_exists("$skindir/reviewblock.tpl")) $tpl->assignInclude("reviewsblock", "$skindir/reviewblock.tpl" );
 else $tpl->assignInclude("reviewsblock", "default_tpls/reviewblock.tpl");
-$tpl->assignInclude( "header", "./$skindir/header.tpl" );
-$tpl->assignInclude( "footer", "./$skindir/footer.tpl" );
+ 
 
 //let TemplatePower do its thing, parsing etc.
 $tpl->prepare();

@@ -31,7 +31,7 @@ function preview_story($stories) {
 		if(isset($_GET['textsize'])) $textsize = $_GET['textsize'];
 		else $textsize = 0;
 		
-		if(file_exists("./$skindir/viewstory.tpl")) $tpl = new TemplatePower("./$skindir/viewstory.tpl");
+		if(file_exists("./$skindir/viewstory.tpl")) $tpl = new TemplatePower("$skindir/viewstory.tpl");
 		else $tpl = new TemplatePower(_BASEDIR."default_tpls/viewstory.tpl");
 		$tpl->prepare( );			
 		include("includes/storyblock.php");

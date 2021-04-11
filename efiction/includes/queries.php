@@ -2,7 +2,7 @@
 
 // Default query strings used throughout the script.  You may need to alter these to bridge to other scripts or databases.
 
-define ("_AUTHORPREFIX", defined("TABLEPREFIX") ? TABLEPREFIX : $tableprefix);
+define ("_AUTHORPREFIX", MPREFIX);
 
 define ("_UIDFIELD", "author.uid");  // Do not change the aliasing (the "author." part)!
 define ("_PENNAMEFIELD", "author.penname");  // Do not change the aliasing (the "author." part)!

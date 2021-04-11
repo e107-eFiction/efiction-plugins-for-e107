@@ -25,14 +25,16 @@
 $current = "series";
 if($_GET['action'] == "add" || $_GET['action'] == "edit") $displayform = 1;
 
+// Include some files for page setup and core functions
 include ("header.php");
+require_once(HEADERF);
+
 //make a new TemplatePower object
 if(file_exists("$skindir/default.tpl")) $tpl = new TemplatePower( "$skindir/default.tpl" );
 else $tpl = new TemplatePower(_BASEDIR."default_tpls/default.tpl");
-if(file_exists("$skindir/listings.tpl")) $tpl->assignInclude( "listings", "./$skindir/listings.tpl" );
-else $tpl->assignInclude( "listings", "./default_tpls/listings.tpl" );
-$tpl->assignInclude( "header", "./$skindir/header.tpl" );
-$tpl->assignInclude( "footer", "./$skindir/footer.tpl" );
+if(file_exists("$skindir/listings.tpl")) $tpl->assignInclude( "listings", "$skindir/listings.tpl" );
+else $tpl->assignInclude( "listings", _BASEDIR."default_tpls/listings.tpl" );
+ 
 
 include("includes/pagesetup.php");
 $seriesid = isset($_GET['seriesid']) && isNumber($_GET['seriesid']) ? $_GET['seriesid'] : false;

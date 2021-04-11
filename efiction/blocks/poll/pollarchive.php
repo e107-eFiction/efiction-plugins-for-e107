@@ -24,17 +24,18 @@
 $current = "pollarchive";
 
 include ("../../header.php");
+require_once(HEADERF);
 
 if(file_exists(_BASEDIR."blocks/poll/{$language}.php")) include(_BASEDIR."blocks/poll/{$language}.php");
 else include(_BASEDIR."blocks/poll/en.php");
 if(file_exists("$skindir/default.tpl")) $tpl = new TemplatePower( "$skindir/default.tpl" );
 else $tpl = new TemplatePower(_BASEDIR."default_tpls/default.tpl");
-$tpl->assignInclude( "header", "./$skindir/header.tpl" );
-$tpl->assignInclude( "footer", "./$skindir/footer.tpl" );
+ 
+ 
 //let TemplatePower do its thing, parsing etc.
 $tpl->prepare();
 
-include("../../includes/pagesetup.php");
+include(_BASEDIR."../../includes/pagesetup.php");
 
 $poll = !empty($_GET['poll']) && isNumber($_GET['poll']) ? $_GET['poll'] : false;
 

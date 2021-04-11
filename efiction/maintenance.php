@@ -22,7 +22,9 @@
 
 $current = "maintenance";
 
-include("header.php");
+// Include some files for page setup and core functions
+include ("header.php");
+require_once(HEADERF);
 
 if(file_exists("$skindir/default.tpl")) $tpl = new TemplatePower( "$skindir/default.tpl" );
 else $tpl = new TemplatePower(_BASEDIR."default_tpls/default.tpl");

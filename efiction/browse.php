@@ -23,14 +23,15 @@
 $current = "browse";
 $displayform = 1;
 
+// Include some files for page setup and core functions
 include ("header.php");
+require_once(HEADERF);
 
 if(file_exists("$skindir/browse.tpl")) $tpl = new TemplatePower( "$skindir/browse.tpl" );
 else $tpl = new TemplatePower(_BASEDIR."default_tpls/browse.tpl");
-if(file_exists("$skindir/listings.tpl")) $tpl->assignInclude("listings", "./$skindir/listings.tpl");
-else $tpl->assignInclude( "listings", "./default_tpls/listings.tpl" );
-$tpl->assignInclude( "header", "./$skindir/header.tpl" );
-$tpl->assignInclude( "footer", "./$skindir/footer.tpl" );
+if(file_exists("$skindir/listings.tpl")) $tpl->assignInclude("listings", "$skindir/listings.tpl");
+else $tpl->assignInclude( "listings", _BASEDIR."default_tpls/listings.tpl" );
+ 
 
 include("includes/pagesetup.php");
 if(isset($_GET['type'])) $type = descript($_GET['type']);
