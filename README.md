@@ -56,6 +56,17 @@ _Important_: Don't use e107 EUA in any case. It complicates things.
 - [x] check and fix: space+"default_tpls
 DONE.
 
+#### FOOTERF
+- [x] adding FOOTERF + exit( ) everywhere after $tpl->printToScreen();
+- [x] replace $tpl->printToScreen(); with:   
+$output = $tpl->getOutputContent();  
+$output = e107::getParser()->parseTemplate($output, true);
+e107::getRender()->tablerender($caption, $output, $current);
+- [x] replace $tpl->printToScreen( ) too
+DONE
+
+
+
 **user panels list**
 - [ ] contact
 - [ ] editbio

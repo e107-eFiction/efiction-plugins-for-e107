@@ -57,7 +57,11 @@ if(dbnumrows($shouts) > 0) {
 	if($totalshouts > $itemsperpage) $output .= build_pagelinks("archive.php?", $totalshouts, $offset);
 }
 else $output .= write_message(_NOSHOUTS);
-$tpl->assign("output", "<div id='pagetitle'>"._SHOUTARCHIVE."</div>\n\n$output");
-$tpl->printToScreen();
-
-?>
+$caption = _SHOUTARCHIVE;
+$tpl->assign("output",  $output );
+    $output = $tpl->getOutputContent();  
+    $output = e107::getParser()->parseTemplate($output, true);
+    e107::getRender()->tablerender($caption, $output, $current);
+dbclose( );
+    require_once(FOOTERF);  
+    exit( );

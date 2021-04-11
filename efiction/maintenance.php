@@ -35,6 +35,11 @@ if(dbnumrows($page)) list($title, $text) = dbrow($page);
 else $text = write_message(_ERROR);
 $output = "<div id='pagetitle'>$title</div>\n\n$text";
 $tpl->assign("output", $output);
-$tpl->printToScreen();
+
+    $output = $tpl->getOutputContent();  
+    $output = e107::getParser()->parseTemplate($output, true);
+    $caption = $title;
+    e107::getRender()->tablerender($caption, $output, $current);
 dbclose( );
-?>
+    require_once(FOOTERF);  
+    exit( );

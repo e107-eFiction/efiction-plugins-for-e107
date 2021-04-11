@@ -39,13 +39,15 @@ else include_once("languages/en_admin.php");
 // end basic page setup
 
 if(!isADMIN) {
-$output .= "<script language=\"javascript\" type=\"text/javascript\">
-location = \"maintenance.php\";
-</script>";
-$tpl->assign( "output", $output );
-$tpl->printToScreen();
-dbclose( );
-exit( );
+    $output .= "<script language=\"javascript\" type=\"text/javascript\">
+    location = \"maintenance.php\";
+    </script>";
+$output = $tpl->getOutputContent();  
+$output = e107::getParser()->parseTemplate($output, true);
+e107::getRender()->tablerender($caption, $output, $current);
+    dbclose( );
+    require_once(FOOTERF);  
+    exit( );
 }
 $oldVersion = explode(".", $settings['version']);
 $confirm = isset($_GET['confirm']) ? $_GET['confirm'] : false;
@@ -331,6 +333,8 @@ else {
 }
 else $output .= write_message(_ALREADYUPDATED);
 $tpl->assign( "output", $output );
-$tpl->printToScreen();
+    $output = $tpl->getOutputContent();  
+    $output = e107::getParser()->parseTemplate($output, true);
+    e107::getRender()->tablerender($caption, $output, $current);
 dbclose( );
 ?>

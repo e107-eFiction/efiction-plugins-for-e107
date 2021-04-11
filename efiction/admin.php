@@ -81,6 +81,9 @@ e107::lan('efiction',true );
 		$output .= write_message(_RUNNINGVERSION);
 	}	
 	$tpl->assign( "output", $output );
-	$tpl->printToScreen();
+    $output = $tpl->getOutputContent();  
+    $output = e107::getParser()->parseTemplate($output, true);
+    e107::getRender()->tablerender($caption, $output, $current);
 	dbclose( );
-?>
+    require_once(FOOTERF);  
+    exit( );

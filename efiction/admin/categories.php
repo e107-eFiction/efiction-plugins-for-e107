@@ -99,8 +99,11 @@ function relevelcategory($cat, $leveldown) {
 		if(isset($_POST['catid']) && $_POST['parentcatid'] == $_POST['catid']) {
 			$output .= write_error(_ACTIONCANCELLED." "._CATERROR);
 			$tpl->assign( "output", $output );
-			$tpl->printToScreen();
+    $output = $tpl->getOutputContent();  
+    $output = e107::getParser()->parseTemplate($output, true);
+    e107::getRender()->tablerender($caption, $output, $current);
 			dbclose( );
+            require_once(FOOTERF);  
 			exit( );
 		}
 		if($_POST['parentcatid'] != "-1") 	{

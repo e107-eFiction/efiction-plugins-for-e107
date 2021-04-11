@@ -74,6 +74,8 @@ else {
 	}
 }
 $tpl->assign("output", $output);
-$tpl->printToScreen();
-
-?>
+    $output = $tpl->getOutputContent();  
+    $output = e107::getParser()->parseTemplate($output, true);
+    e107::getRender()->tablerender($caption, $output, $current);
+    require_once(FOOTERF);  
+    exit( );

@@ -132,12 +132,15 @@ class efiction_url // plugin-folder + '_url'
 			'redirect'		=> '{e_PLUGIN}efiction/viewstory.php$1', 	 		// file-path of what to load when the regex returns true.
 		);   
  
-		$config['member'] = array(
-            'alias'         => 'member.php',
+		$config['submission'] = array(
+            'alias'         => 'submission.php',
 			'regex'			=> '^{alias}\/?([\?].*)?\/?$', 
 			'sef'			=> '{alias}', 
-			'redirect'		=> '{e_PLUGIN}efiction/member.php$1', 	 		// file-path of what to load when the regex returns true.
+			'redirect'		=> '{e_PLUGIN}efiction/viewpage.php?page=rules$1', 	 		// file-path of what to load when the regex returns true.
 		);      
+        
+        
+        
         
         $config['index'] = array(
             'alias'         => 'efiction',

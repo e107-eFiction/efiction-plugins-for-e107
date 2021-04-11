@@ -50,10 +50,12 @@ if(!defined("_CHARSET")) exit( );
 		$reviews = dbassoc($result);
 		if(!empty($reviews['respond'])) {
 			$tpl->assign("output", write_message(_ALREADYRESPONDED));
-			$tpl->printToScreen( );
-			dbclose( );
+			$output = $tpl->getOutputContent();  
+            $output = e107::getParser()->parseTemplate($output, true);
+            e107::getRender()->tablerender($caption, $output, $current);
+        	dbclose( );
+            require_once(FOOTERF);  
 			exit( );
-
 		}
 		$type = $reviews['type'];
 		if($type == "SE") $query2 = "SELECT uid FROM ".TABLEPREFIX."fanfiction_series WHERE seriesid = '".$reviews['item']."'";

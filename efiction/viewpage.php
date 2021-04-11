@@ -37,11 +37,19 @@ include("includes/pagesetup.php");
 $page = dbquery("SELECT message_title, message_text FROM ".TABLEPREFIX."fanfiction_messages WHERE ".($current ? "message_name = '".escapestring($current)."'" : "message_id = '".(isNumber($_GET['id']) ? $_GET[id] : "0")."'")." LIMIT 1");
 if(dbnumrows($page)) list($title, $text) = dbrow($page);
 else $text = write_message(_ERROR);
-if(strpos($text, "?>") === false) $tpl->assign("output", "<div id='pagetitle'>$title</div>\n\n$text");
+if(strpos($text, "?>") === false) {
+    $text = e107::getParser()->toHTML($text, "BODY"); 
+    $tpl->assign("output", $text);
+}
 else {
 	eval("?>".$text."<?php ");
-	$tpl->assign("output", "<div id='pagetitle'>$title</div>\n\n$text");
+	$tpl->assign("output", $text);
 }
-$tpl->printToScreen();
+$output = $tpl->getOutputContent();  
+
+$output = e107::getParser()->parseTemplate($output, true);
+$caption = $title; 
+e107::getRender()->tablerender($caption, $output, $current);
 dbclose( );
-?>
+    require_once(FOOTERF);  
+    exit( );

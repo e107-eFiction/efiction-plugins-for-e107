@@ -66,9 +66,12 @@ if (isset($_POST['submit']) || isset($_GET['offset'])) {
         $query .= ' '._ORDERBY;
         search($query, $countquery);
         $tpl->assign('output', $output);
-        $tpl->printToScreen();
+        $output = $tpl->getOutputContent();  
+$output = e107::getParser()->parseTemplate($output, true);
+e107::getRender()->tablerender($caption, $output, $current);;
         dbclose();
-        exit();
+        require_once(FOOTERF);  
+        exit( );
     }
     if ($searchterm && strlen($searchterm) < 3) {
         errorExit(_SEARCHTERMTOOSHORT);
@@ -96,9 +99,12 @@ if (isset($_POST['submit']) || isset($_GET['offset'])) {
                 $countquery = 'SELECT COUNT(stories.sid) FROM '.TABLEPREFIX.'fanfiction_stories as stories LEFT JOIN '.TABLEPREFIX."fanfiction_coauthors as coauth ON coauth.sid = stories.sid WHERE stories.validated > 0 AND (FIND_IN_SET(stories.uid, '$authors') > 0 OR FIND_IN_SET(coauth.uid, '$authors') > 0)";
                 search($query, $countquery);
                 $tpl->assign('output', $output);
-                $tpl->printToScreen();
+                $output = $tpl->getOutputContent();  
+$output = e107::getParser()->parseTemplate($output, true);
+e107::getRender()->tablerender($caption, $output, $current);;
                 dbclose();
-                exit();
+                require_once(FOOTERF);  
+                exit( );
             } else {
                 $query[] = '1 = 0';
                 $countquery[] = '1 = 0';
@@ -372,6 +378,9 @@ if (isset($_POST['submit']) || isset($_GET['offset'])) {
         $output .= "<div id='submitdiv'><input name=\"submit\" id=\"submit\" value=\""._SUBMIT.'" type="submit" class="button"></div></div></form></div>';
     }
 }
-$tpl->assign('output', $output);
-$tpl->printToScreen();
+$output = $tpl->getOutputContent();  
+$output = e107::getParser()->parseTemplate($output, true);
+e107::getRender()->tablerender($caption, $output, $current);
 dbclose();
+    require_once(FOOTERF);  
+    exit( );

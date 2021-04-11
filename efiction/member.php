@@ -71,6 +71,9 @@ else if(!empty($action)) {
 }
 else $output = write_error(_NOTAUTHORIZED);
 $tpl->assign( "output", $output );
-$tpl->printToScreen();
+    $output = $tpl->getOutputContent();  
+    $output = e107::getParser()->parseTemplate($output, true);
+    e107::getRender()->tablerender($caption, $output, $current);
 dbclose( );
-?>
+    require_once(FOOTERF);  
+    exit( );
