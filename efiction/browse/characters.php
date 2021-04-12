@@ -28,12 +28,13 @@ $charid = isset($_GET['charid']) && isNumber($_GET['charid']) ? $_GET['charid'] 
 if($charid > 0) {
 	$charquery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_characters WHERE charid = '$charid' LIMIT 1");
 	$char = dbassoc($charquery);
-	$output = "<div id='pagetitle'>".stripslashes($char['charname'])."</div>\n<div id='story'>".format_story($char['bio'])."</div>";
+	$caption = stripslashes($char['charname']);
+    $output = "<div id='story'>".format_story($char['bio'])."</div>";
 	$numrows = search(_STORYQUERY.$storyquery._ORDERBY, _STORYCOUNT.$countquery, "browse.php?");
 }
 else {
-	$output .= "<div id=\"pagetitle\">"._CHARACTERS.($let ? " - $let" : "")."</div>".build_alphalinks("browse.php?$terms&amp;", $let);
-
+	$caption =  _CHARACTERS.($let ? " - $let" : "");
+    $output =  build_alphalinks("browse.php?$terms&amp;", $let)."</div>";
 	if($let == _OTHER) $query = " charname REGEXP '^[^a-z]'";
 	else if($let) $query = " charname LIKE '$let%'";
 	else $query = "";

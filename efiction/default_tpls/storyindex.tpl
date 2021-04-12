@@ -8,7 +8,8 @@
 <span class="label">Rated:</span> {rating}<br />
 <span class="label">Categories:</span> {category} <span class="label">Characters: </span> {characters}<br />
 {classifications}
-<span class="label">Challenges:</span> {challengelinks}<br /> <span class="label">Series:</span> {serieslinks}<br />
+<span class="label">Autor originálu:</span> {writer}
+<br /> <span class="label">Series:</span> {serieslinks}<br />
 <span class="label">Chapters: </span> {numchapters} <span class="label">Completed:</span> {completed} <br /> 
 <span class="label">Word count:</span> {wordcount} <span class="label">Read:</span> {count}<br />
 <span class="label"> Published: </span>{published} <span class="label">Updated:</span> {updated} </div>

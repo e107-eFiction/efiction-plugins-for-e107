@@ -245,15 +245,15 @@ function title_link($stories) {
 	$rating = $stories['rid'];
 	$warningtext = !empty($ratingslist[$rating]['warningtext']) ? addslashes(strip_tags($ratingslist[$rating]['warningtext'])) : "";
 		if(empty($ratingslist[$rating]['ratingwarning']))
-			$title = "<a href=\""._BASEDIR."viewstory.php?sid=".$stories['sid']."\">".$stories['title']."</a>";
+			$title = "<a href=\"viewstory.php?sid=".$stories['sid']."\">".$stories['title']."</a>";
 		else {
-			$warning = "";
+            $warning = "";
 			$warninglevel = sprintf("%03b", $ratingslist[$rating]['ratingwarning']);
-			if($warninglevel[2] && !isset($_SESSION[SITEKEY."_warned"][$rating])) {
+			if($warninglevel[2] && !e107::getSession()->is(SITEKEY."_warned/{$rating}")) {
 				$location = "viewstory.php?sid=".$stories['sid']."&amp;warning=$rating";
 				$warning = $warningtext;
 			}
-			if($warninglevel[1] && !$ageconsent && empty($_SESSION[SITEKEY.'_ageconsent'])) {
+			if($warninglevel[1] && !$ageconsent && !e107::getSession()->is(SITEKEY."_ageconsent")) {
 				$location = "viewstory.php?sid=".$stories['sid']."&amp;ageconsent=ok&amp;warning=$rating";
 				$warning = _AGECHECK." - "._AGECONSENT." ".$warningtext." -- 1";
 			}
@@ -263,9 +263,9 @@ function title_link($stories) {
 			}
 			if(!empty($warning)) {
 				$warning = preg_replace("@'@", "\'", $warning);
-				$title = "<a href=\"javascript:if(confirm('".$warning."')) location = '"._BASEDIR."$location'\">".$stories['title']."</a>";
+				$title = "<a href=\"javascript:if(confirm('".$warning."')) location = '$location'\">".$stories['title']."</a>";
 			}
-			else $title = "<a href=\""._BASEDIR."viewstory.php?sid=".$stories['sid']."\">".$stories['title']."</a>";
+			else $title = "<a href=\"viewstory.php?sid=".$stories['sid']."\">".$stories['title']."</a>";
 		}
 	return $title;
 }
@@ -273,13 +273,13 @@ function title_link($stories) {
 // Same with the author list
 function author_link($stories) {
 	if(is_array($stories['coauthors'])) {
-		$authlink[] = "<a href=\""._BASEDIR."viewuser.php?uid=".$stories['uid']."\">".$stories['penname']."</a>";
+		$authlink[] = "<a href=\"viewuser.php?uid=".$stories['uid']."\">".$stories['penname']."</a>";
 		$coauth = dbquery("SELECT "._PENNAMEFIELD." as penname, co.uid FROM ".TABLEPREFIX."fanfiction_coauthors AS co LEFT JOIN "._AUTHORTABLE." ON co.uid = "._UIDFIELD." WHERE co.sid = '".$stories['sid']."'");
 		foreach($stories['coauthors'] AS $k => $v) {
-			$authlink[] = "<a href=\""._BASEDIR."viewuser.php?uid=".$k."\">".$v."</a>";
+			$authlink[] = "<a href=\"viewuser.php?uid=".$k."\">".$v."</a>";
 		}
 	}
-	return isset($authlink) ? implode(", ", $authlink) : "<a href=\""._BASEDIR."viewuser.php?uid=".$stories['uid']."\">".$stories['penname']."</a>";
+	return isset($authlink) ? implode(", ", $authlink) : "<a href=\"viewuser.php?uid=".$stories['uid']."\">".$stories['penname']."</a>";
 }
 
 // Used to truncate text (summaries in blocks for example) to a set length.  An improvement on the old version as this keeps words intact
@@ -502,14 +502,14 @@ function catlist($catid) {
 			while(isset($thiscat)) {
 				if(isset($link)) $link = " > ".$link;
 				else $link = "";
-				if($action != "printable") $link = "<a href='"._BASEDIR."browse.php?type=categories&amp;catid=$thiscat'>".$catlist[$thiscat]['name']."</a>".$link;
+				if($action != "printable") $link = "<a href='browse.php?type=categories&amp;catid=$thiscat'>".$catlist[$thiscat]['name']."</a>".$link;
 				else $link = $catlist[$thiscat]['name'].$link;
 				if($catlist[$thiscat]['pid'] == -1) unset($thiscat);
 				else $thiscat = $catlist[$thiscat]['pid'];
 			}
 			$categorylinks[] = $link;
 		}
-		else $categorylinks[] = "<a href='"._BASEDIR."browse.php?type=categories&amp;catid=$cat'>".$catlist[$cat]['name']."</a>";
+		else $categorylinks[] = "<a href='browse.php?type=categories&amp;catid=$cat'>".$catlist[$cat]['name']."</a>";
 	}
 	return implode(", ", $categorylinks);
 }
@@ -522,7 +522,7 @@ function charlist($characters) {
 	$charlinks = array( );
 	foreach($characters as $c) {
 		if(empty($charlist[$c]['name'])) continue;
-		if($action != "printable") $charlinks[] = "<a href='"._BASEDIR."browse.php?type=characters&amp;charid=$c'>".$charlist[$c]['name']."</a>";
+		if($action != "printable") $charlinks[] = "<a href='browse.php?type=characters&amp;charid=$c'>".$charlist[$c]['name']."</a>";
 		else $charlinks[] = $charlist[$c]['name'];
 	}
 	return implode(", ", $charlinks);
@@ -551,6 +551,7 @@ function search($storyquery, $countquery, $pagelink = "searching.php?", $pagetit
 		$count = 0;                     
 		while($stories = dbassoc($result3)) {       
 			$tpl->newBlock("storyblock");
+            
 			include(_BASEDIR."includes/storyblock.php"); 
 		}
 		$tpl->gotoBlock("_ROOT");		
@@ -574,4 +575,79 @@ function search($storyquery, $countquery, $pagelink = "searching.php?", $pagetit
 	$tpl->gotoBlock("_ROOT");
 	return $numrows;
 }
+
+function original_link($stories) {
+    $original_url = '';
+    $source = $stories['original_url']; 
+    $title = $stories['original_title']; 
+	if($source) {
+      if (strpos($source, 'http') === 0) {
+          $original_url =  "<a target='_blank'  rel='noindex, nofollow' href='".$stories['original_url']."'>{$title}</a>";
+      }
+      else {
+         $original_url = "<a target='#'  rel='noindex, nofollow'>{$title}</a><br>Originál nie je volne dostupný"; 
+      }
+	}
+	return $original_url;
+}
+
+ 
+
+
+function preklad_link($stories) {
+    $original_url = '';
+    $source = $stories['preklad_url']; 
+	if($source) {
+      if (strpos($source, 'http') === 0) {
+          $original_url =  "<a target='_blank' href=\"".$stories['preklad_url']."\">Link na preklad</a> <br>V prípade, že link nefunguje, nahláste to prosím. ";
+      }
+      else {
+         $original_url = "Link na preklad nie je uvedený"; 
+      }
+	}
+	return $original_url;
+}
+
+    function storyimage($story = array() ) {
+      
+ 		 $category_icon = $story['image'];  
+         
+         if($category_icon != '' ) {
+         $settings =  array('legacyPath'=>'{e_IMAGE}topics/', 'w'=> 0, 'h'=>0);
+
+		$settings['class']     = 'img img-fluid';
+		$settings['legacy']    = array('{e_IMAGE}topics/');
+		$settings['media'] = 'topics';
+	    $settings['path'] = 'topics';
+        
+        $category_icon = str_replace('../', '', trim($category_icon));
+                            
+		if($category_icon[0] == '{')
+		{
+				$src =  e107::getParser()->replaceConstants($category_icon, 'full');	
+		}
+		else {
+
+			$src = $settings['legacyPath'].$category_icon;
+			$src =  e107::getParser()->replaceConstants($src, 'full');
+		}
+        
+        $icon = e107::getParser()->toImage($src, $settings);      	 
+        return $src; 
+       }
+       else {
+        if($story['unnuke_topicid'] > 0) {
+       
+         $topicquery = dbquery("SELECT topicname, topicimage AS image  FROM ".TABLEPREFIX."unnuke_topics WHERE topicid = {$story['unnuke_topicid']}");
+         
+         if($topicquery) list($topicname,  $topicimage) = dbrow($topicquery);
+         $topic['image'] = $topicimage;
+         $icon =  storyimage($topic);
+         return $icon;
+          
+        }
+       
+       } 
+       
+    }
 ?>

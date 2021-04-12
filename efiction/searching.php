@@ -56,7 +56,7 @@ $searchtype = (isset($_REQUEST['searchtype']) ? $_REQUEST['searchtype'] : 'simpl
 $searchterm = (isset($_REQUEST['searchterm']) ? escapestring($_REQUEST['searchterm']) : false);
 
 if (isset($_POST['submit']) || isset($_GET['offset'])) {
-    $output .= '<div id="pagetitle">'._RESULTS.'</div>';
+    $caption = _RESULTS;
     $query = array();
     $countquery = array();
     $scountquery = array();
@@ -296,7 +296,8 @@ e107::getRender()->tablerender($caption, $output, $current);;
     }
 } else {
     if ($searchtype == 'simple') {
-        $output .= '<div id="pagetitle">'._SIMPLE."</div><div style='text-align: center;'><form method=\"post\" enctype=\"multipart/form-data\" action=\"searching.php\">
+        $caption = _SIMPLE;
+        $output .= "<div style=\"text-align: center;'><form method=\"post\" enctype=\"multipart/form-data\" action=\"searching.php\">
 		<div class=\"tblborder\" style=\"width: 320px; padding: 5px; margin: 0 auto;\">
 		<select name=\"searchtype\">
 		<option value=\"penname\">"._PENNAME.'</option>
@@ -309,7 +310,8 @@ e107::getRender()->tablerender($caption, $output, $current);;
         $output .= '<INPUT type="submit" class="button" name="submit" value="'._SUBMIT.'" size="20">
 		<div style="font-size: 8pt; text-align: right;"><a href="searching.php?searchtype=advanced">'._ADVANCED.'</a></div></div></form></div>';
     } else {
-        $output .= '<div id="pagetitle">'._ADVANCED.'</div><div>
+        $caption = _ADVANCED;
+        $output .= '<div>
 			<form method="POST" name="form" enctype="multipart/form-data" action="searching.php?searchtype=advanced">
 			<div class="tblborder" style="width: 90%; margin: 0 auto; padding: 10px;">';
         if ($multiplecats) {
@@ -378,6 +380,8 @@ e107::getRender()->tablerender($caption, $output, $current);;
         $output .= "<div id='submitdiv'><input name=\"submit\" id=\"submit\" value=\""._SUBMIT.'" type="submit" class="button"></div></div></form></div>';
     }
 }
+
+$tpl->assign("output", $output);
 $output = $tpl->getOutputContent();  
 $output = e107::getParser()->parseTemplate($output, true);
 e107::getRender()->tablerender($caption, $output, $current);

@@ -23,7 +23,7 @@
  
 if (!defined('e107_INIT'))
 {
-	require_once("../../class2.php");
+	require_once(__DIR__.'/../../class2.php');
 }
  
 
@@ -31,7 +31,8 @@ if (!defined('e107_INIT'))
 define ("_CHARSET", "utf-8");
 define ("_BASEDIR", e_PLUGIN."efiction/"); ;
  
- 
+define("_ADMINBASEDIR", e_PLUGIN."efiction/admin/");
+
 require_once(_BASEDIR."config.php");
 
 $settings = efiction::settings();
@@ -97,10 +98,10 @@ if(isset($PHP_SELF)) $PHP_SELF = htmlspecialchars(descript($PHP_SELF), ENT_QUOTE
 $agecontsent = false; $viewed = false; 
 
 require_once("includes/get_session_vars.php");
-
+ 
 if(isset($_GET['skin'])) {
 	$siteskin = $_GET['skin'];
-	$_SESSION[SITEKEY."_skin"] = $siteskin;
+    e107::getSession()->set(SITEKEY."_skin", $siteskin); 
 }
 
 $v = explode(".", $version);
@@ -109,26 +110,25 @@ $newV = explode(".", $version);
 //if($v[0] == $newV[0] && ($v[1] < $newV[1] || (isset($newV[2]) && $v[2] < $newV[2]))) {
 foreach($newV AS $k => $l) {
 	if($newV[$k] > $v[$k] || (!empty($newV[$k]) && empty($v[$k]))) {
-		if(isADMIN && basename($_SERVER['PHP_SELF']) != "update.php") {
+		if(isADMIN && e_PAGE != "update.php") {
 			header("Location: update.php");
 			exit( );
 		}
-		else if(!isADMIN && basename($_SERVER['PHP_SELF']) != "maintenance.php" && !(isset($_GET['action']) && $_GET['action'] == "login")) {
+		else if(!isADMIN && e_PAGE != "maintenance.php" && !(isset($_GET['action']) && $_GET['action'] == "login")) {
 			header("Location: maintenance.php");
 			exit( );
 		}
 	}
 }
 
-if(!empty($_SESSION[SITEKEY."_skin"])) $siteskin = $_SESSION[SITEKEY."_skin"];
-if($maintenance && !isADMIN && basename($_SERVER['PHP_SELF']) != "maintenance.php" && !(isset($_GET['action']) && $_GET['action'] == "login")) {
+if(e107::getSession()->is(SITEKEY."_skin")) $siteskin = e107::getSession()->get(SITEKEY."_skin");
+if($maintenance && !isADMIN && e_PAGE != "maintenance.php" && !(isset($_GET['action']) && $_GET['action'] == "login")) {
 	header("Location: maintenance.php");
 	exit( );
 }
 
 $blocks = efiction::blocks();
 
-// This session variable is used to track the story views
 if(e107::getSession()->is(SITEKEY."_viewed")) $viewed = e107::getSession()->get(SITEKEY."_viewed"); 
 if(isset($_GET['ageconsent'])) e107::getSession()->set(SITEKEY."_ageconsent", 1);
 if(isset($_GET['warning'])) e107::getSession()->set(SITEKEY."_warned_{$_GET['warning']}", 1);
@@ -303,16 +303,11 @@ $inlinestyle = '
 
 e107::css('inline', $inlinestyle);
  
-e107::css('url', _BASEDIR.$skindir."/style.css");
+e107::css('url',  $skindir."/style.css");
  
 }
 
  
 include (_BASEDIR."includes/class.TemplatePower.inc.php");
-if($debug == 1) {
-	@ error_reporting(E_ALL);
-	echo "\n<!-- \$_SESSION \n"; print_r($_SESSION); echo " -->";
-	echo "\n<!-- \$_COOKIE \n"; print_r($_COOKIE); echo " -->";
-	echo "\n<!-- \$_POST \n"; print_r($_POST); echo " -->";
-}
-?>
+ 
+ 

@@ -36,6 +36,12 @@ class efiction_url // plugin-folder + '_url'
 			'sef'			=> 'admin.php',   
 		);
 
+		$config['member'] = array(
+            'alias'         => 'member.php',
+			'regex'			=> '^{alias}\/?([\?].*)?\/?$', 
+			'sef'			=> '{alias}', 
+			'redirect'		=> '{e_PLUGIN}efiction/member.php$1', 	 		// file-path of what to load when the regex returns true.
+		);
 
 		$config['reviews'] = array(
             'alias'         => 'reviews.php',

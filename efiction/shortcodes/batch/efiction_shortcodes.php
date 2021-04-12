@@ -162,6 +162,26 @@
             }
             return '';
         }
+        
+        /* {STORY_IMAGE} */
+        public function sc_story_image($parm)
+        {
+             
+            $category_icon = $this->var['image'];  
+          
+            $settings =  array('legacyPath'=>'{e_IMAGE}topics/', 'w'=> 0, 'h'=>0);
+ 
+            if($category_icon[0] == '{')
+      		{
+      			 $src =  e107::getParser()->replaceConstants($category_icon, 'full');	
+      		}
+      		else {
+      
+      			$src = "https://hpkizi.sk/images/topics/".$category_icon;
+      		}
+ 
+            return $src;
+        }      
     
         // Because this is used in places other than the listings of stories, we're setting it up as a function to be called as needed.
         function title_link($stories) {
@@ -197,5 +217,7 @@
         		}
         	return $title;
         }
+        
+        
     
     }

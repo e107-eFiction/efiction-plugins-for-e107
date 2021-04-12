@@ -25,7 +25,8 @@ if(!defined("_CHARSET")) exit( );
 // Page Setup
 $current = "series";
 
-$output .= "<div id=\"pagetitle\">"._SERIES.($let ? " - $let" : "")."</div>".build_alphalinks("browse.php?$terms&amp;", $let);
+$caption =  _SERIES.($let ? " - $let" : "");
+$output .=  build_alphalinks("browse.php?$terms&amp;", $let)."</div>";
 
 if($let) {
 	$seriesquery .= (empty($seriesquery) ? "" : " AND ").($let == _OTHER ? " series.title REGEXP '^[^a-z]'" : "series.title LIKE '$let%'");
@@ -71,7 +72,7 @@ list($numrows)= dbrow($count);
 $sresult = dbquery($query);
 $count = 0;
 $tpl->newBlock("listings");
-while($stories = dbassoc($sresult)) { include("includes/seriesblock.php"); }	
+while($stories = dbassoc($sresult)) { include(_BASEDIR."includes/seriesblock.php"); }	
 $tpl->gotoBlock("listings");
 if($numrows > $itemsperpage) $tpl->assign("pagelinks", build_pagelinks("browse.php?$terms&amp;", $numrows, $offset));
 $tpl->gotoBlock("_ROOT");

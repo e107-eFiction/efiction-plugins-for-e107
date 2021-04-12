@@ -33,7 +33,8 @@ include("includes/pagesetup.php");
 $page = dbquery("SELECT message_title, message_text FROM ".TABLEPREFIX."fanfiction_messages WHERE message_name = 'maintenance' LIMIT 1");
 if(dbnumrows($page)) list($title, $text) = dbrow($page);
 else $text = write_message(_ERROR);
-$output = "<div id='pagetitle'>$title</div>\n\n$text";
+$caption = $title;
+$output =  $text";
 $tpl->assign("output", $output);
 
     $output = $tpl->getOutputContent();  

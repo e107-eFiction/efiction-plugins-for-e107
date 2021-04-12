@@ -52,11 +52,11 @@ $shouts = dbquery("SELECT shouts.*, "._PENNAMEFIELD." as penname FROM ".TABLEPRE
 $content .= "<div id='shoutlist' style='height: 200px; overflow: auto;'>";
 if(dbnumrows($shouts) != 0) {
 	while($shout = dbassoc($shouts)) {
-		if(isNumber($shout['shout_name']) && isset($shout['penname'])) $shoutname = "<a href='"._BASEDIR."viewuser.php?uid=".$shout['shout_name']."'>".$shout['penname']."</a>";
+		if(isNumber($shout['shout_name']) && isset($shout['penname'])) $shoutname = "<a href='viewuser.php?uid=".$shout['shout_name']."'>".$shout['penname']."</a>";
 		else if(isset($shout['shout_name'])) $shoutname = $shout['shout_name'];
 		else $shout = _GUEST; // Just in case.
 		$content .= "<span class='sbname'>$shoutname</span><br /><span class='sbdatetime'>".date("$shoutdate", $shout['shout_datestamp']);
-		if(isADMIN) $content .= " [<a href='"._BASEDIR."admin.php?action=blocks&amp;admin=shoutbox&amp;shout_id=".$shout['shout_id']."' class='sbadmin'>"._EDIT."</a>]";
+		if(isADMIN) $content .= " [<a href='admin.php?action=blocks&amp;admin=shoutbox&amp;shout_id=".$shout['shout_id']."' class='sbadmin'>"._EDIT."</a>]";
 		$content .= "</span><br />\n<span class='sbshout'>".stripslashes($shout['shout_message'])."</span><br />";
 	}
 }

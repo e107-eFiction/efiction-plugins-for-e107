@@ -21,7 +21,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 if(!defined("_CHARSET")) exit( );
-	$output .= "<div id=\"pagetitle\">".($recentdays ? _RECENTSTORIES : _MOSTRECENT)." ".$pagelinks['rss']['link']."</div>";
+	$caption = ($recentdays ? _RECENTSTORIES : _MOSTRECENT)." ".$pagelinks['rss']['link'];
 	
 	$countquery .= ($recentdays ? " AND updated > '".date("Y-m-d H:i:s", mktime(0, 0, 0, date("m")  , date("d")-$recentdays, date("Y")))."'" : "");
 	$query = $storyquery.($recentdays ? " AND updated > '".date("Y-m-d H:i:s", mktime(0, 0, 0, date("m")  , date("d")-$recentdays, date("Y")))."'" : "");

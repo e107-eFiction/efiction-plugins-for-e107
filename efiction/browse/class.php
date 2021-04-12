@@ -28,7 +28,7 @@ if(isset($_GET['type_id']) && isNumber($_GET['type_id'])) $type_id = $_GET['type
 if(isset($_GET['classid']) && isNumber($_GET['classid'])) $classid = $_GET['classid'];
 
 if(!empty($classid)) { 
-	$output .= "<div id='pagetitle'>".$classtypelist[$type_id]['title'].": ".$classlist[$classid]['name']."</div>";
+	$caption = $classtypelist[$type_id]['title'].": ".$classlist[$classid]['name'];
 	$disablesorts = array($classtypelist[$type_id]['name']);
 	$storyquery .= " AND FIND_IN_SET('$classid', stories.classes) > 0".$storyquery._ORDERBY;
 	$countquery .= " AND FIND_IN_SET('$classid', stories.classes) > 0";
@@ -38,7 +38,7 @@ if(!empty($classid)) {
 	$searchVars['classin'] = array($classid);
 }
 else if(isset($type_id)) {
-	$output .= "<div id='pagetitle'>".$classtypelist[$type_id]['title']."</div>";
+	$caption = $classtypelist[$type_id]['title'];
 	foreach($classlist as $c => $i) {
 		if($i['type'] == $type_id) $clist[] = "<a href='browse.php?type=class&amp;type_id=$type_id&amp;classid=$c'>".$i['name']."</a><br />";
 	}
@@ -47,7 +47,7 @@ else if(isset($type_id)) {
 	$column = 1;
 	$list = floor($total / $displaycolumns);
 	if($total % $displaycolumns != 0) $list++;
-	$output .= "<div id=\"columncontainer\"><div id=\"browseblock\">".($displaycolumns ? "<div class=\"column\">" : "");
+	$output = "<div id=\"columncontainer\"><div id=\"browseblock\">".($displaycolumns ? "<div class=\"column\">" : "");
 	foreach($clist as $c) {
 		$count++;
 		$output .= $c;

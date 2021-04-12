@@ -22,6 +22,8 @@
 // ----------------------------------------------------------------------
 
 if(!defined("_CHARSET")) exit( );
+
+
 	if(!isset($count)) $count = 0;
 	$tpl->assign("sid", $stories['sid']);
 	unset($challengelinks, $challengeadmin, $serieslinks, $categorylinks, $adminlinks, $authlink);
@@ -35,7 +37,10 @@ if(!defined("_CHARSET")) exit( );
 		unset($coauthors);
 	}
 	else if(empty($stories['coauthors'])) $stories['coauthors'] = array( );	
-	$tpl->assign("title"   , stripslashes(title_link($stories)) );
+    
+
+	
+    $tpl->assign("title"   , stripslashes(title_link($stories)) );
 	$tpl->assign("author"   , author_link($stories));
 	$tpl->assign("summary", stripslashes($stories['summary']) );
 	$tpl->assign("rating"   , $ratingslist[$stories['rid']]['name']);
@@ -61,32 +66,36 @@ if(!defined("_CHARSET")) exit( );
 		}
 	}		
 	// We only want to pull this list once
-	if(!isset($storycodeblocks)) {
-		$storycodeblocks = array( );
+ 
 		$codequery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'storyblock'");
 		while($code = dbassoc($codequery)) {
 			$storycodeblocks[] = $code['code_text'];
 		}
-	}
-	if(count($storycodeblocks)) foreach($storycodeblocks as $c) { eval($c); } 
+	 
+    
+	if(count($storycodeblocks)) foreach($storycodeblocks as $c) { 
+       eval($c); 
+    } 
+    
+    
 	$tpl->assign("classifications", $allclasslist);
 	$seriesquery = "SELECT series.* FROM ".TABLEPREFIX."fanfiction_inseries as list, ".TABLEPREFIX."fanfiction_series as series WHERE list.sid = '".$stories['sid']."' AND series.seriesid = list.seriesid";
 	$seriesresult = dbquery($seriesquery) or die(_FATALERROR."<br>Query: $seriesquery<br>Error: (".mysql_errno( ).") ".mysql_error( ));
 	$serieslinks = array( );
 	while($s = dbassoc($seriesresult)) {
 		if(isset($action) && $action == "printable") $serieslinks[] = stripslashes($s['title']);
-		else $serieslinks[] = "<a href=\""._BASEDIR."viewseries.php?seriesid=".$s['seriesid']."\">".stripslashes($s['title'])."</a>";
+		else $serieslinks[] = "<a href=\"viewseries.php?seriesid=".$s['seriesid']."\">".stripslashes($s['title'])."</a>";
 	}
 	$tpl->assign("serieslinks", (count($serieslinks) > 0 ? implode(", ", $serieslinks) : _NONE));
 	$tpl->assign("characters", ($stories['charid'] ? charlist($stories['charid']) : _NONE));
 	
 	$tpl->assign("category",  $stories['catid'] == '-1' || !$stories['catid'] ? _ORPHAN : catlist($stories['catid']));
 	$tpl->assign("completed"   , ($stories['completed'] ? _YES : _NO) );
-	$tpl->assign("roundrobin"   , ($stories['rr'] ?  (!empty($roundrobin) ? $roundrobin : "<img src=\"images/roundrobin.gif\" alt=\""._ROUNDROBIN."\">") : "") );
+	$tpl->assign("roundrobin"   , ($stories['rr'] ?  (!empty($roundrobin) ? $roundrobin : "<img src=\""._BASEDIR."images/roundrobin.gif\" alt=\""._ROUNDROBIN."\">") : "") );
 	$tpl->assign("ratingpics"   , ratingpics($stories['rating']) );
-	$tpl->assign("reviews"   , ($reviewsallowed ? "<a href=\""._BASEDIR."reviews.php?type=ST&amp;item=".$stories['sid']."\">"._REVIEWS."</a>" : "") );
+	$tpl->assign("reviews"   , ($reviewsallowed ? "<a href=\"reviews.php?type=ST&amp;item=".$stories['sid']."\">"._REVIEWS."</a>" : "") );
 	if(isMEMBER && !empty($favorites)) 
-		$tpl->assign("addtofaves", "[<a href=\""._BASEDIR."member.php?action=favst&amp;add=1&amp;sid=".$stories['sid']."\">"._ADDSTORY2FAVES."</a>] [<a href=\""._BASEDIR."member.php?action=favau&amp;add=".$stories['uid'].(count($stories['coauthors']) ? ",".implode(",", array_keys($stories['coauthors'])) : "")."\">"._ADDAUTHOR2FAVES."</a>]");
+		$tpl->assign("addtofaves", "[<a href=\"member.php?action=favst&amp;add=1&amp;sid=".$stories['sid']."\">"._ADDSTORY2FAVES."</a>] [<a href=\""._BASEDIR."member.php?action=favau&amp;add=".$stories['uid'].(count($stories['coauthors']) ? ",".implode(",", array_keys($stories['coauthors'])) : "")."\">"._ADDAUTHOR2FAVES."</a>]");
 	
 	$numchapsquery = dbquery("SELECT count(sid) FROM ".TABLEPREFIX."fanfiction_chapters WHERE sid = '".$stories['sid']."' AND validated > 0");
 	list($chapters) = dbrow($numchapsquery);
@@ -99,7 +108,7 @@ if(!defined("_CHARSET")) exit( );
 		if($stories['updated'] > $recent) $tpl->assign("new", isset($new) ? file_exists(_BASEDIR.$new) ? "<img src='$new' alt='"._NEW."'>" : $new : _NEW);
 	}
 	$tpl->assign("wordcount"   , $stories['wordcount'] ? $stories['wordcount'] : "0" );
-	$tpl->assign("numreviews"   , ($reviewsallowed == "1" ? "<a href=\""._BASEDIR."reviews.php?type=ST&amp;item=".$stories['sid']."\">".$stories['reviews']."</a>" : "") );
+	$tpl->assign("numreviews"   , ($reviewsallowed == "1" ? "<a href=\"reviews.php?type=ST&amp;item=".$stories['sid']."\">".$stories['reviews']."</a>" : "") );
 	if((isADMIN && uLEVEL < 4) || USERUID == $stories['uid'] || (is_array($stories['coauthors']) && array_key_exists(USERUID, $stories['coauthors'])))
 		$adminlinks .= "[<a href=\""._BASEDIR."stories.php?action=editstory&amp;sid=".$stories['sid'].(isADMIN ? "&amp;admin=1" : "")."\">"._EDIT."</a>] [<a href=\""._BASEDIR."stories.php?action=delete&amp;sid=".$stories['sid'].(isADMIN ? "&amp;admin=1" : "")."\">"._DELETE."</a>]";
 	global $featured;
@@ -114,10 +123,20 @@ if(!defined("_CHARSET")) exit( );
 		if(isADMIN && uLEVEL < 4) $adminlinks .= " [<a href=\""._BASEDIR."admin.php?action=featured&amp;remove=".$stories['sid']."\">"._REMOVE."</a>]";
 	}
 	else if(isADMIN && uLEVEL < 4) $adminlinks .= " [<a href=\""._BASEDIR."admin.php?action=featured&amp;feature=".$stories['sid']."\">"._FEATURED."</a>]";
-	$tpl->assign("toc", "<a href=\""._BASEDIR."viewstory.php?sid=".$stories['sid']."&amp;index=1\">"._TOC."</a>");
+	$tpl->assign("toc", "<a href=\"viewstory.php?sid=".$stories['sid']."&amp;index=1\">"._TOC."</a>");
 	$tpl->assign("oddeven", ($count % 2 ? "odd" : "even"));
 	$tpl->assign("reportthis", "[<a href=\""._BASEDIR."report.php?action=report&amp;url=viewstory.php?sid=".$stories['sid']."\">"._REPORTTHIS."</a>]");
 	if(isADMIN && uLEVEL < 4) $tpl->assign("adminlinks", "<div class=\"adminoptions\"><span class='label'>"._ADMINOPTIONS.":</span> ".$adminlinks."</div>");
 	else if(isMEMBER && (USERUID == $stories['uid'] || array_key_exists(USERUID, $stories['coauthors']))) $tpl->assign("adminlinks", "<div class=\"adminoptions\"><span class='label'>"._OPTIONS.":</span> ".$adminlinks."</div>");
 	$count++;
+    
+    // We only want to pull this list once
+	if(!isset($story_endcodeblocks)) {
+		$story_endcodeblocks = array( );
+		$codequery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'storyblock_end'");
+		while($code = dbassoc($codequery)) {
+			$story_endcodeblocks[] = $code['code_text'];
+		}
+	}   
+    if(count($story_endcodeblocks)) foreach($story_endcodeblocks as $c) { eval($c); }
 ?>

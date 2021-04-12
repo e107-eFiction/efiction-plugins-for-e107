@@ -42,7 +42,7 @@ if(!defined("_CHARSET")) exit( );
 		while($result = dbassoc($query)){
 			$mailresult = sendemail($result['penname'], $result['email'], $sitename, $siteemail, $subject, $mailtext, "html");
 			if($mailresult) $sent++;
-			$output .= $result['penname']." <img src=\"images/".($mailresult ? "check.gif\" alt=\"check\" title=\"check\"" : "X.gif\" alt=\"X\" title=\"X\"")."><br />";		
+			$output .= $result['penname']." <img src='"._BASEDIR."images/".($mailresult ? "check.gif\" alt=\"check\" title=\"check\"" : "X.gif\" alt=\"X\" title=\"X\"")."><br />";		
 		}
 		if($sent) $output .= write_message(_MESSAGESENT." $sent<br/>"._ACTIONSUCCESSFUL);
 		else $output .= write_message(_NOMAILSENT);

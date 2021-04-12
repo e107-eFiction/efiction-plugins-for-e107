@@ -31,7 +31,7 @@ else $current = "members";
 // Include some files for page setup and core functions
 include ("header.php");
 require_once(HEADERF);
-
+ 
 //make a new TemplatePower object
 if(file_exists("$skindir/default.tpl")) $tpl = new TemplatePower( "$skindir/default.tpl" );
 else $tpl = new TemplatePower(_BASEDIR."default_tpls/default.tpl");
@@ -39,15 +39,15 @@ include("includes/pagesetup.php");
 
 // end basic page setup
 
-$pagetitle = "<div id=\"pagetitle\">";
+$pagetitle = "";
 if(isset($_GET['list'])) $list = $_GET['list'];
 else $list = "members";
 if(!$let) {
 	$let = false;
-	$ptitle = "</div>";
+	$ptitle = "";
 }
 else {
-	$ptitle = " -- $let</div>";
+	$ptitle = " -- $let";
 	if($let == _OTHER) {
 		$letter = _PENNAMEFIELD." REGEXP '^[^a-z]'";
 	}
@@ -77,7 +77,7 @@ $listOpts = ""; $countquery = "";
 		$authorquery = _MEMBERLIST.(isset($letter) ? " WHERE $letter" : "")." GROUP BY "._UIDFIELD;
 	}
 
-	$output .= $pagetitle.$ptitle;
+	$caption = $pagetitle.$ptitle;
 	$output .= "<div style=\"text-align: center;\"><form name=\"list\" action=\"\"><select name=\"list\" onchange=\"if(this.selectedIndex.value != 'false') document.location = document.list.list.options[document.list.list.selectedIndex].value\">";
 	$output .= "<option value=\"authors.php?".($let ? "let=$let&amp;" : "")."list=members\"".(empty($list) || $list == "members" ? " selected" : "").">"._ALLMEMBERS."</option>
 		<option value=\"authors.php?".($let ? "let=$let&amp;" : "")."list=authors\"".($list == "authors" ? " selected" : "").">"._AUTHORS."</option>

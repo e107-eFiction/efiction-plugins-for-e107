@@ -105,7 +105,7 @@ if($reviewcount) {
 	if($reviewcount > $itemsperpage) {
 		$tpl->gotoBlock("_ROOT");
 		$tpl->newBlock("listings");
-		$tpl->assign("pagelinks", build_pagelinks(basename($_SERVER['PHP_SELF'])."?action=reviewsby&amp;uid=$uid&amp;", $reviewcount, $offset));
+		$tpl->assign("pagelinks", build_pagelinks(e_PAGE."?action=reviewsby&amp;uid=$uid&amp;", $reviewcount, $offset));
 	}		
 }
 else {

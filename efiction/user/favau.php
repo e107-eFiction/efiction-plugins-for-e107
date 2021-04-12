@@ -27,7 +27,7 @@ if(empty($favorites)) accessDenied( );
 
 	if(empty($uid)) {
 		$uid = USERUID;
-		$output .= "<div id='pagetitle'>"._YOURSTATS."</div>";
+        $caption = _YOURSTATS;
 	}
 	$output .= "<div class='sectionheader'>"._FAVORITEAUTHORS."</div>";
 	

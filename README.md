@@ -65,6 +65,9 @@ e107::getRender()->tablerender($caption, $output, $current);
 - [x] replace $tpl->printToScreen( ) too
 DONE
 
+#### Paths to panels
+- [x]  file_exists("user/" file_exists(_BASEDIR."user/"
+- [x]  file_exists("browse/" file_exists(_BASEDIR."browse/
 
 
 **user panels list**

@@ -41,7 +41,7 @@ else {
 $output = $pagetitle;
 $storyquery = dbquery("SELECT s.title, s.sid, s.rating, s.reviews, s.count, count(fs.item) as fscount FROM ".TABLEPREFIX."fanfiction_stories as s LEFT JOIN ".TABLEPREFIX."fanfiction_favorites as fs ON s.sid = fs.item AND fs.type = 'ST' LEFT JOIN ".TABLEPREFIX."fanfiction_coauthors AS c ON s.sid = c.sid WHERE (s.uid = '$uid' OR c.uid = '$uid') AND s.validated > 0 GROUP BY s.sid");
 $storycount = dbnumrows($storyquery);
-$thislink = basename($_SERVER['PHP_SELF']).(basename($_SERVER['PHP_SELF']) == "viewuser.php" ? "?uid=$uid&amp;" : "?");
+$thislink = e_PAGE == "viewuser.php" ? "?uid=$uid&amp;" : "?";
 $authorof[] = "<a href='".$thislink."action=stats&amp;stat=stories'>$storycount "._STORIES."</a>";
 if($stat == "stories" && dbnumrows($storyquery)) {
 	$hidechapters = isset($_GET["chapters"]) ? $_GET["chapters"] : false;

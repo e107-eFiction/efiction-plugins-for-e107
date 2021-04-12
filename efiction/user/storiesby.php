@@ -35,9 +35,10 @@ if($numstories) {
 	$tpl->newBlock("listings");
 	$tpl->assign("stories", "<div class='sectionheader'>"._STORIESBY." $penname</div>");
 	$storyquery = dbquery("SELECT stories.*, "._PENNAMEFIELD." as penname, UNIX_TIMESTAMP(stories.date) as date, UNIX_TIMESTAMP(stories.updated) as updated FROM ("._AUTHORTABLE.", ".TABLEPREFIX."fanfiction_stories as stories) LEFT JOIN ".TABLEPREFIX."fanfiction_coauthors as coauth ON coauth.sid = stories.sid WHERE "._UIDFIELD." = stories.uid AND stories.validated > 0 AND (stories.uid = '$uid' OR coauth.uid = '$uid') GROUP BY stories.sid "._ORDERBY." LIMIT $offset, $itemsperpage");
-	while($stories = dbassoc($storyquery)) {
+	
+    while($stories = dbassoc($storyquery)) {   
 		$tpl->newBlock("storyblock");
-		include("includes/storyblock.php");
+		include(_BASEDIR."includes/storyblock.php");
 	}
 	$tpl->gotoBlock("listings");
 	if($numstories > $itemsperpage) $tpl->assign("pagelinks", build_pagelinks("viewuser.php?action=storiesby&amp;uid=$uid".(isset($_GET['sort']) ? ($_GET['sort'] == "alpha" ? "&amp;sort=alpha" : "&amp;sort=update") : "")."&amp;", $numstories, $offset));

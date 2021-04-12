@@ -21,11 +21,14 @@
 //
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
-
+ 
 if(!defined("_CHARSET")) exit( );
-$dir = opendir("modules");
+$dir = opendir(_BASEDIR."modules");
+ 
 $admin = isset($_GET['admin']) && $_GET['admin'] == true ? true : false;
 $module = isset($_GET['module']) ? $_GET['module'] : false;
+
+//list of available modules:
 if(!$module) {
 	$output .= "<table class=\"tblborder\" cellpadding=\"0\" cellspacing=\"0\" style=\"margin: 0 auto;\">
 	<tr><th class=\"tblborder\">"._NAME."</th><th class=\"tblborder\">"._VERSION."</th><th class=\"tblborder\">"._OPTIONS."</th></tr>";
@@ -33,25 +36,29 @@ if(!$module) {
 	while($m = dbassoc($modquery)) {
 		$modules[$m['name']] = $m;
 	}
+ 
 }
-while($folder = readdir($dir)) {
-	if($folder == "." || $folder == ".." || !is_dir("modules/$folder")) continue;
+ 
+while($folder = readdir($dir)) { 
+    //skip all not redirectories
+ 	if($folder == "." || $folder == ".." || !is_dir(_BASEDIR."modules/$folder")) continue;
 	$moduleVersion = ""; $moduleName = ""; $moduleDescription = ""; $moduleAuthor = ""; $moduleOpts = array( ); 
 	$moduleAuthorEmail = ""; $moduleWebsite = "";
-	if($module && $module == $folder) {
+	//selected module
+    if($module && $module == $folder) { 
 		if($admin) {
-			if(file_exists("modules/$folder/admin.php")) include("modules/$folder/admin.php");
+			if(file_exists(_BASEDIR."modules/$folder/admin.php")) include(_BASEDIR."modules/$folder/admin.php");
 			else accessDenied( );
 		}
-		else if(file_exists("modules/$folder/version.php")) {
-			include("modules/$folder/version.php");
+		else if(file_exists(_BASEDIR."modules/$folder/version.php")) {
+			include(_BASEDIR."modules/$folder/version.php");
 			$output .= "<div class='sectionheader'>$moduleName - $moduleVersion</div>";
 			if($moduleDescription) $output .= "<p><span class='label'>"._DESC.":</span> $moduleDescription</p>";
 			if($moduleAuthor || $moduleAuthorEmail) $output .= "<p><span class='label'>"._AUTHOR.":</span> ".($moduleAuthorEmail ? "<a href='mailto:$moduleAuthorEmail'>".($moduleAuthor ? $moduleAuthor : $moduleAuthorEmail)."</a>" : $moduleAuthor)."</p>";
 			if($moduleWebsite) $output .= "<p><span class='label'>"._WEBSITE.":</span> <a href='$moduleWebsite'>$moduleWebsite</a></p>";
-			if(file_exists("modules/$folder/changelog.txt")) {
+			if(file_exists(_BASEDIR."modules/$folder/changelog.txt")) {
 				$output .= "<p><span class='label'>"._CHANGELOG."</span>:<br /><br />";
-				$file = "modules/$folder/changelog.txt";
+				$file = _BASEDIR."modules/$folder/changelog.txt";
 				$log_file = @fopen($file, "r");
 				$file_contents = @fread($log_file, filesize($file));
 				$output .= format_story($file_contents);
@@ -60,15 +67,30 @@ while($folder = readdir($dir)) {
 		}
 		else $output .= write_message(_NORESULTS);
 	}
+    //default
 	else if(!$module) {
-		if(!file_exists("modules/".$folder."/version.php")) continue;
-		else include("modules/".$folder."/version.php");
-		if(empty($moduleName)) continue;
-		$output .= "<tr><td class=\"tblborder\"><a href='admin.php?action=modules&amp;module=$folder'>$moduleName</a></td><td class=\"tblborder\" style=\"text-align: center;\">".(isset($modules[$moduleName]['version']) ? $modules[$moduleName]['version'] : $moduleVersion)."</td><td class=\"tblborder\">";
-		if(file_exists("modules/$folder/install.php") && !isset($modules[$moduleName])) $moduleOpts[] = "<a href='modules/$folder/install.php'>"._INSTALLMODULE."</a>";
-		if(isset($modules[$moduleName]['version']) && $modules[$moduleName]['version'] < $moduleVersion && file_exists("modules/$folder/update.php")) $moduleOpts[] = "<a href='modules/$folder/update.php'>"._UPDATE."</a> ";
-		if(file_exists("modules/$folder/admin.php") && isset($modules[$moduleName])) $moduleOpts[] = "<a href='admin.php?action=modules&amp;module=$folder&admin=true'>"._OPTIONS."</a>";
-		if(file_exists("modules/$folder/uninstall.php") && isset($modules[$moduleName])) $moduleOpts[] = "<a href='modules/$folder/uninstall.php'>"._UNINSTALLMODULE."</a>";
+		if(!file_exists(_BASEDIR."modules/".$folder."/version.php")) continue;
+		else include(_BASEDIR."modules/".$folder."/version.php");
+ 
+        if(empty($moduleName)) continue;
+		$output .= "<tr><td class=\"tblborder\">
+        <a href='admin.php?action=modules&amp;module=$folder'>$moduleName</a></td><td class=\"tblborder\" style=\"text-align: center;\">"
+        .(isset($modules[$moduleName]['version']) ? $modules[$moduleName]['version'] : $moduleVersion)."</td><td class=\"tblborder\">";
+        
+         //install
+		if(file_exists(_BASEDIR."modules/$folder/install.php") && !isset($modules[$moduleName])) $moduleOpts[] 
+         = "<a href='"._BASEDIR."modules/$folder/install.php'>"._INSTALLMODULE."</a>";
+         
+        //update 
+		if(isset($modules[$moduleName]['version']) && $modules[$moduleName]['version'] < $moduleVersion && 
+        file_exists(_BASEDIR."modules/$folder/update.php")) $moduleOpts[] = "<a href='"._BASEDIR."modules/$folder/update.php'>"._UPDATE."</a> ";
+        
+       
+		if(file_exists(_BASEDIR."modules/$folder/admin.php") && isset($modules[$moduleName])) $moduleOpts[] = 
+            "<a href='admin.php?action=modules&amp;module=$folder&admin=true'>"._OPTIONS."</a>";
+            
+		if(file_exists(_BASEDIR."modules/$folder/uninstall.php") && isset($modules[$moduleName])) $moduleOpts[] = 
+            "<a href='"._BASEDIR."modules/$folder/uninstall.php'>"._UNINSTALLMODULE."</a>";
 		$output .= implode(" | ", $moduleOpts);
 		$output .= "</td></tr>";
 	}

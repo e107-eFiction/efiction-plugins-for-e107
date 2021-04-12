@@ -33,7 +33,7 @@ require_once(HEADERF);
 if(file_exists("$skindir/reviews.tpl")) $tpl = new TemplatePower( "$skindir/reviews.tpl" );
 else $tpl = new TemplatePower(_BASEDIR."default_tpls/reviews.tpl");
 if(file_exists("$skindir/reviewblock.tpl")) $tpl->assignInclude("reviewsblock", "$skindir/reviewblock.tpl" );
-else $tpl->assignInclude("reviewsblock", "default_tpls/reviewblock.tpl");
+else $tpl->assignInclude("reviewsblock", _BASEDIR."default_tpls/reviewblock.tpl");
  
 
 //let TemplatePower do its thing, parsing etc.
@@ -64,7 +64,8 @@ if($action == "delete") {
 	list($author) = dbrow($authorquery);
 	if($author != USERUID && !$notauthor && ($revdelete < 2 || ($revdelete == 1 && $reviewuid))) accessDenied( );
 	$delete = isset($_GET['delete']) ? $_GET['delete'] : false;
-	$output .= "<div id=\"pagetitle\">"._DELETEREVIEW."</div>";
+ 
+    $caption = _DELETEREVIEW;
 	if($delete == "yes") {
 		if($type == "ST") {
 			$query = dbquery("SELECT uid FROM ".TABLEPREFIX."fanfiction_stories WHERE sid = $item LIMIT 1");
@@ -121,7 +122,8 @@ else if($action == "edit" || $action == "add") {
 		$chapquery = dbquery("SELECT chapid FROM ".TABLEPREFIX."fanfiction_chapters WHERE sid = '$item' AND inorder = '1' LIMIT 1");
 		list($chapid) = dbrow($chapquery);
 	}
-	$tpl->assign("pagetitle", "<div id =\"pagetitle\">"._REVIEW."</div>");
+ 
+    $caption = _REVIEW;
 	if(isset($_POST['submit'])) {
 		$reviewer = isset($_POST['reviewer']) ? escapestring(descript(strip_tags($_POST['reviewer'], $allowed_tags))) : "";
 		$review = format_story(strip_tags(descript($_POST['review']), $allowed_tags));
@@ -269,7 +271,8 @@ else {
 			eval($code['code_text']);
 		}
 	}
-	$tpl->assign("pagetitle", "<div id=\"pagetitle\">"._REVIEWSFOR." $title</div>");
+ 
+    $caption = _REVIEWSFOR; 
 	if($type == "SE") {
 		$jumpmenu = "";
 		$stinseries = dbquery("SELECT sid, subseriesid, inorder FROM ".TABLEPREFIX."fanfiction_inseries WHERE seriesid = '$item'");

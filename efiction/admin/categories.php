@@ -40,7 +40,7 @@ function build_cat_row($thiscat, $thiscatinfo) {
 		if($catinfo['pid'] == $thiscatinfo['pid'] && $thiscatinfo['order'] < $catinfo['order']) $downlink = "<a href=\"admin.php?action=categories&go=down&displayorder=".$thiscatinfo['order']."&parentcatid=".$thiscatinfo['pid']."\">$down</a>";
 		if($catinfo['pid'] == $thiscat) $subs .= build_cat_row($cat, $catinfo);
 	}
-	if($subs) $output .= "<img onclick=\"javascript:displayCatRows('$thiscat')\" name='c_$thiscat' alt='on' src='".($onpic ? $onpic : "images/row_on.gif")."'> ";
+	if($subs) $output .= "<img onclick=\"javascript:displayCatRows('$thiscat')\" name='c_$thiscat' alt='on' src='".($onpic ? $onpic : _BASEDIR."images/row_on.gif")."'> ";
 	$output .= $thiscatinfo['name']."</td>\n
 	<td class='tblborder'>$downlink</td>\n
 	<td class='tblborder' width=\"13\">$uplink</td>\n

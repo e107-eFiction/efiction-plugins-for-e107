@@ -41,7 +41,7 @@ $seriesid = (isset($_GET['seriesid']) && is_numeric($_GET['seriesid'])) ? escape
 $sresult = dbquery(_SERIESQUERY." AND seriesid = '$seriesid' LIMIT 1");
 $series = dbassoc($sresult);
 if(file_exists("$skindir/series_title.tpl")) $titleblock = new TemplatePower( "$skindir/series_title.tpl" );
-else $titleblock = new TemplatePower( "default_tpls/series_title.tpl" );
+else $titleblock = new TemplatePower(_BASEDIR."default_tpls/series_title.tpl" );
 $titleblock->prepare( );
 $titleblock->newBlock("series");
 $titleblock->assign("pagetitle", stripslashes($series['title'])." "._BY." <a href=\"viewuser.php?uid=".$series['uid']."\">".$series['penname']."</a>");

@@ -15,7 +15,7 @@ if(!defined("_CHARSET")) exit( );
 	$q2 = dbquery("SELECT o.online_uid, "._PENNAMEFIELD." as penname FROM ".TABLEPREFIX."fanfiction_online as o, "._AUTHORTABLE." WHERE o.online_uid = "._UIDFIELD." AND o.online_uid != 0");
 	$omlist = array( );
 	while($om = dbassoc($q2)) {
-		$omlist[] = "<a href='"._BASEDIR."viewuser.php?uid=".$om['online_uid']."'>".$om['penname']."</a>";
+		$omlist[] = "<a href='viewuser.php?uid=".$om['online_uid']."'>".$om['penname']."</a>";
 	}
 	$tpl->assignGlobal("onlinemembers", count($omlist) ? implode(", ", $omlist) : "");
 	$content = "<div id='who_online'><span class='label'>"._GUESTS.":</span> ".($guests ? $guests : 0)."<br />\n

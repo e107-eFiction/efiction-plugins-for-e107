@@ -13,9 +13,11 @@
 </div></div>
 <!-- END BLOCK : seriesblock -->
 
-{stories}<br />
+ 
 <!-- START BLOCK : storyblock -->
+
 <div class="listbox {oddeven} clearfix">
+<img src="{storyimage}" alt="{storyimage_alt}"> 
 <h2>{title} {new} by {author}</h2>
 <b>Rated:</b> {rating} &bull; {numreviews} {reviews} {score} {featuredstory} {roundrobin}<br />
 <b>Summary:</b> {summary}<br />

@@ -66,8 +66,8 @@ $tpl->prepare( );
 if(file_exists("$skindir/variables.php")) include("$skindir/variables.php");
 
 // If they weren't set in variables.php, set the defaults for these 
-if(!isset($up)) $up = "<img src=\"images/arrowup.gif\" border=\"0\" width=\"13\" height=\"18\" align=\"left\" alt=\""._UP."\">";
-if(!isset($down)) $down = "<img src=\"images/arrowdown.gif\" border=\"0\" width=\"13\" height=\"18\" align=\"right\" alt=\""._DOWN."\">";
+if(!isset($up)) $up = "<img src=\""._BASEDIR."images/arrowup.gif\" border=\"0\" width=\"13\" height=\"18\" align=\"left\" alt=\""._UP."\">";
+if(!isset($down)) $down = "<img src=\""._BASEDIR."images/arrowdown.gif\" border=\"0\" width=\"13\" height=\"18\" align=\"right\" alt=\""._DOWN."\">";
 
 $linkquery = dbquery("SELECT * from ".TABLEPREFIX."fanfiction_pagelinks ORDER BY link_access ASC");
 if(!isset($current)) $current = "";
@@ -87,7 +87,7 @@ $tpl->assignGlobal("slogan", $slogan);
 $tpl->assignGlobal("page_id", $current);
 $tpl->assignGlobal("basedir", _BASEDIR);
 $tpl->assignGlobal("skindir", $skindir);	
-$tpl->assignGlobal("rss", "<a href='"._BASEDIR.$pagelinks['rss']['url']."'><img src='"._BASEDIR."images/xml.gif' alt='RSS' title = 'RSS' border='0'></a>");
+$tpl->assignGlobal("rss", "<a href='".$pagelinks['rss']['url']."'><img src='"._BASEDIR."images/xml.gif' alt='RSS' title = 'RSS' border='0'></a>");
 if(isset($pagelinks['rss'])) $tpl->assignGlobal("columns", $displaycolumns);
 if($action != "printable") {
 	$tpl->newBlock("footer");

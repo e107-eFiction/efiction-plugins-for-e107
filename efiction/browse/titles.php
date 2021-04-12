@@ -24,8 +24,8 @@ if(!defined("_CHARSET")) exit( );
 
 // Page Setup
 $current = "titles";
-	$output .= "<div id=\"pagetitle\">"._TITLES.($let ? " - $let" : "")."</div>".build_alphalinks("browse.php?$terms&amp;", $let);
-
+	$caption = _TITLES.($let ? " - $let" : "");
+    $output .=  build_alphalinks("browse.php?$terms&amp;", $let)."</div>";
 	if($let == _OTHER) $storyquery .= " AND stories.title REGEXP '^[^a-z]'";
 	else if(!empty($let)) $storyquery .= " AND stories.title LIKE '$let%'";
 	$storyquery  .= _ORDERBY;

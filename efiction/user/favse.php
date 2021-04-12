@@ -27,7 +27,7 @@ if(empty($favorites)) accessDenied( );
 
 	if(empty($uid)) {
 		$uid = USERUID;
-		$output .= "<div id='pagetitle'>"._YOURSTATS."</div>";
+        $caption = _YOURSTATS;
 	}
 	$add = isset($_GET['add']) && isNumber($_GET['add']) ? $add = $_GET['add'] : false;
 	$edit = isset($_GET['edit']) && isNumber($_GET['edit']) ? $_GET['edit'] : false;
@@ -100,7 +100,7 @@ if(empty($favorites)) accessDenied( );
 		}
 		if($seriescount > $itemsperpage) {
 			$tpl->gotoBlock("listings");
-			$tpl->assign("pagelinks", build_pagelinks(basename($_SERVER['PHP_SELF'])."?action=favse&amp;uid=$uid&amp;", $seriescount, $offset));
+			$tpl->assign("pagelinks", build_pagelinks(e_PAGE."?action=favse&amp;uid=$uid&amp;", $seriescount, $offset));
 		}
 
 	}

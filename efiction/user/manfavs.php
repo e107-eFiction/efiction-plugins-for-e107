@@ -27,7 +27,7 @@ if(!defined("_CHARSET")) exit( );
 if(empty($favorites)) accessDenied( );
 
 if(!isset($uid)) {
-	$output .= "<div id=\"pagetitle\">"._MANAGEFAVORITES."</div>";
+	$caption =  _MANAGEFAVORITES ;
 	$uid = USERUID;
 }
 else {

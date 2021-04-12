@@ -63,8 +63,8 @@ else include("blocks/menu/en.php");
 		if(is_array($content)) {
 			foreach($content as $link) {
 				$output .= "<tr><td class='tblborder'><input type=\"checkbox\" class=\"checkbox\" checked name=\"content_$count\" value=\"$link\">".$pagelinks["$link"]['link']."</td>
-					<td class='tblborder' width=\"15\">".($count > 1 ? "<a href=\"admin.php?action=blocks&admin=$admin&up=$link\"><img src=\"images/arrowup.gif\" width=\"13\" height=\"18\" alt=\""._UP."\" title=\""._UP."\" border=\"0\"></a>" : "")."</td>
-					<td class='tblborder' width=\"15\">".($count < sizeof($blocks[$admin]['content']) ? "<a href=\"admin.php?action=blocks&admin=$admin&down=$link\"><img src=\"images/arrowdown.gif\" width=\"13\" height=\"18\" alt=\""._DOWN."\" title=\""._DOWN."\" border=\"0\"></a>" : "")."</td></tr>";
+					<td class='tblborder' width=\"15\">".($count > 1 ? "<a href=\"admin.php?action=blocks&admin=$admin&up=$link\"><img src=\""._BASEDIR."images/arrowup.gif\" width=\"13\" height=\"18\" alt=\""._UP."\" title=\""._UP."\" border=\"0\"></a>" : "")."</td>
+					<td class='tblborder' width=\"15\">".($count < sizeof($blocks[$admin]['content']) ? "<a href=\"admin.php?action=blocks&admin=$admin&down=$link\"><img src=\""._BASEDIR."images/arrowdown.gif\" width=\"13\" height=\"18\" alt=\""._DOWN."\" title=\""._DOWN."\" border=\"0\"></a>" : "")."</td></tr>";
 				$count++;
 			}
 		}

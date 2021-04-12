@@ -24,7 +24,7 @@ if(!defined("_CHARSET")) exit( );
 
 $current = "toplists";
 
-	$output = "<div id='pagetitle'>"._10LISTS."</div>";
+	$caption = _10LISTS;
 	$lists = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_panels WHERE panel_type = 'L' AND panel_hidden != '1' AND panel_level = '0' ORDER BY panel_order");
 	while($l = dbassoc($lists)) {
 		$clist[] = "<a href='toplists.php?list=".$l['panel_name']."'>".$l['panel_title']."</a><br />";
@@ -34,7 +34,7 @@ $current = "toplists";
 	$column = 1;
 	$list = floor($total / $displaycolumns);
 	if($total % $displaycolumns != 0) $list++;
-	$output .= "<div id=\"columncontainer\"><div id=\"browseblock\">".($displaycolumns ? "<div class=\"column\">" : "");
+	$output = "<div id=\"columncontainer\"><div id=\"browseblock\">".($displaycolumns ? "<div class=\"column\">" : "");
 	foreach($clist as $c) {
 		$count++;
 		$output .= $c;

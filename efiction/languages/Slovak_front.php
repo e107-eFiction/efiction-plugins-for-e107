@@ -50,7 +50,7 @@ define ("_DOWN", "down arrow");
 define ("_EDIT", "Upraviť");
 define ("_EDITFAVORITES", "Upraviť obľúbené");
 define ("_EMAIL", "E-mail");
-define ("_EMAILFAILED", "The email could not be sent.  Please <a href='"._BASEDIR."contact.php'>contact the administrator</a> to report this problem.");
+define ("_EMAILFAILED", "The email could not be sent.  Please <a href='contact.php'>contact the administrator</a> to report this problem.");
 define ("_ERROR", "<strong>Error!</strong>We encountered an error.  Please go back and try again.");
 define ("_FATALERROR", "<b>A fatal MySQL error was encountered.</b><br />");
 define ("_FSTORY", "Feature");

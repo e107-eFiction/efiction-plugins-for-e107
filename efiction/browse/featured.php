@@ -21,7 +21,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 if(!defined("_CHARSET")) exit( );
-	$output .= "<div id=\"pagetitle\">".$panel['panel_title']."</div>";
+	$caption  = $panel['panel_title'];
 		
 	$storyquery .= " AND stories.featured > 0".$storyquery;
 	$countquery .= " AND featured > 0";
