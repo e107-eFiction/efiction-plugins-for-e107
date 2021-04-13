@@ -1,4 +1,5 @@
-<!-- INCLUDE BLOCK : header --> 
+<!-- INCLUDE BLOCK : header -->
+{output}{otherresults}
 <!-- START BLOCK : sortform -->
     <section class="property-search-section">
         <div class="auto-container">
@@ -23,8 +24,5 @@
         </div>
     </section>
 <!-- END BLOCK : sortform -->
-{output}{otherresults}
- 
 <!-- INCLUDE BLOCK : listings -->
- 
 <!-- INCLUDE BLOCK : footer -->

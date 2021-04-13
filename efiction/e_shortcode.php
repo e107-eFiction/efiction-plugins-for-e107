@@ -264,7 +264,8 @@ class efiction_shortcodes extends e_shortcode
 
             $var['sortend'] = "<div class=\"form-group col-lg-12 col-md-6 col-sm-12 text-center\">
                                 <button type=\"submit\" class=\"theme-btn btn-style-one col-md-3\"><span class=\"btn-title\">"._GO."</span></button>
-                            </div>";
+                            </div>
+                            </form>";
  
 
 		$text .= e107::getParser()->simpleParse($template, $var);

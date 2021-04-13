@@ -76,6 +76,12 @@ function storyform($stories, $preview = 0){
 	$output .= "</select></label>
 		<input type='hidden' name='coauthors' id='coauthors' value='$couids'></div>";
 	}
+    $codequery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'storyform_start'");
+	while($code = dbassoc($codequery)) {
+		eval($code['code_text']);
+	}
+ 
+    
 	$output .= "<p><label for=\"summary\">"._SUMMARY.":</label> ".(!$summary ? "<span style=\"font-weight: bold; color: red\">*</span>" : "")."<br><textarea class=\"textbox\" rows=\"6\" name=\"summary\" id=\"summary\" cols=\"58\">$summary</textarea>";
 	if($tinyMCE) 
 		$output .= "<div class='tinytoggle'><input type='checkbox' name='toggle' onclick=\"toogleEditorMode('summary');\" checked><label for='toggle'>"._TINYMCETOGGLE."</label></div>";

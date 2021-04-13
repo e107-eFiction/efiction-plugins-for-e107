@@ -22,8 +22,7 @@
 // ----------------------------------------------------------------------
 
 if(!defined("_CHARSET")) exit( );
-
-
+ 
 	if(!isset($count)) $count = 0;
 	$tpl->assign("sid", $stories['sid']);
 	unset($challengelinks, $challengeadmin, $serieslinks, $categorylinks, $adminlinks, $authlink);
@@ -37,11 +36,15 @@ if(!defined("_CHARSET")) exit( );
 		unset($coauthors);
 	}
 	else if(empty($stories['coauthors'])) $stories['coauthors'] = array( );	
+ 
+	$tpl->assign('lan_by', _BY);   
+    $tpl->assign('lan_characters', "<span class=\"label\">"._CHARACTERS.": </span>" );
+    $tpl->assign('lan_complete', "<span class=\"label\">"._COMPLETE.": </span>" );
+    $tpl->assign('lan_wordcount', "<span class=\"label\">"._WORDCOUNT.": </span>" );
     
-
-	
     $tpl->assign("title"   , stripslashes(title_link($stories)) );
 	$tpl->assign("author"   , author_link($stories));
+    $tpl->assign("lan_summary", "<span class=\"label\">"._SUMMARY.": </span>" );
 	$tpl->assign("summary", stripslashes($stories['summary']) );
 	$tpl->assign("rating"   , $ratingslist[$stories['rid']]['name']);
 	$tpl->assign("score", ratingpics($stories['rating']) );
@@ -89,6 +92,8 @@ if(!defined("_CHARSET")) exit( );
 	$tpl->assign("serieslinks", (count($serieslinks) > 0 ? implode(", ", $serieslinks) : _NONE));
 	$tpl->assign("characters", ($stories['charid'] ? charlist($stories['charid']) : _NONE));
 	
+    
+    $tpl->assign("lan_category", "<span class=\"label\">"._CATEGORIES.": </span>" );
 	$tpl->assign("category",  $stories['catid'] == '-1' || !$stories['catid'] ? _ORPHAN : catlist($stories['catid']));
 	$tpl->assign("completed"   , ($stories['completed'] ? _YES : _NO) );
 	$tpl->assign("roundrobin"   , ($stories['rr'] ?  (!empty($roundrobin) ? $roundrobin : "<img src=\""._BASEDIR."images/roundrobin.gif\" alt=\""._ROUNDROBIN."\">") : "") );
