@@ -5,3 +5,5 @@ efiction/skins/*
 efiction/skins/*
 efiction/modules/*
 
+efiction/skins/e107/browse.tpl
+efiction/skins/e107/listings.tpl
