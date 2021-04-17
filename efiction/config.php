@@ -10,7 +10,5 @@ $settingsprefix = "e107_";
 include_once("includes/dbfunctions.php");
 if(!empty($sitekey)) $dbconnect = dbconnect($dbhost, $dbuser,$dbpass, $dbname);
  
- 
-define("_CHARSET", "utf-8");
 
 ?>

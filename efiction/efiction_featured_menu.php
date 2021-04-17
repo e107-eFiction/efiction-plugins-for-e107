@@ -66,6 +66,7 @@ if (class_exists('efiction')) {
  
 	$start = $template['start']; 
 	$end = $template['end'];
+    $tablerender= varset($template['tablerender'], '');
 
     foreach ($result as $stories) {
         if (!isset($blocks['featured']['allowtags'])) {
@@ -83,4 +84,4 @@ if (class_exists('efiction')) {
     }
 }
 
-e107::getRender()->tablerender($caption, $start.$text.$end);
+e107::getRender()->tablerender($caption, $start.$text.$end, $tablerender);

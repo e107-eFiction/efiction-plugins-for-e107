@@ -46,7 +46,7 @@ if (class_exists('efiction')) {
         echo e107::getMessage()->addInfo('efiction class is available')->render();
     }
 
-	$template = e107::getTemplate('efiction', 'storyblock', 'recent');
+	$template = e107::getTemplate('efiction', 'storyblock', 'recent', true, true);
 
     $blocks = efiction::blocks();
 
@@ -65,7 +65,8 @@ if (class_exists('efiction')) {
  
 	$start = $template['start']; 
 	$end = $template['end'];
-
+    $tablerender= varset($template['tablerender'], '');
+ 
     foreach ($result as $stories) {
         if (!isset($blocks['recent']['allowtags'])) {
             $stories['summary'] = e107::getParser()->toText($stories['summary']);
@@ -82,4 +83,4 @@ if (class_exists('efiction')) {
     }
 }
 
-e107::getRender()->tablerender($caption, $start.$text.$end);
+e107::getRender()->tablerender($caption, $start.$text.$end, $tablerender);

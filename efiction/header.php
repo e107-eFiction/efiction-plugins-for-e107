@@ -28,7 +28,7 @@ if (!defined('e107_INIT'))
  
 
 // Defines the character set for your language/location
-define ("_CHARSET", "utf-8");
+ 
 define ("_BASEDIR", e_PLUGIN."efiction/"); ;
  
 define("_ADMINBASEDIR", e_PLUGIN."efiction/admin/");
@@ -104,15 +104,14 @@ if(isset($_GET['skin'])) {
     e107::getSession()->set(SITEKEY."_skin", $siteskin); 
 }
 
-$v = explode(".", $version);
-include("version.php");
-$newV = explode(".", $version);
+$v = explode(".", $version);   
+include(_BASEDIR."version.php");  
+$newV = explode(".", $version);    
 //if($v[0] == $newV[0] && ($v[1] < $newV[1] || (isset($newV[2]) && $v[2] < $newV[2]))) {
 foreach($newV AS $k => $l) {
 	if($newV[$k] > $v[$k] || (!empty($newV[$k]) && empty($v[$k]))) {
 		if(isADMIN && e_PAGE != "update.php") {
 			header("Location: update.php");
-			exit( );
 		}
 		else if(!isADMIN && e_PAGE != "maintenance.php" && !(isset($_GET['action']) && $_GET['action'] == "login")) {
 			header("Location: maintenance.php");

@@ -1,4 +1,3 @@
 <?php
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
 $version = "3.5.5";
-?>

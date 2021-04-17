@@ -411,7 +411,7 @@ function newstory( ) {
 
 	$submit = isset($_POST['submit']) ? $_POST['submit'] : false;
 	if(!$submit) $submit = _PREVIEW;
-	$output .= "<div class=\"tblborder\" style=\"width: 500px; padding: 10px; margin: 1em auto;\">
+	$output .= "<div class=\"tblborder\">
 	<form METHOD=\"POST\" name=\"form\" enctype=\"multipart/form-data\" action='stories.php?action=$action".($newchapter ? "&amp;sid=$sid&amp;inorder=$inorder" : "").($admin == 1 ? "&amp;admin=1&amp;uid=$uid" : "")."'>";
 	if(!$newchapter) $output .= storyform($stories, $submit);
 	$output .= chapterform($inorder, $notes, $endnotes, $storytext, $chaptertitle, $uid);
@@ -569,7 +569,7 @@ function editchapter( $chapid ) {
 			exit( );
 		}
 	}
-	$output .= "<div class=\"tblborder\" style=\"width: 550px; margin: 0 auto; padding: 5px;\">
+	$output .= "<div class=\"tblborder\" width=\"80%\" >
 		<form METHOD=\"POST\"  enctype=\"multipart/form-data\" name=\"form\" action=\"stories.php?action=editchapter&amp;chapid=$chapid".($admin ? "&amp;admin=1" : "")."\">";
 	if(!isset($_POST['submit']) || $_POST['submit'] != _PREVIEW) {
 		$storyquery = dbquery("SELECT title, inorder, notes, endnotes, uid, storytext, sid FROM ".TABLEPREFIX."fanfiction_chapters WHERE chapid = '$chapid' LIMIT 1");
@@ -655,9 +655,10 @@ function editstory($sid) {
 		else $coauthors = 0;
 	}
 	if(isset($_POST['submit']) && $_POST['submit'] == _ADDSTORY) {
+ 
 		$oldcats = isset($_POST['oldcats']) ? array_filter(explode(",", $_POST['oldcats']), "isNumber") : array( );
 		if (!$rid || !$title || !$summary || !$catid) {
-			$output .= write_error(_MISSINGFIELDS);
+			$output .= write_error("(A)"._MISSINGFIELDS);
 			$submit = _PREVIEW;
 		}
 		else {
@@ -835,8 +836,9 @@ function editstory($sid) {
 	}
 	$query = dbquery("SELECT DATE_FORMAT(date, '$dateformat') as date, wordcount, uid FROM ".TABLEPREFIX."fanfiction_stories WHERE sid = '$sid' LIMIT 1");
 	list($published, $wordcount, $storyuid) = dbrow($query);
-	$formbegin = "<div class=\"tblborder\" style=\"margin: 10px auto; width: 550px; padding: 10px;\">
+	$formbegin = "<div class=\"tblborder editstory\" width=\"80%\">
 		<form METHOD=\"POST\" name=\"form\" action=\"stories.php?action=editstory".($admin ? "&amp;admin=1" : "")."&amp;sid=$sid\">";
+ 
 
 	if(isset($_POST['submit']) && $_POST['submit'] != _PREVIEW) {
 		$submit = _PREVIEW;
@@ -872,14 +874,14 @@ function editstory($sid) {
 			$stories['uid'] = $uid;
 			$stories['wordcount'] = $wordcount;
 		}
-		$output .= preview_story($stories);
+	    $output .= preview_story($stories);
 		$output .= $formbegin.storyform($stories, _PREVIEW);
 	}
 
 	$chapquery = dbquery("SELECT chapid, title, inorder, rating, reviews, validated, uid FROM ".TABLEPREFIX."fanfiction_chapters WHERE sid = '$sid' ORDER BY inorder");
 	$chapters = dbnumrows($chapquery);
 	$output .= "<p><input type=\"submit\" class=\"button\" value=\"$submit\" name=\"submit\">&nbsp; <input type=\"submit\" class=\"button\" value=\""._ADDSTORY."\" name=\"submit\"></p></form></div>";
-	$output .= "<br><table class=\"tblborder\" style=\"margin: 0 auto; width: 500px;\"><tr><th>"._CHAPTER."</th>".($chapters > 1 ? "<th>"._MOVE."</th>" : "")."<th>"._OPTIONS."</th></tr>";
+	$output .= "<br><table class=\"tblborder\"  ><tr><th>"._CHAPTER."</th>".($chapters > 1 ? "<th>"._MOVE."</th>" : "")."<th>"._OPTIONS."</th></tr>";
 			while($chapter = dbassoc($chapquery)) {
 				$output .="<tr><td class=\"tblborder\"><a href=\"viewstory.php?sid=$sid&amp;chapter=".$chapter['inorder']."\">".$chapter['title']."</a></td>";
 				if($chapters > 1) $output .= "<td align=\"center\" class=\"tblborder\">".($chapter['inorder'] == 1 ? "" : "<a href=\"stories.php?action=viewstories&amp;go=up&amp;sid=$sid&amp;chapid=".$chapter['chapid']."&amp;inorder=".$chapter['inorder']."\">$up</a>").

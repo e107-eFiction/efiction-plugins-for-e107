@@ -166,10 +166,10 @@ class efiction_shortcodes extends e_shortcode
 		      <div class="auto-container">
 			     <div class="property-search-tabs tabs-box">
                     <div class="property-search-form">
-						<div id="sortform">
+						<div id="sortform" class="property-search-form-3col">
                              {sortbegin} 
 									<div class="row">
-									   {categorymenu} {classmenu} {ratingmenu}    {sortmenu}  
+									   {categorymenu} {classmenu} {ratingmenu}  {completemenu}    {sortmenu}  
 									</div>
                              {sortend}
 						</div>			
@@ -180,7 +180,7 @@ class efiction_shortcodes extends e_shortcode
 	</section>';
 
 		$var['sortbegin'] = 
-		"<form style=\"margin:0\" method=\"POST\" id=\"form\" enctype=\"multipart/form-data\" action=\"browse.php?type=recent\">";
+		"<form style=\"margin:0\" method=\"POST\" id=\"form\" enctype=\"multipart/form-data\" action=\"browse.php?type=home\">";
 
 		/* CATEGORIES */
 		if($catlist && !in_array("categories", $disablesorts)) {
@@ -197,7 +197,7 @@ class efiction_shortcodes extends e_shortcode
 		}
  
          //todo fix
-         $disablesorts = array('cw_lang','cw_warning','cw_words', 'pairing', 'ratings' ); 
+         $disablesorts = array('cw_lang','cw_warning','cw_words', 'pairing'  ); 
 		if(count($charlist) > 0 && !in_array("characters", $disablesorts)) {
 			$charactermenu1 = "<div class='form-group col-lg-4 col-md-6 col-sm-12 hidden-sm-down '><select class=\"textbox custom-select-box\"  name=\"charlist1\" id=\"charlist1\">\n";
 			$charactermenu1 .= "<option value=\"0\">"._CHARACTERS."</option>\n";
@@ -259,12 +259,12 @@ class efiction_shortcodes extends e_shortcode
 			$var['sortmenu']  = "<div class='form-group col-lg-4 col-md-6 col-sm-12'><select class=\"textbox custom-select-box\"  name=\"sort\">\n<option value=''>"._SORT."</option><option value=\"alpha\"".(!$defaultsort ? " selected" : "").">"._ALPHA."</option>\n<option value=\"update\"".($defaultsort == 1 ? " selected" : "").">"._MOSTRECENT."</option>\n</select></div>";
 
 			if(!in_array("complete", $disablesorts)) 
-			$var['completemenu'] = "<div class='form-group col-lg-4 col-md-6 col-sm-12'><select class=\"textbox custom-select-box\"  name=\"complete\">\n<option value=\"all\"".($complete == "all" ? " selected" : "").">"._ALLSTORIES."</option>\n<option value=\"1\"".($complete == 1 ? " selected" : "").">"._COMPLETEONLY."</option>\n<option value=\"0\"".($complete && $complete != "all" && $complete != 1 ? " selected" : "").">"._WIP."</option>\n</select></div" ;
+			$var['completemenu'] = "<div class='form-group col-lg-4 col-md-6 col-sm-12'><select class=\"textbox custom-select-box\"  name=\"complete\">\n<option value=\"all\"".($complete == "all" ? " selected" : "").">"._ALLSTORIES."</option>\n<option value=\"1\"".($complete == 1 ? " selected" : "").">"._COMPLETEONLY."</option>\n<option value=\"0\"".($complete && $complete != "all" && $complete != 1 ? " selected" : "").">"._WIP."</option>\n</select></div>" ;
 	
 
             $var['sortend'] = "<div class=\"form-group col-lg-12 col-md-6 col-sm-12 text-center\">
-                                <button type=\"submit\" class=\"theme-btn btn-style-one col-md-3\"><span class=\"btn-title\">"._GO."</span></button>
-                            </div>
+                                        <button type=\"submit\" class=\"theme-btn btn-style-one col-md-3\"><span class=\"btn-title\">"._GO."</span></button>
+                                </div>
                             </form>";
  
 
