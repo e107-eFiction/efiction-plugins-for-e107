@@ -168,17 +168,40 @@
         {
              
             $category_icon = $this->var['image'];  
-          
-            $settings =  array('legacyPath'=>'{e_IMAGE}topics/', 'w'=> 0, 'h'=>0);
- 
-            if($category_icon[0] == '{')
-      		{
-      			 $src =  e107::getParser()->replaceConstants($category_icon, 'full');	
-      		}
-      		else {
-      
-      			$src = "https://hpkizi.sk/images/topics/".$category_icon;
-      		}
+            if($category_icon != '' ) {
+                $settings =  array('legacyPath'=>'{e_IMAGE}topics/', 'w'=> 0, 'h'=>0);
+        		$settings['class']     = 'img img-fluid';
+        		$settings['legacy']    = array('{e_IMAGE}topics/');
+        		$settings['media'] = 'topics';
+        	    $settings['path'] = 'topics';        
+                $category_icon = str_replace('../', '', trim($category_icon));
+                            
+        		if($category_icon[0] == '{')
+        		{
+        				$src =  e107::getParser()->replaceConstants($category_icon, 'full');	
+        		}
+        		else {
+        
+        			$src = $settings['legacyPath'].$category_icon;
+        			$src =  e107::getParser()->replaceConstants($src, 'full');
+        		}
+        
+                $icon = e107::getParser()->toImage($src, $settings);      	 
+            return $src; 
+       }
+       else {
+            if($story['unnuke_topicid'] > 0) {
+           
+             $topicquery = dbquery("SELECT topicname, topicimage AS image  FROM ".TABLEPREFIX."unnuke_topics WHERE topicid = {$story['unnuke_topicid']}");
+             
+             if($topicquery) list($topicname,  $topicimage) = dbrow($topicquery);
+             $topic['image'] = $topicimage;
+             $icon =  storyimage($topic);
+             return $icon;
+              
+            }
+       
+       } 
  
             return $src;
         }      
