@@ -22,7 +22,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
 
 $logtypes = array("RG" => _NEWREG, "ED" => _ADMINEDIT, "DL" => _ADMINDELETE, "VS" => _VALIDATESTORY, "LP"=> _LOSTPASSWORD, "BL" => _BADLOGIN, "RE" => "Reviews", "AM" => "Admin Maintenance", "EB" => _EDITBIO);
 $typequery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'logtype'");

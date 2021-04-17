@@ -17,7 +17,7 @@
 //
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
 
 global $language;
 
@@ -77,4 +77,3 @@ else  {
 	  }
 }
 	$content .= "<div style='text-align: center;'><a href='"._BASEDIR."blocks/poll/pollarchive.php'>"._POLLARCHIVE."</a></div>";
-?>

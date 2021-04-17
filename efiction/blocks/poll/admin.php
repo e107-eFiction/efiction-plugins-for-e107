@@ -1,5 +1,5 @@
 <?php
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
 
 global $language, $tinyMCE, $allowed_tags;
 $blockquery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_blocks WHERE block_name = 'poll'");
@@ -58,4 +58,3 @@ include("blocks/".$blocks['poll']['file']);
 		}
 		$output .= "</table><br />";
 	}
-?>

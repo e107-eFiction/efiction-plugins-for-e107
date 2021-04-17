@@ -1,5 +1,5 @@
 <?php
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
 
 global $language;
 $blockquery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_blocks WHERE block_name = 'info'");
@@ -32,4 +32,4 @@ else include_once("blocks/info/en.php");
 				<option value='2'".($style == 2 ? " selected" : "").">"._VARIABLES."</option></select><br />
 			<INPUT type='submit' class='button' name='submit' value='"._SUBMIT."'></form></div>";
 	}
-?>
+ 

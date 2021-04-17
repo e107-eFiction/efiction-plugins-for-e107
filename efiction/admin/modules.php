@@ -22,7 +22,8 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
  
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
+
 $dir = opendir(_BASEDIR."modules");
  
 $admin = isset($_GET['admin']) && $_GET['admin'] == true ? true : false;

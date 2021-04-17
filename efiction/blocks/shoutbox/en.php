@@ -23,8 +23,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
-
+if (!defined('e107_INIT')) { exit; }
 
 define("_SHOUT", "Shout");
 define("_NOSHOUTS", "No messages have been posted.");
@@ -39,4 +38,3 @@ define("_GUESTSHOUTS", "Allow guests to shout");
 define("_SHOUTEND", "End of shout.  Shouts are limited to 200 characters!");
 
 define("_HELP_SHOUTDATEFORMAT", "The format for date (and optionally time) to be displayed in the shout box.  For custom fomats, use PHP's date format.");
-?>

@@ -23,7 +23,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
 
 	if(isset($blocks['news']['num'])) $numupdated = $blocks['news']['num'];
 	else $numupdated = 1;
@@ -58,4 +58,3 @@ if(!defined("_CHARSET")) exit( );
 	}
 	$news->gotoBlock("_ROOT");
 	$content = $news->getOutputContent( );
-?>

@@ -22,7 +22,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
 
 if(file_exists("docs/adminmanual_{$language}.htm")) $file = "docs/adminmanual_{$language}.htm";
 else $file = "docs/adminmanual_en.htm";

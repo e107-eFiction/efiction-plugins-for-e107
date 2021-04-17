@@ -23,9 +23,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
-
+if (!defined('e107_INIT')) { exit; }
 
 dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_blocks(`block_name`, `block_title`, `block_status`, `block_file`, `block_variables`) VALUES('menu', 'Main Menu', '0', 'menu/menu.php', '');");
 $blocks["menu"] = array("title" => "Main Menu", "status" => "0", "file" => "menu/menu.php");
-?>

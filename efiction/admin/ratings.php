@@ -22,7 +22,8 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
+
 $output .= "<div id=\"pagetitle\">"._RATINGS."</div>";
 	$showlist = 1;
 	if(isset($_GET["delete"]) && isNumber($_GET["delete"])) {

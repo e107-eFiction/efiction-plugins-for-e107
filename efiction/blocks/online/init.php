@@ -23,8 +23,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
-
+if (!defined('e107_INIT')) { exit; }
 
 dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_blocks(`block_name`, `block_title`, `block_status`, `block_file`, `block_variables`) VALUES('online', 'Who\'s Online', '0', 'online/online.php', '');");
 dbquery("CREATE TABLE IF NOT EXISTS `".TABLEPREFIX."fanfiction_online` (
@@ -32,4 +31,3 @@ dbquery("CREATE TABLE IF NOT EXISTS `".TABLEPREFIX."fanfiction_online` (
   `online_ip` int(11) NOT NULL default '0',
   `online_timestamp` int(11) NOT NULL default '0'
 ) ENGINE=MyISAM;");
-?>

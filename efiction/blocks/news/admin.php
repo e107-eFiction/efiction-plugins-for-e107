@@ -1,5 +1,6 @@
 <?php
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
+
 $blockquery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_blocks WHERE block_name = 'news'");
 while($block = dbassoc($blockquery)) {
 	$blocks[$block['block_name']] = unserialize($block['block_variables']);
@@ -25,4 +26,3 @@ include("blocks/".$blocks['news']['file']);
 		<div><label for=\"num\">"._SUMLENGTH.":</label><input type=\"text\" class=\"textbox\" name=\"sumlength\" id=\"sumlength\" size=\"6\" value=\"".$blocks['news']['sumlength']."\"></div>
 			<INPUT type=\"submit\" name=\"submit\" class=\"button\" id=\"submit\" value=\""._SUBMIT."\"></form></div><div style='clear: both;'></div></div>";
 	}
-?>

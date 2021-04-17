@@ -22,7 +22,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
 
 $maint = isset($_GET['maint']) ? $_GET['maint'] : false;
 $output .= "<div id='pagetitle'>"._ARCHIVEMAINT."</div>";
@@ -73,7 +73,17 @@ else if($maint == "stories") {
 			else $alist[$ca['uid']] = $ca['count'];
 		}
 		foreach($alist AS $a => $s) {
-			dbquery("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET stories = '$s' WHERE uid = '$a' LIMIT 1");
+        
+                                $insert = array(
+                                'stories'       => $s   ,
+                                'uid'       => $a , 
+                                '_DUPLICATE_KEY_UPDATE' => 1
+                                );
+ 
+                                e107::getDB()->insert("fanfiction_authorprefs", $insert);
+       
+                                
+		//	dbquery("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET stories = '$s' WHERE uid = '$a' LIMIT 1");
 		}
 		$count =  dbquery("SELECT SUM(wordcount) as count, sid FROM ".TABLEPREFIX."fanfiction_chapters WHERE validated = '1' GROUP BY sid");
 		while($c = dbassoc($count)) {

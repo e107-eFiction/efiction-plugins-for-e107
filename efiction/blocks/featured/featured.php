@@ -23,10 +23,8 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
 
-
-if(!defined("_CHARSET")) exit( );
 	$content = "";
 	$count = 0;
 	$limit = isset($blocks['featured']['limit']) ? $blocks['featured']['limit'] : false;
@@ -44,4 +42,4 @@ if(!defined("_CHARSET")) exit( );
 	}
 	if($use_tpl && dbnumrows($query) > 0) $tpl->gotoBlock("_ROOT");	
 
-?>
+ 

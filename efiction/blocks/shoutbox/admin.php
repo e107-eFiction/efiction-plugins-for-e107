@@ -1,5 +1,6 @@
 <?php
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
+
 $blockquery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_blocks WHERE block_name = 'shoutbox'");
 while($block = dbassoc($blockquery)) {
 	$blocks[$block['block_name']] = unserialize($block['block_variables']);

@@ -1,5 +1,5 @@
 <?php
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
 
 global $language;
 $blockquery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_blocks WHERE block_name = 'random'");
@@ -31,4 +31,3 @@ if(!empty($blocks['random']['tpl'])) $tpl->gotoBlock("_ROOT");
 			<label for=\"sumlength\">"._SUMLENGTH.":</label><input type=\"text\" class=\"textbox\" name=\"sumlength\" id=\"sumlength\" size=\"4\" value=\"".(!empty($blocks['random']['sumlength']) ? $blocks['random']['sumlength'] : "")."\"><br />
 			<INPUT type=\"submit\" name=\"submit\" id=\"submit\" class=\"button\" value=\""._SUBMIT."\"></form></div><div style='text-align: center;'>"._SUMNOTE."</div>";
 	}
-?>

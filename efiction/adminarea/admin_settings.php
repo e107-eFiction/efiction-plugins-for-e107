@@ -32,7 +32,7 @@ class admin_settings_ui extends e_admin_ui
     $vals['submissions']['perms'] = 0;
     $vals['submissions']['icon_32'] = "<i class='S32 e-frontpage-32'></i>";  
     
-    $vals['sitesettings']['link'] = e_HTTP."admin.php?action=settings&amp;sect=sitesetting";
+    $vals['sitesettings']['link'] = e_HTTP."admin.php?action=settings&amp;sect=sitesettings";
     $vals['sitesettings']['title'] = LAN_EFICTION_SITESETTINGS;
     $vals['sitesettings']['caption']  = LAN_EFICTION_SITESETTINGS;
     $vals['sitesettings']['perms'] = 0;
@@ -97,8 +97,7 @@ class admin_settings_ui extends e_admin_ui
     $vals['thankyou']['caption']  = LAN_EFICTION_THANKYOU;
     $vals['thankyou']['perms'] = 0;
     $vals['thankyou']['icon_32'] = "<i class='S32 e-news-32'></i>"; 
-     
-      
+ 
     foreach($vals AS $val) {
             $tmp = e107::getNav()->renderAdminButton($val['link'], $val['title'], $val['caption'], $val['perms'], $val['icon_32'], "div") ;
             $mainPanel .= $tmp;

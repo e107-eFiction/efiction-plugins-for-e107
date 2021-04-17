@@ -23,8 +23,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
-
+if (!defined('e107_INIT')) { exit; }
 
 dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_blocks(`block_name`, `block_title`, `block_status`, `block_file`, `block_variables`) VALUES('poll', 'Poll', '0', 'poll/poll.php', '');");
 dbquery("CREATE TABLE IF NOT EXISTS `".TABLEPREFIX."fanfiction_poll_votes` (
@@ -43,4 +42,3 @@ dbquery("CREATE TABLE IF NOT EXISTS `".TABLEPREFIX."fanfiction_poll` (
 `poll_end` DATETIME NULL ,
 `poll_results` VARCHAR( 250 ) NULL ,
 PRIMARY KEY ( `poll_id` ))");
-?>

@@ -23,8 +23,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
-
+if (!defined('e107_INIT')) { exit; }
 
 dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_blocks(`block_name`, `block_title`, `block_status`, `block_file`, `block_variables`) VALUES('shoutbox', 'Shoutbox', '0', 'shoutbox/shoutbox.php', 'a:3:{s:9:\"shoutdate\";s:11:\"m/d/y h:i a\";s:10:\"shoutlimit\";s:2:\"10\";s:11:\"guestshouts\";i:1;}');");
 dbquery("CREATE TABLE IF NOT EXISTS `".TABLEPREFIX."fanfiction_shoutbox` (
@@ -34,4 +33,3 @@ dbquery("CREATE TABLE IF NOT EXISTS `".TABLEPREFIX."fanfiction_shoutbox` (
   `shout_datestamp` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`shout_id`)
 ) ENGINE=MyISAM;");
-?>

@@ -1,5 +1,5 @@
 <?php
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
 
 	global $dateformat, $tpl;
 	if(file_exists(_BASEDIR."blocks/online/{$language}.php")) include(_BASEDIR."blocks/online/{$language}.php");
@@ -20,4 +20,3 @@ if(!defined("_CHARSET")) exit( );
 	$tpl->assignGlobal("onlinemembers", count($omlist) ? implode(", ", $omlist) : "");
 	$content = "<div id='who_online'><span class='label'>"._GUESTS.":</span> ".($guests ? $guests : 0)."<br />\n
 		<span class='label'>"._MEMBERS.":</span> ".(count($omlist) ? implode(", ", $omlist) : "")."</div>";
-?>

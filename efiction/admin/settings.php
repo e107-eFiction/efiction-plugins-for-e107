@@ -22,7 +22,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
 
 function updatePanelOrder( ) {
 	
@@ -77,6 +77,7 @@ $sects = array("main", "submissions", "sitesettings", "display", "reviews", "use
 //if(!isset($_GET['sect'])) $sect = "main";
 //else $sect = $_GET['sect'];
 $sect = isset($_GET['sect']) ? $_GET['sect'] : "main";
+
 if(isset($_POST['submit'])) {
 	if($sect == "main") {
 		if(!preg_match("!^[a-z0-9_]{3,30}$!i", $_POST['newsitekey'])) $output .= write_error(_BADSITEKEY);
@@ -131,8 +132,8 @@ if(isset($_POST['submit'])) {
 		$logging = $_POST['newlogging'] == 1 ? 1 : 0;
 		$maintenance = $_POST['newmaint'] == 1 ? 1 : 0;
 		$debug = $_POST['newdebug'] == 1 ? 1 : 0;
-		$captcha = $_POST['newcaptcha'] == 1 ? 1 : 0;
-		$result = dbquery("UPDATE ".$settingsprefix."fanfiction_settings SET tinyMCE = '$tinyMCE', favorites = '$favorites', multiplecats = '$multiplecats', allowed_tags = '$allowed_tags', newscomments = '$newscomments', logging = '$logging', maintenance = '$maintenance', debug = '$debug', captcha = '$captcha' WHERE sitekey ='".SITEKEY."'");
+		$newcaptcha = $_POST['newcaptcha'] == 1 ? 1 : 0;
+		$result = dbquery("UPDATE ".$settingsprefix."fanfiction_settings SET tinyMCE = '$tinyMCE', favorites = '$favorites', multiplecats = '$multiplecats', allowed_tags = '$allowed_tags', newscomments = '$newscomments', logging = '$logging', maintenance = '$maintenance', debug = '$debug', captcha = '$newcaptcha' WHERE sitekey ='".SITEKEY."'");
 	}
 	else if($sect == "display") {
 		$dateformat = $_POST['newdateformat'] ? descript(strip_tags($_POST['newdateformat'])) : descript(strip_tags($_POST['customdateformat']));
@@ -171,7 +172,8 @@ if(isset($_POST['submit'])) {
 	}
 	if($result) {
 		$output .= write_message(_ACTIONSUCCESSFUL);
-		$sect = $sects[(array_search($sect, $sects) + 1)];
+		//$sect = $sects[(array_search($sect, $sects) + 1)];  //it moves to next tab, confusing
+        $sect = $sects[(array_search($sect, $sects) )];  //stay on the same tab and check result        
 		if(!$sect) $sect = $sects[0];
 	}
 	else $output .= write_error(_ERROR);
@@ -181,7 +183,8 @@ if(isset($_POST['submit'])) {
 	foreach($settings as $var => $val) {
 		$$var = stripslashes($val);
 	}
-
+    $newcaptcha = efiction::settings('captcha');  //used new variable to be sure old $ captcha is not used
+    
 	$output .= "<form method='POST' class='tblborder' style='' enctype='multipart/form-data' action='".($action == "settings" ? "admin.php?action=settings" : $_SERVER['PHP_SELF']."?step=".$_GET['step'])."&amp;sect=$sect'>";
 	if($sect == "main") {
 		$output .= "<h2>"._SITEINFO."</h2>
@@ -332,12 +335,13 @@ if(isset($_POST['submit'])) {
 				<option value='1'".($debug == "1" ? " selected" : "").">"._YES."</option>
 				<option value='0'".(!isset($debug) || $debug == "0" ? " selected" : "").">"._NO."</option>
 				</select> <a href='#' class='pophelp'>[?]<span>"._HELP_DEBUG."</span></a></td>
-			</tr>
-			<tr>
-				<td><label for='newcaptcha'>"._CAPTCHA.": </label></td><td><select name='newcaptcha'>
-				<option value='1'".($captcha == "1" ? " selected" : "").">"._YES."</option>
-				<option value='0'".(!isset($captcha) || $captcha == "0" ? " selected" : "").">"._NO."</option>
-				</select><a href='#' class='pophelp'>[?]<span>"._HELP_CAPTCHA."</span></a></td></tr>";
+			</tr> 
+            <tr>
+    		<td><label for=\"newcaptcha\">"._CAPTCHA."</label></td>
+    			<td>
+    				".e107::getForm()->radio_switch('newcaptcha', $newcaptcha, _YES, _NO)."<a href='#' class='pophelp'>[?]<span>"._HELP_CAPTCHA."</span></a>
+    			</td>
+    		</tr>";
 	}
 	else if($sect == "display") {
 		$settings = dbquery("SELECT defaultsort, displayindex FROM ".$settingsprefix."fanfiction_settings WHERE sitekey ='".SITEKEY."'");

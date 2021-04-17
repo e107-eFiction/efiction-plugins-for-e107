@@ -20,7 +20,7 @@
 //
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
 
 $current = "characters";
 $charid = isset($_GET['charid']) && isNumber($_GET['charid']) ? $_GET['charid'] : 0;
@@ -71,4 +71,3 @@ else {
 	$numrows = 0;
 }	
 	if($charid > 0) $charlist1 = $charid;
-?>

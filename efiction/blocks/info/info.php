@@ -1,5 +1,5 @@
 <?php
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
 
 if(file_exists(_BASEDIR."blocks/info/{$language}.php")) include_once(_BASEDIR."blocks/info/{$language}.php");
 else include_once(_BASEDIR."blocks/info/en.php");
@@ -63,4 +63,3 @@ else include_once(_BASEDIR."blocks/info/en.php");
 			eval($code['code_text']);
 	}
 	if(empty($blocks['info']['style'])) $content .= "<div>$adminnotices</div><div class='cleaner'>&nbsp;</div></div>";
-?>

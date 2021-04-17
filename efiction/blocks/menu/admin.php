@@ -1,5 +1,5 @@
 <?php
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
 
 global $language, $pagelinks;
 $linkquery = dbquery("SELECT * from ".TABLEPREFIX."fanfiction_pagelinks ORDER BY link_access ASC");
@@ -81,4 +81,3 @@ else include("blocks/menu/en.php");
 			<option value=\"0\"".(empty($blocks['menu']['style']) ? " selected" : "").">"._LISTFORMAT."</option>
 			</select><br /><br /><INPUT type=\"submit\" class=\"button\" name=\"submit\" value=\""._SUBMIT."\"></div></form></div>";
 	}
-?>

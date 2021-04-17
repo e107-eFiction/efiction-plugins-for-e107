@@ -23,8 +23,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
-
+if (!defined('e107_INIT')) { exit; }
 
 define("_CHART", "Chart");
 define("_NARRATIVE", "Narrative");
@@ -34,4 +33,4 @@ define("_DISPLAY",  "Style of Display");
 define("_NARTEXT", "We are the home of  {authors} authors from among our {members} members.  There have been {reviews} reviews written about our {stories} stories consisting of {chapters} chapters and {totalwords} words.  A special welcome to our newest member, {newest}. {loggedinas} {submissions}");
 define("_NEWESTMEMBER", "Newest Member");
 define("_REVIEWERS", "Reviewers");
-?>
+ 

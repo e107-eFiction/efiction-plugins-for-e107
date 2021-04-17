@@ -1,6 +1,8 @@
 
 
 
-efiction/skins/*
-efiction/modules/*
+e107_plugins/efiction/skins/*
+e107_plugins/efiction/modules/*
+e107_plugins/efiction/config.php
+
  

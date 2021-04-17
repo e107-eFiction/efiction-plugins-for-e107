@@ -23,10 +23,8 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
-
+if (!defined('e107_INIT')) { exit; }
 
 define("_STYLE", "Style");
 define("_LISTFORMAT", "Unordered List");
 define("_NOLIST", "Links Only");
-?>

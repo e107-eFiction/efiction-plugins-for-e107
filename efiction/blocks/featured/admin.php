@@ -1,5 +1,6 @@
 <?php
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
+
 $blockquery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_blocks WHERE block_name = 'featured'");
 while($block = dbassoc($blockquery)) {
 	$blocks[$block['block_name']] = unserialize($block['block_variables']);
@@ -30,4 +31,4 @@ if($use_tpl) $tpl->gotoBlock("_ROOT");
 			<label for=\"sumlength\">"._SUMLENGTH.":</label><input type=\"text\" class=\"textbox\" name=\"sumlength\" id=\"sumlength\" size=\"4\" value=\"".(isset($blocks['featured']['sumlength']) ? $blocks['featured']['sumlength'] : "")."\"><br />
 			<INPUT type=\"submit\" class=\"button\" name=\"submit\" id=\"submit\" value=\""._SUBMIT."\"></form></div><div style='text-align: center;'>"._SUMNOTE."</div>";
 	}
-?>
+ 

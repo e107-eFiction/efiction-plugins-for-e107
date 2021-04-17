@@ -20,8 +20,7 @@
 //
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
-if(!defined("_CHARSET")) exit( );
-
+if (!defined('e107_INIT')) { exit; }
 
 $disablesorts = array("ratings");
 $rating = isset($_REQUEST['rating']) ? $_GET['rating'] : false;
@@ -54,5 +53,3 @@ else {
 		$output .= "</div>".($displaycolumns ? "</div>" : "")."<div class='cleaner'>&nbsp;</div></div>";
 	}
 }
-
-?>
