@@ -22,7 +22,8 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
+
 $sort = "<form name=\"sort\" action=\"\"><label for=\"sort\">"._SORT.":</label> <select name=\"sort\" class=\"textbox\" onchange=\"if(this.selectedIndex.value != 'false') document.location = document.sort.sort.options[document.sort.sort.selectedIndex].value\"><option value=\"false\">"._OPTIONS."</option>";
 $sort .= "<option value=\"viewuser.php?".($action ? "action=".$action : "")."uid=$uid&amp;sort=alpha\">"._ALPHA."</option>";
 $sort.= "<option value=\"viewuser.php?".($action ? "action=".$action : "")."uid=$uid&amp;sort=update\">"._MOSTRECENT."</option></select></form>";
@@ -45,4 +46,3 @@ if($numstories) {
 	$tpl->gotoBlock("_ROOT");
 }
 else $output .= write_message(_NORESULTS);
-?>

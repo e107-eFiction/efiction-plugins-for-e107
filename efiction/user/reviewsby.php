@@ -22,8 +22,9 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
-if(!function_exists("catlist")) include("includes/listings.php");
+if (!defined('e107_INIT')) { exit; }
+
+if(!function_exists("catlist")) include(_BASEDIR."includes/listings.php");
 
 if(!isset($uid)) {
 	$uid = USERUID;
@@ -113,4 +114,3 @@ else {
 }
 	$tpl->gotoBlock("_ROOT");
 	$tpl->assign("output", $output);
-?>

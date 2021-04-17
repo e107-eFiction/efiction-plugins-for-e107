@@ -22,7 +22,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
 
 		$output .= "<div id=\"pagetitle\">"._MANAGEREVIEWS."</div>";
 		$count = dbquery("SELECT count(s.sid) FROM ".TABLEPREFIX."fanfiction_stories AS s LEFT JOIN ".TABLEPREFIX."fanfiction_coauthors AS c ON s.sid = c.sid WHERE s.uid = '".USERUID."' OR c.uid = '".USERUID."'");
@@ -62,4 +62,3 @@ if(!defined("_CHARSET")) exit( );
 			eval($c['code_text']);
 		}
 		$output .= "</table>";
-?>

@@ -22,7 +22,8 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
+
 if(empty($favorites)) accessDenied( );
 
 	$output = "<div class=\"tblborder\" style=\"padding: 5px; width: 300px; margin: 1em auto;\">";
@@ -40,4 +41,3 @@ if(empty($favorites)) accessDenied( );
 	}
 	$output .= "</div>";
 	$tpl->assign("output", $output);
-?>

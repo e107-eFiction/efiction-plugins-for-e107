@@ -22,7 +22,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
 
 	$output = "<div id='pagetitle'>".($action == "register" ? _SETPREFS : _EDITPREFS)."</div>";
 	if(isset($_POST['submit'])) {
@@ -34,7 +34,7 @@ if(!defined("_CHARSET")) exit( );
 		$storyindex = isset($_POST['storyindex']) && $_POST['storyindex'] == "on" ? 1 : 0;
 		$sortby = isset($_POST['sortby']) && $_POST['sortby'] == 1 ? 1 : 0;
 		$skinnew = descript(strip_tags($_POST['skinnew']));
-		if($skinnew != $skin) $_SESSION[$sitekey."_skin"] = $skinnew;
+		if($skinnew != $skin) e107::getSession()->get(SITEKEY."_skin"); = $skinnew;
 		dbquery("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET alertson = '$useralertson', newreviews = '$newreviews', newrespond = '$newrespond', ageconsent = '$ageconsent', tinyMCE ='$tinyMCE', userskin = '$skinnew', storyindex = '$storyindex', sortby = '$sortby' WHERE uid = '".USERUID."'");
 		$output .= write_message(_ACTIONSUCCESSFUL." "._BACK2ACCT);
 	}
@@ -75,5 +75,3 @@ if(!defined("_CHARSET")) exit( );
 		closedir($directory);
 		$output .= "</select><A HREF=\"#\" class=\"pophelp\">[?]<span>"._HELP_SKIN."</span></A><br /><INPUT type=\"submit\" class=\"button\" id=\"submit\" name=\"submit\" value=\""._SUBMIT."\"></form>";
 	}
-
-?>

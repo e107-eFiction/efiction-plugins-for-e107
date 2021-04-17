@@ -22,7 +22,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
 
 // Build the user's profile information
 $tpl->newBlock("profile");
@@ -87,4 +87,3 @@ if(isADMIN && uLEVEL < 3) {
 	$tpl->assign("adminoptions", $adminopts);
 }
 $tpl->gotoBlock("_ROOT");
-?>

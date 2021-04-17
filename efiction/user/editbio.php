@@ -22,7 +22,8 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
+
 if(!function_exists("random_char")) {
 
 function random_char($string)
@@ -215,4 +216,3 @@ function random_string ($charset_string, $length)
 	 	}
 	 	$output .= "</div></form></div>".write_message("<font color=\"red\">*</font> "._REQUIREDFIELDS);
 	}
-?>

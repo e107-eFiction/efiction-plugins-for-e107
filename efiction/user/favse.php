@@ -22,7 +22,8 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
+
 if(empty($favorites)) accessDenied( );
 
 	if(empty($uid)) {
@@ -107,4 +108,3 @@ if(empty($favorites)) accessDenied( );
 	else $output .= write_message(_NORESULTS);
 	}
 	$tpl->gotoBlock( "_ROOT" );
-?>

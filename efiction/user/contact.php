@@ -22,7 +22,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
 
 	if(!$uid) $output .= write_error(_ERROR);
 	else {
@@ -44,10 +44,11 @@ if(!defined("_CHARSET")) exit( );
 				<label for=\"email\">"._YOUREMAIL.":</label> <INPUT type=\"text\" class=\"textbox\" name=\"email\"><br />
 				<label for=\"subject\">"._SUBJECT.":</label> <INPUT  type=\"text\" class=\"textbox\" name=\"subject\"><br />
 				<label for=\"comments\">"._COMMENTS.":</label> <TEXTAREA  class=\"textbox\" name=\"comments\" cols=\"50\" rows=\"6\"></TEXTAREA><br />";
-			if(!USERUID && !empty($captcha)) $output .= "<div><span class=\"label\">"._CAPTCHANOTE."</span><input MAXLENGTH=5 SIZE=5 name=\"userdigit\" type=\"text\" value=\"\"><br /><img width=120 height=30 src=\""._BASEDIR."includes/button.php\" style=\"border: 1px solid #111;\"></div>";
-			$output .= "<div style=\"text-align: center;\"><INPUT name=\"submit\" class=\"button\" type=\"submit\" value=\""._SUBMIT."\"></div></form>";
+			if(!USERUID && USE_IMAGECODE) {
+              $output .= "<div><span class=\"label\">"._CAPTCHANOTE."</span><input MAXLENGTH=5 SIZE=5 name=\"userdigit\" type=\"text\" value=\"\"><br /><img width=120 height=30 src=\""._BASEDIR."includes/button.php\" style=\"border: 1px solid #111;\"></div>";
+			}
+            $output .= "<div style=\"text-align: center;\"><INPUT name=\"submit\" class=\"button\" type=\"submit\" value=\""._SUBMIT."\"></div></form>";
 			$output .= write_message(_REQUIREDFIELDS._RESPECTNOTE);
 		}
 	}
 	$tpl->assign( "output", $output );	
-?>
