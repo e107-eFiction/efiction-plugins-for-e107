@@ -2,7 +2,9 @@
 
 define ("LAN_EFICTION_BY", "by");
 define ("LAN_EFICTION_READMORE", "Read more...");
- 
+
+define('_RECENTSTORIES', 'Stories updated in the last [x] days.');
+
  
 define('_ACTIONSUCCESSFUL', 'The action was successful.');
 define('_ACTIONCANCELLED', 'The requested action was cancelled.');
@@ -128,7 +130,7 @@ define('_MEMBERLOGIN', 'Member Login');
 
 // Browse
 define('_BROWSE', 'Browse');
-define('_RECENTSTORIES', 'Stories updated in the last '.$recentdays.' days.');
+
 define('_EMAILSENT', 'Your e-mail has been sent.');
 define('_TITLES', 'Titles');
 // Contact Us

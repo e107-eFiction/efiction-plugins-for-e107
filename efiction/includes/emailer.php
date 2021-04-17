@@ -23,9 +23,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
-
-
+if (!defined('e107_INIT')) { exit; }
 
 function sendemail($to_name,$to_email,$from_name,$from_email,$subject,$message,$type="plain",$cc="",$bcc="") {
                  
@@ -71,7 +69,7 @@ function sendemail($to_name,$to_email,$from_name,$from_email,$subject,$message,$
 		$mail->Username = $smtp_username;
 		$mail->Password = $smtp_password;
 	}
-	$mail->CharSet = _CHARSET;
+	$mail->CharSet = 'utf-8';
 	$mail->From = $siteemail;
 	$mail->FromName = $from_name;
 	$mail->AddAddress($to_email, $to_name);

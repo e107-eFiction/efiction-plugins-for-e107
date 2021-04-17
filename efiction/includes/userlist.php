@@ -1,26 +1,33 @@
 <?php
-error_reporting(0);
-define("_BASEDIR", "../");
-include("../config.php");
-include("../includes/dbfunctions.php");
-list($tableprefix, $language) = dbrow(dbquery("SELECT tableprefix, language FROM ".$settingsprefix."fanfiction_settings WHERE sitekey = '$sitekey'"));
-define("TABLEPREFIX", $tableprefix);
-if(file_exists(_BASEDIR."languages/{$language}.php")) include (_BASEDIR."languages/{$language}.php");
-else include (_BASEDIR."languages/en.php");
-include("../includes/queries.php");
+ error_reporting(0);
 
+
+if (!defined('e107_INIT'))
+{
+	require_once(__DIR__.'/../../../class2.php');
+}
  
-$users = dbquery("SELECT "._UIDFIELD." as uid, "._PENNAMEFIELD." as username FROM "._AUTHORTABLE." WHERE LOWER(".
-	_PENNAMEFIELD.") LIKE \"".escapestring($_GET['str'])."%\" ORDER BY username ASC limit 10");
-echo "var element = '".$_GET['element']."';\n";
-while($u = dbassoc($users)) {
-	$userlist[$u['uid']] = $u['username'];
+e107::lan('efiction');
+
+header("Content-Type: text/javascript; charset=utf-8",true);
+include("../includes/queries.php");
+ 
+$userstr = isset($_GET['str']) ? e107::getParser()->toDB($_GET['str']) : "";
+$element = isset($_GET['element']) ? e107::getParser()->toDB($_GET['element']) : "";
+
+$usersquery = "SELECT "._UIDFIELD." as uid, "._PENNAMEFIELD." as username FROM "._AUTHORTABLE." WHERE LOWER(".
+	_PENNAMEFIELD.") LIKE \"".$userstr."%\" ORDER BY username ASC limit 10";
+   
+echo "var element = '".$element."';\n";
+$x = 0;
+$records = e107::getDb()->retrieve($usersquery, true);
+
+foreach($records AS $u) {
+    $userlist[$u['uid']] = $u['username'];
 }
-if(count($userlist) > 0) {
-	$x = 0;
-	foreach($userlist as $k => $v) {
-		echo "userList[$x] =  new Array('$k','$v');\n";
+foreach($userlist AS $k => $v)  {
+        echo "userList[$x] =  new Array('$k','$v');\n";
 		$x++;
-	}
 }
-?>
+ 
+ 

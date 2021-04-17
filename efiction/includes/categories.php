@@ -21,7 +21,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
 
 // Adds the categories selection section to a form.
 
@@ -40,6 +40,7 @@ foreach($catlist as $cat => $info) {
 		$cats[] = $cat;
 	}
 }
+
 $output .= "</select></div>
 		<div style='float: left; width: 20%; text-align: center; padding-top: 3em;'>
 			<input type='button' class='button' value='>' name='Select' onClick='addCat(\"catoptions\", \"selectCats\");'><br /><br />
@@ -51,4 +52,3 @@ $output .= "</select></div>
 			(!empty($selectedCats) ? $selectedCats : "")."</select></div>
 		</div>
 		<input type='hidden' name='catid' id='catid' value='".(isset($cats) ? implode(",", $cats) : "")."'>";
-?>

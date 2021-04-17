@@ -3,6 +3,12 @@
 IN DEVELOPMENT eFiction plugin for e107 
 
 
+## Version 1.0.1
+- replaced _CHARSET
+- replaced $_SESSION with e107 session handler
+
+
+
 **Integration**
 
 - [x] using class2.php
@@ -93,11 +99,14 @@ DONE
 - [ ] stats
 - [ ] stories by
  
- **Sessions**
 
-- [x] replacing session _viewed // This session variable is used to track the story views
+**Sessions**
+- [x] check $_SESSION
+- [x] replacing session _viewed // This session variable is used to track the story views, there was bug, it couldn't work before
 - [x] replacing session _ageconsent
 - [x] replacing session _warned
+- [x] replacing session _skin
+- [x] replacing session _digit 
 
 **Age controls**:
 - [x] moving to UEA data? Decision: Not, it is easy to get Author data now. 

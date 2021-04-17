@@ -43,8 +43,8 @@ if(USERID) {  //fully managed by e107, user is logged in
 			define("uLEVEL", $authordata['level']);
 			define("isADMIN", uLEVEL > 0 ? true : false);
 			define("isMEMBER", true);
-			if(EMPTY($_SESSION[$sitekey."_agecontsent"])) $ageconsent = $authordata['ageconsent'];
-			else $ageconsent = $_SESSION[$sitekey."_agecontsent"];
+            if(e107::getSession()->is(SITEKEY."_agecontsent")) $ageconsent = e107::getSession()->get(SITEKEY."_agecontsent");
+			else $ageconsent = $authordata['ageconsent'];
 		}
 	}
  

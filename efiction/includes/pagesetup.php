@@ -26,7 +26,7 @@ This file does some of the setup of the common elements of the pages within your
 It also checks the common $_GET variables and cleans them up to prevent hacking and attacks.
 */
 
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
 
 $favtypes = array("SE" => "series", "ST" => "stories", "AU" =>"authors");
 $revtypes = array("SE" => "series", "ST" => "stories");

@@ -20,7 +20,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
 
 // Validates emails
 function validEmail($str) {
@@ -63,10 +63,10 @@ function recurseCategories($catid) {
 
 // Captcha script validation
 function captcha_confirm() {
-	if(empty($_SESSION[SITEKEY.'_digit'])) return false;
-	$digit = $_SESSION[SITEKEY.'_digit'];
+    if(!e107::getSession()->is(SITEKEY."_digit")) return false;
+	$digit =  e107::getSession()->get(SITEKEY."_digit"); 
 	$userdigit = $_POST['userdigit'];
-	unset($_SESSION[SITEKEY.'_digit']);
+    e107::getSession()->clear(SITEKEY."_digit"); 
 	if($digit == md5(SITEKEY.$userdigit) && $userdigit > 1) return true;
 	return false;
 }
@@ -216,7 +216,7 @@ function nl2br2($string) {
 function format_story($text) {
       $text = trim($text);
       if(strpos($text, "<br>") === false && strpos($text, "<p>") === false && strpos($text, "<br />") === false) $text = nl2br2($text);
-      if(_CHARSET != "ISO-8859-1" && _CHARSET != "US-ASCII") return stripslashes($text);
+      //only UTF-8 is supported
       $badwordchars = array(chr(212), chr(213), chr(210), chr(211), chr(209), chr(208), chr(201), chr(145), chr(146), chr(147), chr(148), chr(151), chr(150), chr(133));
       $fixedwordchars = array('&#8216;', '&#8217;', '&#8220;', '&#8221;', '&#8212;', '&#8211;', '&#8230;', '&#8216;', '&#8217;', '&#8220;', '&#8221;', '&#8212;', '&#8211;',  '&#8230;' );
       $text = str_replace($badwordchars,$fixedwordchars,stripslashes($text));
