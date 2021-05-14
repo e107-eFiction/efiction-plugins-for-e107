@@ -9,6 +9,7 @@ IN DEVELOPMENT eFiction plugin for e107
 
 
 
+
 **Integration**
 
 - [x] using class2.php
@@ -113,6 +114,8 @@ DONE
 - [x] update title shortcode? 
 - [x] fix viewstory.php
 
+**TPLS files**
+- [x] profile.tpl
 
 
 

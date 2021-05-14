@@ -34,15 +34,13 @@ else $tpl = new TemplatePower(_BASEDIR."default_tpls/user.tpl");
 if(file_exists("$skindir/listings.tpl")) $tpl->assignInclude( "listings", "$skindir/listings.tpl" );
 else $tpl->assignInclude( "listings", _BASEDIR."default_tpls/listings.tpl" );
  
-if(file_exists("$skindir/profile.tpl")) $tpl->assignInclude("profile", "$skindir/profile.tpl");
-else $tpl->assignInclude("profile", _BASEDIR."default_tpls/profile.tpl");
-
-include("includes/pagesetup.php");	
+include(_BASEDIR."includes/pagesetup.php");	
 // If uid isn't a number kill the script with an error message.  The only way this happens is a hacker.
 if(empty($uid)) {
 	if(!isMEMBER) accessDenied( );
 	else $uid = USERUID;
 }
+ 
 if($displayprofile) include("user/profile.php");
 else if(isADMIN && uLEVEL < 3) {
 	$result2 = dbquery("SELECT * FROM "._AUTHORTABLE." LEFT JOIN ".TABLEPREFIX."fanfiction_authorprefs as ap ON ap.uid = "._UIDFIELD." WHERE "._UIDFIELD." = '$uid' LIMIT 1");
@@ -56,7 +54,7 @@ else if(isADMIN && uLEVEL < 3) {
 $infoquery = dbquery("SELECT "._PENNAMEFIELD." as penname FROM "._AUTHORTABLE." WHERE "._UIDFIELD." = '$uid' LIMIT 1");
 
 list($penname) = dbrow($infoquery);
-$caption = $penname;
+ 
 $panelquery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_panels WHERE ".($action ? "panel_name = '$action' AND (panel_type = 'P' OR panel_type = 'F')" : "panel_type = 'P' AND panel_hidden = 0 ORDER BY panel_order ASC")." LIMIT 1");
 if($panelquery) {
 	$panel = dbassoc($panelquery);   
