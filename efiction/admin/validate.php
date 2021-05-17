@@ -34,7 +34,7 @@ function preview_story($stories) {
 		if(file_exists("./$skindir/viewstory.tpl")) $tpl = new TemplatePower("$skindir/viewstory.tpl");
 		else $tpl = new TemplatePower(_BASEDIR."default_tpls/viewstory.tpl");
 		$tpl->prepare( );			
-		include("includes/storyblock.php");
+		include(_BASEDIR."includes/storyblock.php");
 		$adminlinks = "<div class=\"adminoptions\"><span class='label'>"._ADMINOPTIONS.":</span> <a href=\"admin.php?action=validate&amp;sid=$stories[sid]&amp;chapid=$stories[chapid]&amp;validate=yes\">"._VALIDATE."</a> | "._EDIT." - <a href=\"stories.php?action=editstory&amp;sid=$stories[sid]&amp;admin=1\">"._STORY."</a> "._OR." <a href=\"stories.php?action=editchapter&amp;chapid=$stories[chapid]&amp;admin=1\">"._CHAPTER."</a> | "._DELETE." - <a href=\"stories.php?action=delete&amp;sid=$stories[sid]\">"._STORY."</a> "._OR." <a href=\"stories.php?action=delete&amp;chapid=$stories[chapid]&amp;sid=$stories[sid]&amp;admin=1&amp;uid=$stories[uid]\">"._CHAPTER."</a> | <a href=\"javascript:pop('admin.php?action=yesletter&amp;uid=$stories[uid]&amp;chapid=$stories[chapid]', 400, 350, 'yes')\">"._YESLETTER."</a> | <a href=\"javascript:pop('admin.php?action=noletter&amp;uid=$stories[uid]&amp;chapid=$stories[chapid]',400, 350, 'yes')\">"._NOLETTER."</a></div>";
 		$tpl->assign("adminlinks", $adminlinks);
 		if($stories['inorder'] == 1 && !empty($stories['storynotes'])) {
@@ -78,7 +78,7 @@ function preview_story($stories) {
 		$storyquery = dbquery("SELECT story.validated, story.catid, story.sid, story.title, story.summary, story.uid, "._PENNAMEFIELD." as penname, chapter.inorder, story.coauthors FROM ".TABLEPREFIX."fanfiction_stories as story, ".TABLEPREFIX."fanfiction_chapters  as chapter, "._AUTHORTABLE." WHERE "._UIDFIELD." = story.uid AND chapter.sid = story.sid AND chapter.chapid ='$_GET[chapid]' LIMIT 1");
 		list($storyvalid, $catid, $sid, $title, $summary, $authoruid, $author, $inorder, $coauthors) = dbrow($storyquery);
 		if(uLEVEL == 1 || (empty($admincats) || sizeof(array_intersect(explode(",", $catid), explode(",", $admincats))))) {
-			include("includes/emailer.php");
+			include(_BASEDIR."includes/emailer.php");
 			if(!$storyvalid) {
 				dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET validated = '1', updated = NOW() WHERE sid = '$_GET[sid]'");
 				foreach(explode(",", $catid) as $cat) {

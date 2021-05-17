@@ -82,7 +82,7 @@ function validate( ) {
 		$storyquery = mysql_query("SELECT story.validated, story.catid, story.sid, story.title, story.summary, story.uid, author.penname, chapter.inorder FROM ".$tableprefix."fanfiction_stories as story, ".$tableprefix."fanfiction_chapters  as chapter, ".$tableprefix."fanfiction_authors as author WHERE author.uid = story.uid AND chapter.sid = story.sid AND chapter.chapid ='".$_GET['chapid']."' LIMIT 1");
 		list($validated, $catid, $sid, $title, $summary, $authoruid, $author, $inorder) = mysql_fetch_array($storyquery);
 		if($admincats == "0" || sizeof(array_intersect(explode(",", $catid), explode(",", $admincats)))) {
-			include("includes/emailer.php");
+			include(_BASEDIR."includes/emailer.php");
 			if($validated != "1") {
 				mysql_query("UPDATE ".$tableprefix."fanfiction_stories SET validated = '1', updated = NOW() WHERE sid = '".$_GET['sid']."'");
 				$categories = explode(",", $catid);
@@ -177,7 +177,7 @@ function yesletter( ) {
 		$subject = stripinput($_POST['subject']);
 		$letter = nl2br(stripinput($_POST['letter']));
 			
-		include("includes/emailer.php");
+		include(_BASEDIR."includes/emailer.php");
 		$result = sendemail($_POST['email'], $_POST['email'], $adminname, $ademail, $subject, $letter, "html");
 
 		if($result) echo "<div style='text-align: center;'>"._EMAILSENT."</div>";
@@ -213,7 +213,7 @@ function noletter( ) {
 		$subject = stripinput($_POST['subject']);
 		$letter = nl2br(stripinput($_POST['letter']));
 			
-		include("includes/emailer.php");
+		include(_BASEDIR."includes/emailer.php");
 		$result = sendemail($_POST['email'], $_POST['email'], $adminname, $ademail, $subject, $letter, "html");
 
 		if($result) echo "<div style='text-align: center;'>"._EMAILSENT."</div>";

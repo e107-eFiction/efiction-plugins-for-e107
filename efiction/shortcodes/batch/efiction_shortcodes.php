@@ -40,207 +40,145 @@
     class plugin_efiction_efiction_shortcodes extends e_shortcode
     {
         public function __construct()
-        {
+        {     
+        }
+
+        /* {BROWSE_CAPTION} */
+    	public function sc_browse_caption($parm)
+    	{
         
-          
+    		$text = $this->var['caption'];
+    		return $text;
+    	}
         
-        }
-
-        /* {STORY_AUTHORS_LINK} TODO: TEMPLATE */
-
-        public function sc_story_authors_link($parm)
-        {
-            $stories = $this->var;
-
-            if ($stories['coauthors'] > 0) {
-                $authlink[] = '<a href="'.e_HTTP.'viewuser.php?uid='.$stories['uid'].'">'.$stories['penname'].'</a>';
-                $coauth_query = 'SELECT '._PENNAMEFIELD.' as penname, co.uid FROM #fanfiction_coauthors AS co LEFT JOIN '._AUTHORTABLE.' ON co.uid = '._UIDFIELD." WHERE co.sid = '".$stories['sid']."'" ;
-
-                $records = e107::getDb()->retrieve($coauth_query, true);
-
-                foreach ($records as $coauth) {
-                    $v = $coauth['penname'];
-                    $k = $coauth['uid'];
-                    $authlink[] = '<a href="'.e_HTTP.'viewuser.php?uid='.$k.'">'.$v.'</a>';
-                }
-            }
-            if (isset($authlink)) {
-                return implode(', ', $authlink);
-            } else {
-                return '<a href="'.e_HTTP.'viewuser.php?uid='.$stories['uid'].'">'.$stories['penname'].'</a>';
-            }
-        }
-
-        /* {STORY_SUMMARY}
-        {STORY_SUMMARY: limit=100}
-        {STORY_SUMMARY: limit=full}
-        */
-        public function sc_story_summary($parm)
-        {
-            $stories = $this->var;
-            $text = e107::getParser()->toHTML($this->var['summary'], true, 'TITLE');
-			 
-            $limit = ($stories['sumlength'] > 0 ? $stories['sumlength'] : 75);  
-            if (!empty($parm['limit'])) {
-                $limit = $parm['limit'];
-            }
-            if ($limit == 'full') {
-                return $text;
-            } else {
-                $text = e107::getParser()->truncate($stories['summary'], $limit);
-                return $text;
-            }
-        }
-
-        /* {STORY_TITLE_LINK} */
-        /* TODO: sessions */
-        public function sc_story_title_link($parm)
-        {
-            global $ageconsent, $disablepopups;
-            
-            $tp = e107::getParser();
-            $stories = $this->var;
-            
-            $title = $this->title_link($stories);
-            return $title;
+        /* {BROWSE_SORTBEGIN} */ 
+    	public function sc_browse_sortbegin($parm)
+    	{
+    		$text = $this->var['sortbegin'];
+    		return $text;
+    	}
+        /* {BROWSE_CATEGORYMENU} */
+    	public function sc_browse_categorymenu($parm)
+    	{
+    		$text = $this->var['categorymenu'];
+    		return $text;
+    	}        
+        /* {BROWSE_CHARACTERMENU1} */
+    	public function sc_browse_charactermenu1($parm)
+    	{
+    		$text = $this->var['charactermenu1'];
+    		return $text;
+    	}           
+        /* {BROWSE_CHARACTERMENU2} */
+    	public function sc_browse_charactermenu2($parm)
+    	{
+    		$text = $this->var['charactermenu2'];
+    		return $text;
+    	}            
+        /* {BROWSE_PAIRINGSMENU} */
+    	public function sc_browse_pairingsmenu($parm)
+    	{
+    		$text = $this->var['pairingsmenu'];
+    		return $text;
+    	}          
+        /* {BROWSE_RATINGMENU} */
+    	public function sc_browse_ratingmenu($parm)
+    	{
+    		print_a($this->var['ratingmenu']);
+            $text = $this->var['ratingmenu'];
+    		return $text;
+    	}   
+        /* {BROWSE_CLASSMENU} */
+    	public function sc_browse_classmenu($parm)
+    	{
+    		$text = $this->var['classmenu'];
+    		return $text;
+    	}    
+        /* {BROWSE_SORTMENU} */
+    	public function sc_browse_sortmenu($parm)
+    	{
+    		$text = $this->var['sortmenu'];
+    		return $text;
+    	} 
+        /* {BROWSE_COMPLETEMENU} */
+    	public function sc_browse_completemenu($parm)
+    	{
+    		$text = $this->var['completemenu'];
+    		return $text;
+    	}              
+        /* {BROWSE_SORTEND} */
+    	public function sc_browse_sortend($parm)
+    	{
+    		$text = $this->var['sortend'];
+    		return $text;
+    	}    
+        /* {BROWSE_ALPHALINKS} */
+    	public function sc_browse_alphalinks($parm)
+    	{
+  
+    		$alphalinks =  build_alphalinks("browse.php?".$this->var['terms']."&amp;", $this->var['let']) ;
+    		return $alphalinks;
+    	}  
+        /* {BROWSE_OUTPUT} */
+    	public function sc_browse_output($parm)
+    	{ 
+    		$text = $this->var['output'];
+    		return $text;
+    	} 
+        /* {BROWSE_OTHERRESULTS} */
+    	public function sc_browse_otherresults($parm)
+    	{
+    		$text = $this->var['otherresults'];
+    		return $text;
+    	}  
+        /* {BROWSE_SERIESBLOCK} */
+    	public function sc_browse_seriesblock($parm)
+    	{
+    		$text = $this->var['seriesblock'];
+    		return $text;
+    	}          
+        /* {BROWSE_PAGELINKS} */
+    	public function sc_browse_pagelinks($parm)
+    	{
+            $itemsperpage =  efiction::settings('itemsperpage');
  
-            /* too soon */
-            $ratingslist = efiction::ratingslist();
-		 
-            $rating = $stories['rid'];
-			$row['story_sef'] = eHelper::title2sef($stories['title'],'dashl');
-
-        	$warningtext = !empty($ratingslist[$rating]['warningtext']) ? addslashes(strip_tags($ratingslist[$rating]['warningtext'])) : "";
-			
-			if(empty($ratingslist[$rating]['ratingwarning'])) {
-			    $row['story_query'] = "sid=".$stories['sid'];
-				$url = e107::url("efiction", "viewstory", $row, "full");  
-      			$title = "<a href='{$url}'>".$stories['title']."</a>";
-			}	  
-      		else {
-      	 
-      			$warninglevel = sprintf("%03b", $ratingslist[$rating]['ratingwarning']);
-				 
-      			if($warninglevel[2] && !e107::getSession()->is(SITEKEY."_warned_{$rating}")) {
-					$row['story_query'] = "sid=".$stories['sid']."&warning=$rating"; 
-      				$location = e107::url("efiction", "viewstory", $row, "full"); 
-      				$warning = $warningtext;
-      			}
-      			elseif($warninglevel[1] && !$ageconsent && !e107::getSession()->is(SITEKEY."_ageconsent")) {
-					$row['story_query'] = "sid=".$stories['sid']."&ageconsent=ok&warning=$rating";
-      				$location = e107::url("efiction", "viewstory", $row, "full"); 
-      				$warning = _AGECHECK." - "._AGECONSENT." ".$warningtext." -- 1";
-      			}
-      			elseif($warninglevel[0] && !isMEMBER) {
-      				$location = "member.php?action=login&amp;sid=".$stories['sid'];
-      				$warning = _RUSERSONLY." - $warningtext";		
-      			}
-      			
-				if(!empty($warning)) {
-      				$warning = preg_replace("@'@", "\'", $warning);
-
-      				$title = "<a href=\"javascript:if(confirm('".$warning."')) location = '$location'\">".$stories['title']."</a>";
-      			}
-      			else {
-					  $row['story_query'] = "sid=".$stories['sid'];
-					  $url = e107::url("efiction", "viewstory", $row, "full");  
-					  $title = "<a href='{$url}'>".$stories['title']."</a>";
-				}
-      		}
-            return $title;
-        }
-
-
-        /* {STORY_RATING_NAME} */
-        public function sc_story_rating_name($parm)
-        {
-            $stories = $this->var;
-            if (class_exists('efiction')) {
-                $ratingslist = efiction::ratingslist();
-                $rating_name = $ratingslist[$stories['rid']]['name'];
-                return $rating_name;
+            $pagelinks = '';
+ 
+            if($this->var['numrows'] > $itemsperpage) {  
+              $pagelinks = build_pagelinks("browse.php?".$this->var['terms']."&amp;",  $this->var['numrows'], $this->var['offset'] );
             }
-            return '';
-        }
+ 
+    		return $pagelinks;
+    	}  
         
-        /* {STORY_IMAGE} */
-        public function sc_story_image($parm)
-        {
-             
-            $category_icon = $this->var['image'];  
-            if($category_icon != '' ) {
-                $settings =  array('legacyPath'=>'{e_IMAGE}topics/', 'w'=> 0, 'h'=>0);
-        		$settings['class']     = 'img img-fluid';
-        		$settings['legacy']    = array('{e_IMAGE}topics/');
-        		$settings['media'] = 'topics';
-        	    $settings['path'] = 'topics';        
-                $category_icon = str_replace('../', '', trim($category_icon));
-                            
-        		if($category_icon[0] == '{')
-        		{
-        				$src =  e107::getParser()->replaceConstants($category_icon, 'full');	
-        		}
-        		else {
-        
-        			$src = $settings['legacyPath'].$category_icon;
-        			$src =  e107::getParser()->replaceConstants($src, 'full');
-        		}
-        
-                $icon = e107::getParser()->toImage($src, $settings);      	 
-            return $src; 
-       }
-       else {
-            if($story['unnuke_topicid'] > 0) {
-           
-             $topicquery = dbquery("SELECT topicname, topicimage AS image  FROM ".TABLEPREFIX."unnuke_topics WHERE topicid = {$story['unnuke_topicid']}");
-             
-             if($topicquery) list($topicname,  $topicimage) = dbrow($topicquery);
-             $topic['image'] = $topicimage;
-             $icon =  storyimage($topic);
-             return $icon;
+        /* {BROWSE_SEARCHFORM}*/
+       	public function sc_browse_searchform($parm)
+    	{
+
+             $browse_template = e107::getTemplate('efiction', 'searchform', 'default');
+             $search_browse = e107::getScParser()->getScObject('searchform_shortcodes', 'efiction', false);
+             $search_vars = array();
+             $search_browse->wrapper('searchform/default');
+      
               
-            }
-       
-       } 
+              $search_vars['searchform_sortbegin'] = $this->sc_browse_sortbegin($parm);
+              $search_vars['searchform_categorymenu'] = $this->sc_browse_categorymenu($parm);
+              $search_vars['searchform_charactermenu1'] = $this->sc_browse_charactermenu1($parm);
+              $search_vars['searchform_charactermenu2'] = $this->sc_browse_charactermenu2($parm);            
+              $search_vars['searchform_pairingsmenu'] = $this->sc_browse_pairingsmenu($parm);
+                       
+              $search_vars['searchform_classmenu'] = $this->sc_browse_classmenu($parm);       
+              $search_vars['searchform_sortmenu'] = $this->sc_browse_sortmenu($parm);       
+              $search_vars['searchform_ompletemenu'] = $this->sc_browse_completemenu($parm);       
+              $search_vars['searchform_sortend'] = $this->sc_browse_sortend($parm);                          
+              
+              $search_vars = array_merge($search_vars, $this->var);
  
-            return $src;
-        }      
-    
-        // Because this is used in places other than the listings of stories, we're setting it up as a function to be called as needed.
-        function title_link($stories) {
-            
-            $ageconsent =  efiction::settings('ageconsent');
-            $disablepopups =  efiction::settings('disablepopups');
-            
-            $ratingslist = efiction::ratingslist();
-        	$rating = $stories['rid'];
-        	$warningtext = !empty($ratingslist[$rating]['warningtext']) ? addslashes(strip_tags($ratingslist[$rating]['warningtext'])) : "";
-        		if(empty($ratingslist[$rating]['ratingwarning']))
-        			$title = "<a href=\"viewstory.php?sid=".$stories['sid']."\">".$stories['title']."</a>";
-        		else {
-        			$warning = "";
-        			$warninglevel = sprintf("%03b", $ratingslist[$rating]['ratingwarning']);
-        			if($warninglevel[2] && !e107::getSession()->is(SITEKEY."_warned/{$rating}")) {
-        				$location = "viewstory.php?sid=".$stories['sid']."&amp;warning=$rating";
-        				$warning = $warningtext;
-        			}
-        			if($warninglevel[1] && !$ageconsent && !e107::getSession()->is(SITEKEY."_ageconsent")) {
-        				$location = "viewstory.php?sid=".$stories['sid']."&amp;ageconsent=ok&amp;warning=$rating";
-        				$warning = _AGECHECK." - "._AGECONSENT." ".$warningtext." -- 1";
-        			}
-        			if($warninglevel[0] && !isMEMBER) {
-        				$location = "member.php?action=login&amp;sid=".$stories['sid'];
-        				$warning = _RUSERSONLY." - $warningtext";		
-        			}
-        			if(!empty($warning)) {
-        				$warning = preg_replace("@'@", "\'", $warning);
-        				$title = "<a href=\"javascript:if(confirm('".$warning."')) location = '$location'\">".$stories['title']."</a>";
-        			}
-        			else $title = "<a href=\"viewstory.php?sid=".$stories['sid']."\">".$stories['title']."</a>";
-        		}
-        	return $title;
-        }
+              $search_browse->setVars($search_vars);
+     
+              $text = e107::getParser()->parseTemplate($browse_template['form'], true, $search_browse);
+             
+    		return $text;
+    	}  
         
-        
-    
     }

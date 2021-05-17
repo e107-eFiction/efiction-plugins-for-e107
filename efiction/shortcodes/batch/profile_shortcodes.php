@@ -61,12 +61,13 @@ class plugin_efiction_profile_shortcodes extends e_shortcode
     /* {PROFILE_ADMINOPTIONS} */
 	public function sc_profile_adminoptions($parm = null)
 	{
-        $userinfo = $this->var;
+        $uid = $this->var['uid'];  
+        $userinfo = $this->var; 
         $adminopts = "";
         if(isADMIN && uLEVEL < 3) {
-        	$adminopts .= "<div class=\"adminoptions\"><span class='label'>"._ADMINOPTIONS.":</span> ".(isset($userinfo['validated']) && $userinfo['validated'] ? "[<a href=\"admin.php?action=members&amp;revoke=$uid\" class=\"vuadmin\">"._REVOKEVAL."</a>] " : "[<a href=\"admin.php?action=members&amp;validate=$uid\" class=\"vuadmin\">"._VALIDATE."</a>] ")."[<a href=\"member.php?action=editbio&amp;uid=$uid\" class=\"vuadmin\">"._EDIT."</a>] [<a href=\"admin.php?action=members&amp;delete=$uid\" class=\"vuadmin\">"._DELETE."</a>]";
-        	$adminopts .= " [<a href=\"admin.php?action=members&amp;".($userinfo['level'] < 0 ? "unlock=".$userinfo['uid']."\" class=\"vuadmin\">"._UNLOCKMEM : "lock=".$userinfo['uid']."\" class=\"vuadmin\">"._LOCKMEM)."</a>]";
-        	$adminopts .= " [<a href=\"admin.php?action=admins&amp;".(isset($userinfo['level']) && $userinfo['level'] > 0 ? "revoke=$uid\" class=\"vuadmin\">"._REVOKEADMIN."</a>] [<a href=\"admin.php?action=admins&amp;do=edit&amp;uid=$uid\" class=\"vuadmin\">"._EDITADMIN : "do=new&amp;uid=$uid\" class=\"vuadmin\">"._MAKEADMIN)."</a>]</div>";
+        	$adminopts .= "<span class='label'>"._ADMINOPTIONS.":</span> ".(isset($userinfo['validated']) && $userinfo['validated'] ? "[<a  href=\"admin.php?action=members&amp;revoke=$uid\" class=\"btn btn-sm btn-outline--danger vuadmin\">"._REVOKEVAL."</a>] " : "[<a href=\"admin.php?action=members&amp;validate=$uid\" class=\"btn btn-sm btn-outline-success vuadmin\">"._VALIDATE."</a>] ")."[<a href=\"member.php?action=editbio&amp;uid=$uid\" class=\"btn btn-sm  btn-outline-success vuadmin\">"._EDIT."</a>] [<a href=\"admin.php?action=members&amp;delete=$uid\" class=\"btn btn-sm btn-outline-danger vuadmin\">"._DELETE."</a>]";
+        	$adminopts .= " [<a href=\"admin.php?action=members&amp;".($userinfo['level'] < 0 ? "unlock=".$userinfo['uid']."\" class=\"btn btn-sm btn-outline-info vuadmin\">"._UNLOCKMEM : "lock=".$userinfo['uid']."\" class=\"btn btn-sm btn-outline-secondary vuadmin\">"._LOCKMEM)."</a>]";
+        	$adminopts .= " [<a href=\"admin.php?action=admins&amp;".(isset($userinfo['level']) && $userinfo['level'] > 0 ? "revoke=$uid\" class=\"btn btn-sm btn-outline-danger vuadmin\">"._REVOKEADMIN."</a>] [<a href=\"admin.php?action=admins&amp;do=edit&amp;uid=$uid\" class=\"btn btn-sm btn-outline-info vuadmin\">"._EDITADMIN : "do=new&amp;uid=$uid\" class=\"btn btn-sm btn-outline-warning vuadmin\">"._MAKEADMIN)."</a>]";
         	 
             return $adminopts;
         }
@@ -116,7 +117,7 @@ class plugin_efiction_profile_shortcodes extends e_shortcode
     public function sc_profile_codeblock($parm = null)
     {
         if ($parm == 'userprofile') {
-            $stories = $this->var;
+            
             $codequery = "SELECT * FROM #fanfiction_codeblocks WHERE code_type = 'userprofile'";
             $codes = e107::getDb()->retrieve($codequery, true);
    
@@ -125,7 +126,7 @@ class plugin_efiction_profile_shortcodes extends e_shortcode
                 eval($code['code_text']);
             }
             $text = $output;
-            $output = '';
+            print_a($output);
             return $text;
        } 
     }
@@ -154,9 +155,19 @@ class plugin_efiction_profile_shortcodes extends e_shortcode
     /* {PROFILE_REPORTTHIS} */
 	public function sc_profile_reportthis($parm = null)
 	{
+	  $start = '[';
+      $end = ']';
+      $class = '';
+      if(!empty($parm['class'])) {
+        $class = ' class ="'.$parm['class'].'"' ;
+        $start = '';
+        $end = '';
+      }
+      
       $text=
-      "[<a href=\""._BASEDIR."report.php?action=report&amp;url=viewuser.php?uid=".$uid."\">"._REPORTTHIS."</a>]";
-    }
+      $start."<a ".$class." href=\""._BASEDIR."report.php?action=report&amp;url=viewuser.php?uid=".$this->var['uid']."\">"._REPORTTHIS."</a>".$end;
+      return $text;
+	}
     /* {PROFILE_USERLEVEL} */
 	public function sc_profile_userlevel($parm = null)
 	{

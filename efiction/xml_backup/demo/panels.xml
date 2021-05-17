@@ -1,0 +1,787 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<e107Export version="2.3.1 (git)" timestamp="1619092829" >
+	<database>
+	<dbTable name="fanfiction_panels">
+		<item>
+			<field name="panel_id">231</field>
+			<field name="panel_name">favseries</field>
+			<field name="panel_title">10 Most Favorite Series</field>
+			<field name="panel_url">toplists/default.php</field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">6</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">L</field>
+		</item>
+		<item>
+			<field name="panel_id">229</field>
+			<field name="panel_name">favstories</field>
+			<field name="panel_title">10 Most Favorite Stories</field>
+			<field name="panel_url">toplists/default.php</field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">7</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">L</field>
+		</item>
+		<item>
+			<field name="panel_id">230</field>
+			<field name="panel_name">favauthors</field>
+			<field name="panel_title">10 Most Favorite Authors</field>
+			<field name="panel_url">toplists/default.php</field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">11</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">L</field>
+		</item>
+		<item>
+			<field name="panel_id">228</field>
+			<field name="panel_name">readstories</field>
+			<field name="panel_title">10 Most Read Stories</field>
+			<field name="panel_url">toplists/default.php</field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">9</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">L</field>
+		</item>
+		<item>
+			<field name="panel_id">227</field>
+			<field name="panel_name">reviewedstories</field>
+			<field name="panel_title">10 Most Reviewed Stories</field>
+			<field name="panel_url">toplists/default.php</field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">8</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">L</field>
+		</item>
+		<item>
+			<field name="panel_id">226</field>
+			<field name="panel_name">prolificreviewers</field>
+			<field name="panel_title">10 Most Prolific Reviewers</field>
+			<field name="panel_url">toplists/default.php</field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">12</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">L</field>
+		</item>
+		<item>
+			<field name="panel_id">225</field>
+			<field name="panel_name">prolificauthors</field>
+			<field name="panel_title">10 Most Prolific Authors</field>
+			<field name="panel_url">toplists/default.php</field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">10</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">L</field>
+		</item>
+		<item>
+			<field name="panel_id">224</field>
+			<field name="panel_name">reviewedseries</field>
+			<field name="panel_title">10 Most Reviewed Series</field>
+			<field name="panel_url">toplists/default.php</field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">5</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">L</field>
+		</item>
+		<item>
+			<field name="panel_id">223</field>
+			<field name="panel_name">smallseries</field>
+			<field name="panel_title">10 Smallest Series</field>
+			<field name="panel_url">toplists/default.php</field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">4</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">L</field>
+		</item>
+		<item>
+			<field name="panel_id">222</field>
+			<field name="panel_name">largeseries</field>
+			<field name="panel_title">10 Largest Series</field>
+			<field name="panel_url">toplists/default.php</field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">3</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">L</field>
+		</item>
+		<item>
+			<field name="panel_id">221</field>
+			<field name="panel_name">longstories</field>
+			<field name="panel_title">10 Longest Stories</field>
+			<field name="panel_url">toplists/default.php</field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">2</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">L</field>
+		</item>
+		<item>
+			<field name="panel_id">220</field>
+			<field name="panel_name">shortstories</field>
+			<field name="panel_title">10 Shortest Stories</field>
+			<field name="panel_url">toplists/default.php</field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">1</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">L</field>
+		</item>
+		<item>
+			<field name="panel_id">219</field>
+			<field name="panel_name">viewlog</field>
+			<field name="panel_title">Action Log</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">1</field>
+			<field name="panel_order">8</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">A</field>
+		</item>
+		<item>
+			<field name="panel_id">218</field>
+			<field name="panel_name">series</field>
+			<field name="panel_title">Series</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">5</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">B</field>
+		</item>
+		<item>
+			<field name="panel_id">217</field>
+			<field name="panel_name">contact</field>
+			<field name="panel_title">Contact</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">0</field>
+			<field name="panel_hidden">1</field>
+			<field name="panel_type">P</field>
+		</item>
+		<item>
+			<field name="panel_id">215</field>
+			<field name="panel_name">panels</field>
+			<field name="panel_title">Panels</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">1</field>
+			<field name="panel_order">2</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">A</field>
+		</item>
+		<item>
+			<field name="panel_id">214</field>
+			<field name="panel_name">featured</field>
+			<field name="panel_title">Featured Stories</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">0</field>
+			<field name="panel_hidden">1</field>
+			<field name="panel_type">B</field>
+		</item>
+		<item>
+			<field name="panel_id">212</field>
+			<field name="panel_name">class</field>
+			<field name="panel_title">Classes</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">0</field>
+			<field name="panel_hidden">1</field>
+			<field name="panel_type">B</field>
+		</item>
+		<item>
+			<field name="panel_id">213</field>
+			<field name="panel_name">recent</field>
+			<field name="panel_title">Most Recent</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">0</field>
+			<field name="panel_hidden">1</field>
+			<field name="panel_type">B</field>
+		</item>
+		<item>
+			<field name="panel_id">210</field>
+			<field name="panel_name">ratings</field>
+			<field name="panel_title">Ratings</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">3</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">B</field>
+		</item>
+		<item>
+			<field name="panel_id">211</field>
+			<field name="panel_name">titles</field>
+			<field name="panel_title">Titles</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">4</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">B</field>
+		</item>
+		<item>
+			<field name="panel_id">209</field>
+			<field name="panel_name">characters</field>
+			<field name="panel_title">Characters</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">2</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">B</field>
+		</item>
+		<item>
+			<field name="panel_id">207</field>
+			<field name="panel_name">reviewsby</field>
+			<field name="panel_title">Reviews by {author}</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">3</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">P</field>
+		</item>
+		<item>
+			<field name="panel_id">208</field>
+			<field name="panel_name">categories</field>
+			<field name="panel_title">Categories</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">1</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">B</field>
+		</item>
+		<item>
+			<field name="panel_id">206</field>
+			<field name="panel_name">seriesby</field>
+			<field name="panel_title">Series by {author}</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">2</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">P</field>
+		</item>
+		<item>
+			<field name="panel_id">205</field>
+			<field name="panel_name">storiesby</field>
+			<field name="panel_title">Stories by {author}</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">1</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">P</field>
+		</item>
+		<item>
+			<field name="panel_id">204</field>
+			<field name="panel_name">reviewsby</field>
+			<field name="panel_title">Your Reviews</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">1</field>
+			<field name="panel_order">0</field>
+			<field name="panel_hidden">1</field>
+			<field name="panel_type">U</field>
+		</item>
+		<item>
+			<field name="panel_id">203</field>
+			<field name="panel_name">manageseries</field>
+			<field name="panel_title">Manage Series</field>
+			<field name="panel_url">series.php?action=manage</field>
+			<field name="panel_level">1</field>
+			<field name="panel_order">5</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">S</field>
+		</item>
+		<item>
+			<field name="panel_id">202</field>
+			<field name="panel_name">managestories</field>
+			<field name="panel_title">Manage Stories</field>
+			<field name="panel_url">stories.php?action=viewstories</field>
+			<field name="panel_level">1</field>
+			<field name="panel_order">4</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">S</field>
+		</item>
+		<item>
+			<field name="panel_id">201</field>
+			<field name="panel_name">newseries</field>
+			<field name="panel_title">Add New Series</field>
+			<field name="panel_url">series.php?action=add</field>
+			<field name="panel_level">1</field>
+			<field name="panel_order">3</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">S</field>
+		</item>
+		<item>
+			<field name="panel_id">200</field>
+			<field name="panel_name">newstory</field>
+			<field name="panel_title">Add New Story</field>
+			<field name="panel_url">stories.php?action=newstory</field>
+			<field name="panel_level">1</field>
+			<field name="panel_order">2</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">S</field>
+		</item>
+		<item>
+			<field name="panel_id">199</field>
+			<field name="panel_name">stats</field>
+			<field name="panel_title">View Your Statistics</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">1</field>
+			<field name="panel_order">5</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">U</field>
+		</item>
+		<item>
+			<field name="panel_id">198</field>
+			<field name="panel_name">revres</field>
+			<field name="panel_title">Review Response</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">1</field>
+			<field name="panel_order">0</field>
+			<field name="panel_hidden">1</field>
+			<field name="panel_type">U</field>
+		</item>
+		<item>
+			<field name="panel_id">197</field>
+			<field name="panel_name">manfavs</field>
+			<field name="panel_title">Manage Favorites</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">1</field>
+			<field name="panel_order">4</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">F</field>
+		</item>
+		<item>
+			<field name="panel_id">196</field>
+			<field name="panel_name">manageimages</field>
+			<field name="panel_title">Manage Images</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">1</field>
+			<field name="panel_order">1</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">S</field>
+		</item>
+		<item>
+			<field name="panel_id">195</field>
+			<field name="panel_name">register</field>
+			<field name="panel_title">Register</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">0</field>
+			<field name="panel_hidden">1</field>
+			<field name="panel_type">U</field>
+		</item>
+		<item>
+			<field name="panel_id">194</field>
+			<field name="panel_name">editbio</field>
+			<field name="panel_title">Edit Bio</field>
+			<field name="panel_url">usersettings.php</field>
+			<field name="panel_level">1</field>
+			<field name="panel_order">3</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">U</field>
+		</item>
+		<item>
+			<field name="panel_id">193</field>
+			<field name="panel_name">lostpassword</field>
+			<field name="panel_title">Lost Password</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">0</field>
+			<field name="panel_hidden">1</field>
+			<field name="panel_type">U</field>
+		</item>
+		<item>
+			<field name="panel_id">192</field>
+			<field name="panel_name">editprefs</field>
+			<field name="panel_title">Edit Preferences</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">1</field>
+			<field name="panel_order">2</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">U</field>
+		</item>
+		<item>
+			<field name="panel_id">191</field>
+			<field name="panel_name">revreceived</field>
+			<field name="panel_title">Reviews Received</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">1</field>
+			<field name="panel_order">0</field>
+			<field name="panel_hidden">1</field>
+			<field name="panel_type">U</field>
+		</item>
+		<item>
+			<field name="panel_id">190</field>
+			<field name="panel_name">logout</field>
+			<field name="panel_title">Logout</field>
+			<field name="panel_url">index.php?logout</field>
+			<field name="panel_level">1</field>
+			<field name="panel_order">99</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">U</field>
+		</item>
+		<item>
+			<field name="panel_id">189</field>
+			<field name="panel_name">login</field>
+			<field name="panel_title">Login</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">0</field>
+			<field name="panel_hidden">1</field>
+			<field name="panel_type">U</field>
+		</item>
+		<item>
+			<field name="panel_id">188</field>
+			<field name="panel_name">messages</field>
+			<field name="panel_title">Message Settings</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">2</field>
+			<field name="panel_order">0</field>
+			<field name="panel_hidden">1</field>
+			<field name="panel_type">A</field>
+		</item>
+		<item>
+			<field name="panel_id">186</field>
+			<field name="panel_name">noletter</field>
+			<field name="panel_title">Rejection Letter</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">3</field>
+			<field name="panel_order">0</field>
+			<field name="panel_hidden">1</field>
+			<field name="panel_type">A</field>
+		</item>
+		<item>
+			<field name="panel_id">185</field>
+			<field name="panel_name">yesletter</field>
+			<field name="panel_title">Validation Letter</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">3</field>
+			<field name="panel_order">0</field>
+			<field name="panel_hidden">1</field>
+			<field name="panel_type">A</field>
+		</item>
+		<item>
+			<field name="panel_id">184</field>
+			<field name="panel_name">validate</field>
+			<field name="panel_title">Validate Submission</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">3</field>
+			<field name="panel_order">0</field>
+			<field name="panel_hidden">1</field>
+			<field name="panel_type">A</field>
+		</item>
+		<item>
+			<field name="panel_id">182</field>
+			<field name="panel_name">categories</field>
+			<field name="panel_title">Categories</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">2</field>
+			<field name="panel_order">6</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">A</field>
+		</item>
+		<item>
+			<field name="panel_id">183</field>
+			<field name="panel_name">custpages</field>
+			<field name="panel_title">Custom Pages</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">1</field>
+			<field name="panel_order">4</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">A</field>
+		</item>
+		<item>
+			<field name="panel_id">180</field>
+			<field name="panel_name">admins</field>
+			<field name="panel_title">Admins</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">1</field>
+			<field name="panel_order">5</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">A</field>
+		</item>
+		<item>
+			<field name="panel_id">181</field>
+			<field name="panel_name">classifications</field>
+			<field name="panel_title">Classifications</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">2</field>
+			<field name="panel_order">5</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">A</field>
+		</item>
+		<item>
+			<field name="panel_id">179</field>
+			<field name="panel_name">censor</field>
+			<field name="panel_title">Censor</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">1</field>
+			<field name="panel_order">0</field>
+			<field name="panel_hidden">1</field>
+			<field name="panel_type">A</field>
+		</item>
+		<item>
+			<field name="panel_id">178</field>
+			<field name="panel_name">blocks</field>
+			<field name="panel_title">Blocks</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">1</field>
+			<field name="panel_order">6</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">A</field>
+		</item>
+		<item>
+			<field name="panel_id">177</field>
+			<field name="panel_name">settings</field>
+			<field name="panel_title">Settings</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">1</field>
+			<field name="panel_order">1</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">A</field>
+		</item>
+		<item>
+			<field name="panel_id">176</field>
+			<field name="panel_name">mailusers</field>
+			<field name="panel_title">Mail Users</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">2</field>
+			<field name="panel_order">4</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">A</field>
+		</item>
+		<item>
+			<field name="panel_id">175</field>
+			<field name="panel_name">members</field>
+			<field name="panel_title">Members</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">2</field>
+			<field name="panel_order">3</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">A</field>
+		</item>
+		<item>
+			<field name="panel_id">174</field>
+			<field name="panel_name">ratings</field>
+			<field name="panel_title">Ratings</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">2</field>
+			<field name="panel_order">2</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">A</field>
+		</item>
+		<item>
+			<field name="panel_id">173</field>
+			<field name="panel_name">characters</field>
+			<field name="panel_title">Characters</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">2</field>
+			<field name="panel_order">1</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">A</field>
+		</item>
+		<item>
+			<field name="panel_id">172</field>
+			<field name="panel_name">featured</field>
+			<field name="panel_title">Featured Stories</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">3</field>
+			<field name="panel_order">5</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">A</field>
+		</item>
+		<item>
+			<field name="panel_id">171</field>
+			<field name="panel_name">news</field>
+			<field name="panel_title">News</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">3</field>
+			<field name="panel_order">4</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">A</field>
+		</item>
+		<item>
+			<field name="panel_id">170</field>
+			<field name="panel_name">addseries</field>
+			<field name="panel_title">Add New Series</field>
+			<field name="panel_url">series.php?action=add</field>
+			<field name="panel_level">3</field>
+			<field name="panel_order">3</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">A</field>
+		</item>
+		<item>
+			<field name="panel_id">169</field>
+			<field name="panel_name">newstory</field>
+			<field name="panel_title">Add New Story</field>
+			<field name="panel_url"><![CDATA[stories.php?action=newstory&admin=1]]></field>
+			<field name="panel_level">3</field>
+			<field name="panel_order">2</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">A</field>
+		</item>
+		<item>
+			<field name="panel_id">168</field>
+			<field name="panel_name">versioncheck</field>
+			<field name="panel_title">Version Check</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">3</field>
+			<field name="panel_order">7</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">A</field>
+		</item>
+		<item>
+			<field name="panel_id">167</field>
+			<field name="panel_name">submitted</field>
+			<field name="panel_title">Submissions</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">3</field>
+			<field name="panel_order">5</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">A</field>
+		</item>
+		<item>
+			<field name="panel_id">232</field>
+			<field name="panel_name">favst</field>
+			<field name="panel_title">Favorite Stories</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">0</field>
+			<field name="panel_hidden">1</field>
+			<field name="panel_type">F</field>
+		</item>
+		<item>
+			<field name="panel_id">233</field>
+			<field name="panel_name">favse</field>
+			<field name="panel_title">Favorite Series</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">0</field>
+			<field name="panel_hidden">1</field>
+			<field name="panel_type">F</field>
+		</item>
+		<item>
+			<field name="panel_id">234</field>
+			<field name="panel_name">favau</field>
+			<field name="panel_title">Favorite Authors</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">0</field>
+			<field name="panel_hidden">1</field>
+			<field name="panel_type">F</field>
+		</item>
+		<item>
+			<field name="panel_id">235</field>
+			<field name="panel_name">favst</field>
+			<field name="panel_title">Favorite Stories</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">0</field>
+			<field name="panel_hidden">1</field>
+			<field name="panel_type">U</field>
+		</item>
+		<item>
+			<field name="panel_id">236</field>
+			<field name="panel_name">favse</field>
+			<field name="panel_title">Favorite Series</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">0</field>
+			<field name="panel_hidden">1</field>
+			<field name="panel_type">U</field>
+		</item>
+		<item>
+			<field name="panel_id">237</field>
+			<field name="panel_name">favau</field>
+			<field name="panel_title">Favorite Authors</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">1</field>
+			<field name="panel_order">0</field>
+			<field name="panel_hidden">1</field>
+			<field name="panel_type">U</field>
+		</item>
+		<item>
+			<field name="panel_id">238</field>
+			<field name="panel_name">favlist</field>
+			<field name="panel_title">{author}'s Favorites</field>
+			<field name="panel_url">viewuser.php?action=manfavs</field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">1</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">F</field>
+		</item>
+		<item>
+			<field name="panel_id">239</field>
+			<field name="panel_name">skins</field>
+			<field name="panel_title">Skins</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">3</field>
+			<field name="panel_order">6</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">A</field>
+		</item>
+		<item>
+			<field name="panel_id">240</field>
+			<field name="panel_name">authorfields</field>
+			<field name="panel_title">Profile Information</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">1</field>
+			<field name="panel_order">9</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">A</field>
+		</item>
+		<item>
+			<field name="panel_id">241</field>
+			<field name="panel_name">manual</field>
+			<field name="panel_title">Admin Manual</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">3</field>
+			<field name="panel_order">6</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">A</field>
+		</item>
+		<item>
+			<field name="panel_id">242</field>
+			<field name="panel_name">modules</field>
+			<field name="panel_title">Modules</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">1</field>
+			<field name="panel_order">11</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">A</field>
+		</item>
+		<item>
+			<field name="panel_id">243</field>
+			<field name="panel_name">maintenance</field>
+			<field name="panel_title">Archive Maintenance</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">1</field>
+			<field name="panel_order">10</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">A</field>
+		</item>
+		<item>
+			<field name="panel_id">244</field>
+			<field name="panel_name">home</field>
+			<field name="panel_title">Home</field>
+			<field name="panel_url"></field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">0</field>
+			<field name="panel_hidden">1</field>
+			<field name="panel_type">B</field>
+		</item>
+		<item>
+			<field name="panel_id">245</field>
+			<field name="panel_name">original_authors</field>
+			<field name="panel_title">Original Author</field>
+			<field name="panel_url">modules/translations/browse/original_authors.php</field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">6</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">B</field>
+		</item>
+		<item>
+			<field name="panel_id">246</field>
+			<field name="panel_name">original_titles</field>
+			<field name="panel_title">Original Title</field>
+			<field name="panel_url">modules/translations/browse/original_titles.php</field>
+			<field name="panel_level">0</field>
+			<field name="panel_order">7</field>
+			<field name="panel_hidden">0</field>
+			<field name="panel_type">B</field>
+		</item>
+	</dbTable>
+	</database>
+</e107Export>

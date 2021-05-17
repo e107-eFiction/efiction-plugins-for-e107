@@ -29,6 +29,36 @@ $output .= "<div id='pagetitle'>"._ARCHIVEMAINT."</div>";
 if($maint == "update") {
 	if(file_exists("admin/update.php")) include_once("admin/update.php");
 }
+if($maint == "dates") {
+    $authorquery = "SELECT *, user_id AS user_id, UNIX_TIMESTAMP(date) as date 
+     FROM "._AUTHORTABLE." LEFT JOIN ".TABLEPREFIX."fanfiction_authorprefs as ap ON ap.uid = "._UIDFIELD    ;
+
+    $authordata = e107::getDb()->retrieve($authorquery, true);
+    foreach($authordata AS $author) {
+     $uid = $author['uid'];    
+     $user_id = $author['user_id'];    
+     $date = $author['date'];   
+     if($user_id > 0 ) {
+        $userinfo  = e107::user($user_id);   
+        if($userinfo['user_join'] > 0) {
+            if(is_null( $date )) {
+                 $mysqldate = date('Y-m-d H:i:s', $userinfo['user_join']);  
+                  
+                  $update = array(
+      			'date' => $mysqldate,
+      			 'WHERE'   => "uid = '".$uid ."'"
+      
+      		        );
+                  $result = e107::getDb()->update('fanfiction_authors', $update  ); 
+                 
+  
+            }     
+        }
+     }
+    }
+  	$output .= write_message(_ACTIONSUCCESSFUL); 
+}
+
 if($maint == "reviews") {
 	dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET rating = '0', reviews = '0'"); // Set them all to 0 before we re-insert.
 	$stories = dbquery("SELECT AVG(rating) as average, item FROM ".TABLEPREFIX."fanfiction_reviews WHERE type = 'ST' AND rating != '-1' GROUP BY item");
@@ -52,7 +82,7 @@ if($maint == "reviews") {
 	$series = dbquery("SELECT seriesid FROM ".TABLEPREFIX."fanfiction_series");
 	while($s = dbassoc($series)) {
 		$thisseries = $s['seriesid'];
-		include("includes/seriesreviews.php");
+		include(_BASEDIR."includes/seriesreviews.php");
 	}
 	// For modules which may allow reviews.
 	$codequery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'revfix'");
@@ -220,6 +250,7 @@ else {
 	<li><a href='admin/backup.php' target='_new'>"._BACKUP."</a> <A HREF=\"#\" class=\"pophelp\">[?]<span>"._HELP_BACKUP."</span></A></li>
 	<li><a href='admin/backup_utf8.php' target='_new'>"._BACKUP."</a> (UTF-8) <A HREF=\"#\" class=\"pophelp\">[?]<span>"._HELP_BACKUP."</span></A></li>
 	<li><a href='admin.php?action=maintenance&amp;maint=update'>"._UPDATE."</a>  <A HREF=\"#\" class=\"pophelp\">[?]<span>"._HELP_UPDATE."</span></A></li>
+    <li><a href='admin.php?action=maintenance&amp;maint=dates'>Member since date fix</a> </li>
 </ul>";
 }
 ?>

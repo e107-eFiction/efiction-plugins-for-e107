@@ -35,7 +35,7 @@ $chapid = isset($_GET['chapid']) && isNumber($_GET['chapid']) ? $_GET['chapid'] 
 	if(isset($_POST['submit'])) {
 		$subject = strip_tags(descript($_POST['subject']));
 		$letter = descript($_POST['letter']);
-		include("includes/emailer.php");
+		include(_BASEDIR."includes/emailer.php");
 		$result = sendemail($_POST['authorname'], $_POST['authoremail'], $adminname, $ademail, $subject, $letter, "html");
 		if($result) echo write_message(_EMAILSENT);
 		else echo write_error(_NOMAILSENT);
