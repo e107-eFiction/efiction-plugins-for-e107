@@ -28,7 +28,7 @@ if (!defined('e107_INIT')) { exit; }
 if(USERID) {  //fully managed by e107, user is logged in
  
     $authordata = eauthors::get_author_data_by_user_id(USERID ); 
-    
+ 
     $author_uid = $authordata['uid'];
     
 	if($author_uid > 0) { //user is author
@@ -42,15 +42,12 @@ if(USERID) {  //fully managed by e107, user is logged in
 	 
 			define("uLEVEL", $authordata['level']);
 			define("isADMIN", uLEVEL > 0 ? true : false);
-			define("isMEMBER", true);
-            if(e107::getSession()->is(SITEKEY."_agecontsent")) $ageconsent = e107::getSession()->get(SITEKEY."_agecontsent");
+			define("isMEMBER", true);        
+            if(e107::getSession()->is(SITEKEY."_ageconsent")) $ageconsent = e107::getSession()->get(SITEKEY."_ageconsent");
 			else $ageconsent = $authordata['ageconsent'];
 		}
 	}
- 
 	// author data
-	
-
 }
 else {
 	if(!defined("USERUID")) define("USERUID", 0);
@@ -60,11 +57,10 @@ else {
 	if(!defined("isADMIN")) define("isADMIN", false);
 }
 
- 
 if(!defined("USERUID")) define("USERUID", 0);
 if(!defined("USERPENNAME")) define("USERPENNAME", false);
 if(!defined("uLEVEL")) define("uLEVEL", 0);
 if(!defined("isMEMBER")) define("isMEMBER", false);
 if(!defined("isADMIN")) define("isADMIN", false);
  
- if(empty($siteskin)) $siteskin = $defaultskin;
+if(empty($siteskin)) $siteskin = $defaultskin;
