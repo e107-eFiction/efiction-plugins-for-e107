@@ -4,7 +4,7 @@ $dbhost = "localhost";
 $dbname = "efiction";
 $dbuser= "root";
 $dbpass = "12345678";
-$sitekey = "cUg2qzQFKf";
+$sitekey = SITEKEY;
 $settingsprefix = "e107_";
 
 include_once("includes/dbfunctions.php");

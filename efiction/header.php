@@ -27,12 +27,6 @@ if (!defined('e107_INIT'))
 }
  
 
-// Defines the character set for your language/location
- 
-define ("_BASEDIR", e_PLUGIN."efiction/"); ;
- 
-define("_ADMINBASEDIR", e_PLUGIN."efiction/admin/");
-
 require_once(_BASEDIR."config.php");
 
 $settings = efiction::settings();
@@ -41,10 +35,8 @@ $settings = efiction::settings();
 if(isset($skin)) $globalskin = $skin; 
  
 $settings = efiction::settings();
-if(!defined("SITEKEY")) define("SITEKEY", $settings['sitekey']);
-unset($settings['sitekey']);
-if(!defined("TABLEPREFIX")) define("TABLEPREFIX", $settings['tableprefix']);
-unset($settings['tableprefix']);
+ 
+ 
 define("STORIESPATH", $settings['storiespath']);
 unset($settings['storiespath']);
 foreach($settings as $var => $val) {
@@ -64,7 +56,7 @@ if(isset($globalskin)) $skin = $globalskin;
 if(isset($_GET['action'])) $action = strip_tags($_GET['action']);
 else $action = false;
 
-e107::lan('efiction');
+
 
 //because alphabet
 if(file_exists(_BASEDIR."languages/{$language}.php")) include (_BASEDIR."languages/{$language}.php");
@@ -96,7 +88,7 @@ if(isset($PHP_SELF)) $PHP_SELF = htmlspecialchars(descript($PHP_SELF), ENT_QUOTE
 
 // Set these variables to start.
 $agecontsent = false; $viewed = false; 
-
+ 
 require_once("includes/get_session_vars.php");
  
 if(isset($_GET['skin'])) {
@@ -127,11 +119,12 @@ if($maintenance && !isADMIN && e_PAGE != "maintenance.php" && !(isset($_GET['act
 }
 
 $blocks = efiction::blocks();
-
+ 
 if(e107::getSession()->is(SITEKEY."_viewed")) $viewed = e107::getSession()->get(SITEKEY."_viewed"); 
+
 if(isset($_GET['ageconsent'])) e107::getSession()->set(SITEKEY."_ageconsent", 1);
 if(isset($_GET['warning'])) e107::getSession()->set(SITEKEY."_warned_{$_GET['warning']}", 1);
-
+ 
  
 if(is_dir(_BASEDIR."skins/$siteskin")) $skindir = _BASEDIR."skins/$siteskin";
 else if(is_dir(_BASEDIR."skins/".$settings['skin'])) $skindir = _BASEDIR."skins/".$defaultskin;
@@ -173,16 +166,11 @@ if($current == "viewuser" && isNumber($uid)) {
 }
  
  
-if(!isset($_GET['action']) || $_GET['action'] != "printable") {
-  e107::js('url',  _BASEDIR."includes/javascript.js" , 'jquery' );
-  if(!empty($tinyMCE)) {
-      //e107::js('url', _BASEDIR."tinymce/js/tinymce/tinymce.min.js" , 'jquery' );
-   
-  }
-}
+
 
 if(isset($displayform) && $displayform == 1) {
 
+e107::js('url',  _BASEDIR."includes/userselect.js" , 'jquery' );
 e107::js('url',  _BASEDIR."includes/xmlhttp.js" , 'jquery' );
   $inlinecode = "
     lang = new Array( );
@@ -206,8 +194,7 @@ characters = new Array( );
 
 if(!$displaycolumns) $displaycolumns = 1;
 $colwidth = floor(100/$displaycolumns);
-
-
+ 
 if(!empty($_GET['action']) && $_GET['action'] == "printable") {
 	if(file_exists("$skindir/printable.css")) echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"$skindir/printable.css\">";
 	else echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"default_tpls/printable.css\">";
@@ -228,7 +215,7 @@ if(!empty($_GET['action']) && $_GET['action'] == "printable") {
 else { 
 
 $inlinestyle = '
-    #columncontainer { margin: 1em auto; width: auto; padding: 5%;}
+    #columncontainer { margin: 1em auto; width: 100%; padding: 5%;}
     #browseblock, #memberblock { width: 100%; padding: 0; margin: 0; float: left; border: 0px solid transparent; }
     .column { float: left; width: '.($colwidth - 1).'%; }
     html>body .column { width: '.$colwidth.'%; }
