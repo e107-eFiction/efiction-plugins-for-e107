@@ -46,15 +46,14 @@ if (class_exists('efiction')) {
         echo e107::getMessage()->addInfo('efiction class is available')->render();
     }
 
-	$template = e107::getTemplate('efiction', 'storyblock', 'random');
-
+	$template = e107::getTemplate('efiction', 'blocks', 'random', true, true);
     $blocks = efiction::blocks();
 
     $caption = $blocks['random']['title'];
 	$var = array('BLOCK_CAPTION' => $caption);
 	$caption = e107::getParser()->simpleParse($template['caption'], $var);
 
-    $sc = e107::getScParser()->getScObject('efiction_shortcodes', 'efiction', false);
+    $sc = e107::getScParser()->getScObject('story_shortcodes', 'efiction', false);
     $text = '';
  
 	$limit = isset($blocks['random']['limit']) && $blocks['random']['limit'] > 0 ? $blocks['random']['limit'] : 1;
@@ -66,12 +65,12 @@ if (class_exists('efiction')) {
 	$start = $template['start']; 
 	$end = $template['end'];
     $tablerender= varset($template['tablerender'], '');
-
+ 
     foreach ($result as $stories) {
         if (!isset($blocks['random']['allowtags'])) {
             $stories['summary'] = e107::getParser()->toText($stories['summary']);
         } else {
-            $stories['summary'] = e107::getParser()->toHTML($this->var['summary'], true, 'SUMMARY');
+            $stories['summary'] = e107::getParser()->toHTML($stories['summary'], true, 'SUMMARY');
         }
 		$$stories['sumlength'] = $sumlength ;
         $sc->setVars($stories);
