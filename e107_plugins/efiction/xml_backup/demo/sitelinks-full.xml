@@ -1,0 +1,382 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<e107Export version="2.3.1 (git)" timestamp="1620561551" >
+	<database>
+	<dbTable name="links">
+		<item>
+			<field name="link_id">1</field>
+			<field name="link_name">LAN_EFICTION_HOME</field>
+			<field name="link_url">index.php</field>
+			<field name="link_description"></field>
+			<field name="link_button">iconsminds-home-1.glyph</field>
+			<field name="link_category">1</field>
+			<field name="link_order">1</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">0</field>
+			<field name="link_function">efiction::home</field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner">efiction</field>
+		</item>
+		<item>
+			<field name="link_id">2</field>
+			<field name="link_name">_MOSTRECENT</field>
+			<field name="link_url">browse.php?type=recent</field>
+			<field name="link_description"></field>
+			<field name="link_button">iconsminds-file-clipboard.glyph</field>
+			<field name="link_category">1</field>
+			<field name="link_order">2</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">0</field>
+			<field name="link_function">efiction::recent</field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner">efiction</field>
+		</item>
+		<item>
+			<field name="link_id">3</field>
+			<field name="link_name">_LOGIN</field>
+			<field name="link_url">login.php</field>
+			<field name="link_description"></field>
+			<field name="link_button"></field>
+			<field name="link_category">2</field>
+			<field name="link_order">17</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">0</field>
+			<field name="link_function">efiction::login</field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner">efiction</field>
+		</item>
+		<item>
+			<field name="link_id">4</field>
+			<field name="link_name">LAN_EFICTION_ADMINAREA</field>
+			<field name="link_url">admin.php</field>
+			<field name="link_description"></field>
+			<field name="link_button"></field>
+			<field name="link_category">2</field>
+			<field name="link_order">18</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">254</field>
+			<field name="link_function">efiction::adminarea</field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner">efiction</field>
+		</item>
+		<item>
+			<field name="link_id">5</field>
+			<field name="link_name">LAN_EFICTION_LOGOUT</field>
+			<field name="link_url">index.php?logout</field>
+			<field name="link_description"></field>
+			<field name="link_button"></field>
+			<field name="link_category">2</field>
+			<field name="link_order">19</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">253</field>
+			<field name="link_function">efiction::logout</field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner">efiction</field>
+		</item>
+		<item>
+			<field name="link_id">6</field>
+			<field name="link_name">LAN_EFICTION_FEATURED</field>
+			<field name="link_url">browse.php?type=featured</field>
+			<field name="link_description"></field>
+			<field name="link_button">fas-medal.glyph</field>
+			<field name="link_category">1</field>
+			<field name="link_order">3</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">0</field>
+			<field name="link_function">efiction::featured</field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner">efiction</field>
+		</item>
+		<item>
+			<field name="link_id">7</field>
+			<field name="link_name">_CATEGORIES</field>
+			<field name="link_url">browse.php?type=categories</field>
+			<field name="link_description"></field>
+			<field name="link_button"></field>
+			<field name="link_category">1</field>
+			<field name="link_order">4</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">0</field>
+			<field name="link_function">efiction::catslink</field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner">efiction</field>
+		</item>
+		<item>
+			<field name="link_id">8</field>
+			<field name="link_name">_MEMBERS</field>
+			<field name="link_url">authors.php?action=list</field>
+			<field name="link_description"></field>
+			<field name="link_button">fas-user-friends.glyph</field>
+			<field name="link_category">1</field>
+			<field name="link_order">5</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">0</field>
+			<field name="link_function">efiction::authors</field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner">efiction</field>
+		</item>
+		<item>
+			<field name="link_id">9</field>
+			<field name="link_name">_AUTHORS</field>
+			<field name="link_url">authors.php?list=authors</field>
+			<field name="link_description"></field>
+			<field name="link_button"></field>
+			<field name="link_category">1</field>
+			<field name="link_order">6</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">255</field>
+			<field name="link_function">efiction::authors</field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner">efiction</field>
+		</item>
+		<item>
+			<field name="link_id">10</field>
+			<field name="link_name">LAN_HELP</field>
+			<field name="link_url">viewpage.php?page=help</field>
+			<field name="link_description"></field>
+			<field name="link_button"></field>
+			<field name="link_category">4</field>
+			<field name="link_order">23</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">0</field>
+			<field name="link_function">efiction::help</field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner">efiction</field>
+		</item>
+		<item>
+			<field name="link_id">11</field>
+			<field name="link_name">_SEARCH</field>
+			<field name="link_url">searching.php</field>
+			<field name="link_description"></field>
+			<field name="link_button">fas-search.glyph</field>
+			<field name="link_category">1</field>
+			<field name="link_order">8</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">0</field>
+			<field name="link_function">efiction::search</field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner">efiction</field>
+		</item>
+		<item>
+			<field name="link_id">12</field>
+			<field name="link_name">_SERIES</field>
+			<field name="link_url">browse.php?type=series</field>
+			<field name="link_description"></field>
+			<field name="link_button"></field>
+			<field name="link_category">1</field>
+			<field name="link_order">9</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">0</field>
+			<field name="link_function">efiction::series</field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner">efiction</field>
+		</item>
+		<item>
+			<field name="link_id">13</field>
+			<field name="link_name">LAN_EFICTION_TENS</field>
+			<field name="link_url">toplists.php</field>
+			<field name="link_description"></field>
+			<field name="link_button"></field>
+			<field name="link_category">1</field>
+			<field name="link_order">10</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">0</field>
+			<field name="link_function">efiction::tens</field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner">efiction</field>
+		</item>
+		<item>
+			<field name="link_id">14</field>
+			<field name="link_name">LAN_EFICTION_CHALLENGES</field>
+			<field name="link_url">browse.php?type=challenges</field>
+			<field name="link_description"></field>
+			<field name="link_button"></field>
+			<field name="link_category">1</field>
+			<field name="link_order">11</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">0</field>
+			<field name="link_function">efiction::challenges</field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner">efiction</field>
+		</item>
+		<item>
+			<field name="link_id">15</field>
+			<field name="link_name">_CONTACTUS</field>
+			<field name="link_url">contact.php</field>
+			<field name="link_description"></field>
+			<field name="link_button"></field>
+			<field name="link_category">1</field>
+			<field name="link_order">12</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">0</field>
+			<field name="link_function">efiction::contactus</field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner">efiction</field>
+		</item>
+		<item>
+			<field name="link_id">16</field>
+			<field name="link_name">LAN_EFICTION_RULES</field>
+			<field name="link_url">viewpage.php?page=rules</field>
+			<field name="link_description"></field>
+			<field name="link_button"></field>
+			<field name="link_category">4</field>
+			<field name="link_order">24</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">0</field>
+			<field name="link_function">efiction::rules</field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner">efiction</field>
+		</item>
+		<item>
+			<field name="link_id">17</field>
+			<field name="link_name">LAN_EFICTION_TOS</field>
+			<field name="link_url">viewpage.php?page=tos</field>
+			<field name="link_description"></field>
+			<field name="link_button"></field>
+			<field name="link_category">4</field>
+			<field name="link_order">25</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">0</field>
+			<field name="link_function">efiction::tos</field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner">efiction</field>
+		</item>
+		<item>
+			<field name="link_id">19</field>
+			<field name="link_name">LAN_EFICTION_ACCOUNT</field>
+			<field name="link_url">member.php</field>
+			<field name="link_description"></field>
+			<field name="link_button"></field>
+			<field name="link_category">2</field>
+			<field name="link_order">20</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">1</field>
+			<field name="link_function">efiction::member</field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner">efiction</field>
+		</item>
+		<item>
+			<field name="link_id">20</field>
+			<field name="link_name">_TITLES</field>
+			<field name="link_url">browse.php?type=titles</field>
+			<field name="link_description"></field>
+			<field name="link_button"></field>
+			<field name="link_category">1</field>
+			<field name="link_order">13</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">0</field>
+			<field name="link_function">efiction::titles</field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner">efiction</field>
+		</item>
+		<item>
+			<field name="link_id">21</field>
+			<field name="link_name">_REGISTER</field>
+			<field name="link_url">signup.php</field>
+			<field name="link_description"></field>
+			<field name="link_button"></field>
+			<field name="link_category">2</field>
+			<field name="link_order">21</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">0</field>
+			<field name="link_function">efiction::register</field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner">efiction</field>
+		</item>
+		<item>
+			<field name="link_id">22</field>
+			<field name="link_name">_LOSTPASSWORD</field>
+			<field name="link_url">fpw.php</field>
+			<field name="link_description"></field>
+			<field name="link_button"></field>
+			<field name="link_category">2</field>
+			<field name="link_order">22</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">0</field>
+			<field name="link_function">efiction::lostpassword</field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner">efiction</field>
+		</item>
+		<item>
+			<field name="link_id">23</field>
+			<field name="link_name">LAN_EFICTION_NEWS</field>
+			<field name="link_url">news.php</field>
+			<field name="link_description"></field>
+			<field name="link_button"></field>
+			<field name="link_category">1</field>
+			<field name="link_order">14</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">0</field>
+			<field name="link_function">efiction::newsarchive</field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner">efiction</field>
+		</item>
+		<item>
+			<field name="link_id">24</field>
+			<field name="link_name">_BROWSE</field>
+			<field name="link_url">browse.php</field>
+			<field name="link_description"></field>
+			<field name="link_button"></field>
+			<field name="link_category">1</field>
+			<field name="link_order">7</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">0</field>
+			<field name="link_function">efiction::browse</field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner">efiction</field>
+		</item>
+		<item>
+			<field name="link_id">25</field>
+			<field name="link_name">_CHARACTERS</field>
+			<field name="link_url">browse.php?type=characters</field>
+			<field name="link_description"></field>
+			<field name="link_button"></field>
+			<field name="link_category">1</field>
+			<field name="link_order">15</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">0</field>
+			<field name="link_function">efiction::charslink</field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner">efiction</field>
+		</item>
+		<item>
+			<field name="link_id">26</field>
+			<field name="link_name">_RATINGS</field>
+			<field name="link_url">browse.php?type=ratings</field>
+			<field name="link_description"></field>
+			<field name="link_button"></field>
+			<field name="link_category">1</field>
+			<field name="link_order">16</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">0</field>
+			<field name="link_function">efiction::ratings</field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner">efiction</field>
+		</item>
+	</dbTable>
+	</database>
+</e107Export>
