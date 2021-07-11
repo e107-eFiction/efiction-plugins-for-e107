@@ -2,10 +2,10 @@
 if (!defined('e107_INIT')) { exit; }
 
 $block_key = 'news';
-include _BASEDIR.'blocks/'.$blocks[$block_key]['file'];
-
+ 
 include(_BASEDIR."blocks/".$blocks['news']['file']);
-	if(isset($_POST['submit'])) {
+
+if(isset($_POST['submit'])) {
 		if(isset($_POST['num']) && isNumber($_POST['num'])) $blocks['news']['num'] = $_POST['num'];
 		else $blocks['news']['num'] = 1;
 		if(isset($_POST['sumlength']) && isNumber($_POST['sumlength'])) $blocks['news']['sumlength'] = $_POST['sumlength'];

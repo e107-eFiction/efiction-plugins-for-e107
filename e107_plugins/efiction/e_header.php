@@ -102,6 +102,16 @@ hr.preview:after {
 
 e107::css("inline",  $csscode);
 
+/* used for checkbox panels */
+$inlinestyle = '
+ .tblborder input[type=checkbox] {
+	display: inline;
+	margin-right: 5px;
+}
+';
+
+e107::css('inline', $inlinestyle );
+
  
 
  

@@ -159,9 +159,6 @@ if($current == "viewuser" && isNumber($uid)) {
 	$titleinfo = "$sitename :: $penname";
 }
  
- 
-
-
 if(isset($displayform) && $displayform == 1) {
 
 e107::js('url',  _BASEDIR."includes/userselect.js" , 'jquery' );
@@ -279,9 +276,11 @@ $inlinestyle = '
     .multiSelect {
     	width: 300px;
     };
+ 
 ';
+ 
 
-e107::css('inline', $inlinestyle);
+e107::css('inline', $inlinestyle );
  
 e107::css('url',  $skindir."/style.css");
  

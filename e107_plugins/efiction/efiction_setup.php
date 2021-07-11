@@ -187,7 +187,7 @@ if (!class_exists('efiction_setup')) {
 							array("admins","Admins","","1","6","0","A"),
 							array("classifications","Classifications","","2","4","0","A"),
 							array("categories","Categories","","2","1","0","A"),
-							array("custpages","Custom Pages",e_PLUGIN_ABS.'efiction/adminarea/admin_custpages.php',"1","4","0","A"),
+							array("custpages","Custom Pages","","1","4","0","A"),
 							array("validate","Validate Submission","","3","0","1","A"),
 							array("yesletter","Validation Letter","","3","0","1","A"),
 							array("noletter","Rejection Letter","","3","0","1","A"),

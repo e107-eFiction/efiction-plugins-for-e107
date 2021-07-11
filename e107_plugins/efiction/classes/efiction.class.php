@@ -210,32 +210,7 @@ class eFiction
         return $userlinks;
     }
 
-	public static function sitelinks()
-    {
-        $linkquery = 'SELECT * from '.MPREFIX.'fanfiction_pagelinks ORDER BY link_access ASC' ;
-        $records = e107::getDb()->retrieve($linkquery, true);
-		 
-        $userlinks = array();
-        foreach ($records as $link) { 
-            if ($link['link_access'] && !isMEMBER) {
-                continue;
-            }
-            if ($link['link_access'] == 2 && uLEVEL < 1) {
-                continue;
-            }
-            if ($link['link_name'] == 'register' && isMEMBER) {
-                continue;
-            }
-            if (strpos($link['link_url'], 'http://') === false && strpos($link['link_url'], 'https://') === false) {
-                $link['link_url'] = e_HTTP.$link['link_url'];
-            }
  
-			$userlinks[$link['link_name']]  = $link;
-            
-        }
-
-        return $userlinks;
-    }
 
     public static function userpanels()
     {

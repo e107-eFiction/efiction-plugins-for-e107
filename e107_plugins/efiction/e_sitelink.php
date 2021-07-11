@@ -86,7 +86,7 @@ class efiction_sitelink // include plugin-folder in the name.
 	function home() 
 	{
 		$blocks = efiction_blocks::get_blocks();
-		$pagelinks = efiction::sitelinks();
+		$pagelinks = efiction_pagelinks::get_sitelinks();
 		 
 		foreach ($blocks['menu']['content'] as $page) {
 		 

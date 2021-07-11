@@ -11,6 +11,7 @@ e107::getSingleton('efiction_authors', e_PLUGIN.'efiction/classes/authors.class.
 e107::getSingleton('efiction_panels', e_PLUGIN.'efiction/classes/panels.class.php');
 e107::getSingleton('efiction_ratings', e_PLUGIN.'efiction/classes/ratings.class.php');
 e107::getSingleton('efiction_blocks', e_PLUGIN.'efiction/classes/blocks.class.php');
+e107::getSingleton('efiction_pagelinks', e_PLUGIN.'efiction/classes/pagelinks.class.php');
 
 $efiction = e107::getSingleton('efiction', e_PLUGIN.'efiction/classes/efiction.class.php');
 $efiction->init();
