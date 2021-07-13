@@ -2,10 +2,20 @@
 if (!defined('e107_INIT')) { exit; }
 
 	global $dateformat, $tpl;
-	if(file_exists(_BASEDIR."blocks/online/{$language}.php")) include(_BASEDIR."blocks/online/{$language}.php");
-	else include(_BASEDIR."blocks/online/en.php");
+    
+    $block_key = 'online';
+    $template = e107::getTemplate('efiction', 'blocks', $block_key , true, true);
+    $blocks = efiction_blocks::get_blocks();  
+    $caption = $blocks[$block_key]['title'];
+
+    $start = $template['start']; 
+	$end = $template['end'];
+    $tablerender= varset($template['tablerender'], '');
+    
+ 
 	$where = "online_uid=".(USERUID ? USERUID : "0 AND online_ip = INET_ATON('".$_SERVER['REMOTE_ADDR']."')");
 	$result = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_online WHERE $where");
+    
 	if(dbnumrows($result) > 0) dbquery("UPDATE ".TABLEPREFIX."fanfiction_online SET online_timestamp = '".time( )."' WHERE $where");
 	else dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_online(online_uid, online_ip, online_timestamp) VALUES('".(USERUID ? USERUID : 0)."', INET_ATON('".$_SERVER['REMOTE_ADDR']."'), '".time( )."')");
 	$result = dbquery("DELETE FROM ".TABLEPREFIX."fanfiction_online WHERE online_timestamp < ".(time()-60));
@@ -17,7 +27,10 @@ if (!defined('e107_INIT')) { exit; }
 	while($om = dbassoc($q2)) {
 		$omlist[] = "<a href='"._BASEDIR."viewuser.php?uid=".$om['online_uid']."'>".$om['penname']."</a>";
 	}
-	$tpl->assignGlobal("onlinemembers", count($omlist) ? implode(", ", $omlist) : "");
+	 
+    
+    $var['ONLINEMEMBERS'] = count($omlist) ? implode(", ", $omlist) : "";
+    
 	$content = "<div id='who_online'><span class='label'>"._GUESTS.":</span> ".($guests ? $guests : 0)."<br />\n
 		<span class='label'>"._MEMBERS.":</span> ".(count($omlist) ? implode(", ", $omlist) : "")."</div>";
 ?>

@@ -458,3 +458,6 @@ define('_BUGREPORT', 'Bug Report');
 define('_REPORTTHIS', 'Report This');
 
  
+define("_NEWESTMEMBER", "Newest Member");
+define("_REVIEWERS", "Reviewers");
+define("_LOGGEDINAS", "You are currently logged in as"); 

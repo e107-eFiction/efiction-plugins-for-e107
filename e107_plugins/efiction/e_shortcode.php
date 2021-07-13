@@ -100,7 +100,7 @@ class efiction_shortcodes extends e_shortcode
         if ($parm == '') {
             return '';
         }
- 
+
         $block = $parm['key'];
         $value = efiction_blocks::get_single_block($block);  
  
@@ -183,17 +183,26 @@ class efiction_shortcodes extends e_shortcode
 	{
 		//$block = $efiction->get_block('menu'); 
 		$blocks = efiction::blocks();
-		$pagelinks = efiction::userlinks();
-
-		foreach ($blocks['menu']['content'] as $page) {
-			if (isset($pagelinks[$page]['link'])) {
-				if (empty($blocks[$block]['style'])) {
-					$content .= '<li '.($current == $page ? 'id="menu_current"' : '').'>'.$pagelinks[$page]['link'].'</li>';
-				} else {
-					$content .= $pagelinks[$page]['link'];
-				}
-			}
-		}
+		$pagelinks  = efiction_pagelinks::get_pagelinks($current);
+ 
+        if(isset($blocks['menu']['content'])) {
+        	foreach($blocks['menu']['content'] as $page) {
+        		if(isset($pagelinks[$page]['link'])) {
+        			if(empty($blocks[$block]['style'])) $content .= "<li ".($current == $page ? "id=\"menu_current\"" : "").">".$pagelinks[$page]['link']."</li>";
+        			else $content .= $pagelinks[$page]['link'];
+        		}
+        	}
+        }
+        else {
+        	$pages = array('home', 'recent', 'titles', 'catslink', 'series', 'members', 'authors', 'challenges', 'search', 'tens', 'featured', 'help', 'contactus', 'login', 'logout', 'adminarea');
+        	foreach($pages as $page) {
+        		if(empty($pagelinks[$page])) continue;
+        		if(empty($blocks[$block]['style'])) $content .= "<li ".($current == $page ? "id=\"menu_current\"" : "").">".$pagelinks[$page]['link']."</li>";
+        		else $content .= $pagelinks[$page]['link'];
+        	}
+        }
+        if(empty($blocks[$block]['style'])) $content = "<ul>$content</ul>";
+        $content = "<div id=\"$block\">$content</div>";
 
 		return $content;
 	}
@@ -322,7 +331,7 @@ class efiction_shortcodes extends e_shortcode
  
      return $text;
    
-    
+   
     }
 
 	 

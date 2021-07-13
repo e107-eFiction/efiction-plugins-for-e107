@@ -25,7 +25,7 @@
 if (!defined('e107_INIT')) {
     exit;
 }
- 
+
 if (USERID) {  //fully managed by e107, user is logged in
     $userData = e107::user(USERID);
  
@@ -85,3 +85,4 @@ if (!defined('isADMIN')) {
 if (empty($siteskin)) {
     $siteskin = $defaultskin;
 }
+ 

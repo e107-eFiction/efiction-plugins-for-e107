@@ -8,7 +8,7 @@ define ("_UIDFIELD", "author.uid");  // Do not change the aliasing (the "author.
 define ("_PENNAMEFIELD", "author.penname");  // Do not change the aliasing (the "author." part)!
 define ("_EMAILFIELD", "author.email");  // Do not change the aliasing (the "author." part)!
 define ("_PASSWORDFIELD", "author.password"); //  Do not change the aliasing (the "author." part)!
-
+define ("_AUTHORTABLE", _AUTHORPREFIX."fanfiction_authors as author"); // Do not change the aliasing (the "as author" part)!
 
 
  

@@ -4,6 +4,8 @@
  
 require_once e_PLUGIN."efiction/includes/queries.php";
 
+require_once("inc/get_session_vars.php");
+
 $newcaptcha = efiction_settings::get_single_setting('captcha');  
 
 if($newcaptcha && extension_loaded('gd'))

@@ -43,12 +43,10 @@ define("_FEATUREDSUMNOTE", "Default is 75 characters.");
 //info block 
 define("_CHART", "Chart");
 define("_NARRATIVE", "Narrative");
-define("_LOGGEDINAS", "You are currently logged in as");
+
 define("_VARIABLES", "Variables");
 define("_DISPLAY",  "Style of Display");
 define("_NARTEXT", "We are the home of  {authors} authors from among our {members} members.  There have been {reviews} reviews written about our {stories} stories consisting of {chapters} chapters and {totalwords} words.  A special welcome to our newest member, {newest}. {loggedinas} {submissions}");
-define("_NEWESTMEMBER", "Newest Member");
-define("_REVIEWERS", "Reviewers");
 
 /* menu */
 define("_STYLE", "Style");

@@ -10,7 +10,7 @@ $BLOCKS_TEMPLATE['default']['random'] = "<div class='randomstory'>{STORY_TITLE_L
 $BLOCKS_TEMPLATE['default']['featured'] = "<div class='featuredstory'>{STORY_TITLE_LINK} {LAN=LAN_EFICTION_BY} {STORY_AUTHORS_LINK}  {STORY_RATING_NAME}{STORY_SUMMARY}</div>";
  
 /* template for stylink content of info block */
-$BLOCKS_TEMPLATE['info']['caption'] = '<h3>{BLOCK_CAPTION}</h3>'; 
+$BLOCKS_TEMPLATE['info']['caption'] = '{BLOCK_CAPTION}'; 
 $BLOCKS_TEMPLATE['info']['start'] = "<div id='infoblock'>";
 $BLOCKS_TEMPLATE['info']['end'] = "</div>";
 $BLOCKS_TEMPLATE['info']['tablerender'] = 'menu';
@@ -32,17 +32,27 @@ $BLOCKS_TEMPLATE['info']['content'] =
 ;
     
 
-/* Epiphany: <h3>{recent_title}</h3>{recent_content}   */
-$BLOCKS_TEMPLATE['recent']['caption'] = '<h3>{BLOCK_CAPTION}</h3>'; 
+/* Epiphany: <h3>{recent_title}</h3>{recent_content}  - put in tablestyle() */
+$BLOCKS_TEMPLATE['recent']['caption'] = '{BLOCK_CAPTION}'; 
 $BLOCKS_TEMPLATE['recent']['start'] = "";
 $BLOCKS_TEMPLATE['recent']['item'] = 
-  "<div class='recentstory mb-2'>{STORY_TITLE_LINK} {LAN=LAN_EFICTION_BY} {STORY_AUTHORS_LINK}  {STORY_RATING_NAME} <br> 
+  "<div class='recentstory'>{STORY_TITLE_LINK} {LAN=LAN_EFICTION_BY} {STORY_AUTHORS_LINK}  {STORY_RATING_NAME} <br> 
   {STORY_SUMMARY}</div>";
 $BLOCKS_TEMPLATE['recent']['end'] = ''; 
 
-$BLOCKS_TEMPLATE['random'] = $BLOCKS_TEMPLATE['recent'];
-$BLOCKS_TEMPLATE['featured'] = $BLOCKS_TEMPLATE['recent'];
-
+$BLOCKS_TEMPLATE['random']['caption'] = '{BLOCK_CAPTION}'; 
+$BLOCKS_TEMPLATE['random']['start'] = "";
+$BLOCKS_TEMPLATE['random']['item'] = 
+  "<div class='randomstory'>{STORY_TITLE_LINK} {LAN=LAN_EFICTION_BY} {STORY_AUTHORS_LINK}  {STORY_RATING_NAME} <br> 
+  {STORY_SUMMARY}</div>";
+$BLOCKS_TEMPLATE['random']['end'] = ''; 
+ 
+$BLOCKS_TEMPLATE['featured']['caption'] = '{BLOCK_CAPTION}'; 
+$BLOCKS_TEMPLATE['featured']['start'] = "";
+$BLOCKS_TEMPLATE['featured']['item'] = 
+  "<div class='featuredstory'>{STORY_TITLE_LINK} {LAN=LAN_EFICTION_BY} {STORY_AUTHORS_LINK}  {STORY_RATING_NAME} <br> 
+  {STORY_SUMMARY}</div>";
+$BLOCKS_TEMPLATE['featured']['end'] = ''; 
     
     
  

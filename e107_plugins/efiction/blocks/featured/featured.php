@@ -27,12 +27,11 @@ if (!defined('e107_INIT')) {
     exit;
 }
 
-$template = e107::getTemplate('efiction', 'blocks', 'featured', true, true);
-
-$blocks = efiction_blocks::get_blocks();
-
-$caption = $blocks['featured']['title'];
 $block_key = 'featured';
+$template = e107::getTemplate('efiction', 'blocks', $block_key , true, true);
+$blocks = efiction_blocks::get_blocks();  
+$caption = $blocks[$block_key]['title'];
+
 $var = array('BLOCK_CAPTION' => $caption);
 $caption = e107::getParser()->simpleParse($template['caption'], $var);
 

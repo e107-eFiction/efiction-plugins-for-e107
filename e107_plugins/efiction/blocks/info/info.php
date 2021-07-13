@@ -1,8 +1,12 @@
 <?php
 if (!defined('e107_INIT')) { exit; }
  
+$block_key = 'info';
+$template = e107::getTemplate('efiction', 'blocks', $block_key , true, true);
+$blocks = efiction_blocks::get_blocks();  
+$caption = $blocks[$block_key]['title'];
  
-    $template = e107::getTemplate('efiction', 'blocks', 'info', true, true);
+   
     $start = $template['start']; 
 	$end = $template['end'];
     $tablerender= varset($template['tablerender'], '');

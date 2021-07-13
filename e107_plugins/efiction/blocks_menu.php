@@ -39,25 +39,41 @@
 
 if (!defined('e107_INIT')) { exit; }
 $text = '';
-if(isset($parm['block_caption'][e_LANGUAGE]))
+
+if(is_string($parm))
 {
-	$caption = $parm['block_caption'][e_LANGUAGE];
+	parse_str($parm, $parms);
 }
-else $caption = $parm['block_caption']; 
+else
+{
+	$parms = $parm;
+}
+
+if(isset($parms['block_caption'][e_LANGUAGE]))
+{
+	$caption = $parms['block_caption'][e_LANGUAGE];
+}
+else $caption = $parms['block_caption']; 
 
  
-/* {EFICTION_BLOCK_CAPTION=info}
+ 
+//don't use it, it is part of content already  
+/* {EFICTION_BLOCK_CAPTION=info} 
 if($caption == '') {
-    $code = "{EFICTION_BLOCK_CAPTION: key={$parm['block_name']}}"; 
-    $caption =  e107::getParser()->parseTemplate($code);
+    $code = "{EFICTION_BLOCK_CAPTION: key={$parms['block_name']}}"; 
+    $caption =  e107::getParser()->parseTemplate($code);   
 }
  */
 /* {EFICTION_BLOCK_CONTENT=info} */
 if($parm['block_name'] ) {
- $code = "{EFICTION_BLOCK_CONTENT: key={$parm['block_name']}}";  
+ $code = "{EFICTION_BLOCK_CONTENT: key={$parms['block_name']}}";  
  $text =  e107::getParser()->parseTemplate($code);
 }
  
-
-$style =  e107::getParser()->parseTemplate($parm['shortcode_menuTableStyle']);     
+echo $text;
+/* 
+tablerender is used already in {EFICTION_BLOCK_CAPTION} 
+$style =  e107::getParser()->parseTemplate($parms['shortcode_menuTableStyle']);    
+ 
 e107::getRender()->tablerender($caption, $text, $style );
+*/
