@@ -298,6 +298,7 @@ CREATE TABLE `fanfiction_pagelinks` (
   `link_id` int(11) NOT NULL auto_increment,
   `link_name` varchar(50) NOT NULL default '',
   `link_text` varchar(100) NOT NULL default '',
+  `link_key` CHAR( 1 ) NULL,  
   `link_url` varchar(250) NOT NULL default '',
   `link_target` char(1) NOT NULL default '0',
   `link_access` tinyint(4) NOT NULL default '0',
