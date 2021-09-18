@@ -6,7 +6,6 @@
 // Copyright (C) 2003 by Rebecca Smallwood.
 // http://efiction.sourceforge.net/
 // ----------------------------------------------------------------------
-// LICENSE
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License (GPL)
@@ -21,7 +20,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if (!defined('e107_INIT')) { exit; }
+if(!defined("_CHARSET")) exit( );
 
 		$output .= build_alphalinks($pagelink, $let);
 		$count = dbquery($countquery);
@@ -33,13 +32,10 @@ if (!defined('e107_INIT')) { exit; }
 		$colwidth = (100/ $displaycolumns) -1;
 		$count = 0;
 		$column = 1;
-		$authorquery = $authorquery. " ORDER BY "._PENNAMEFIELD." LIMIT $offset,$limit";  
- 
-        $result2 = e107::getDb()->retrieve($authorquery, true);
-     
+		$authorquery = $authorquery. " ORDER BY "._PENNAMEFIELD." LIMIT $offset,$limit";
+		$result2 = dbquery($authorquery);   
 		$output .= "<div id=\"columncontainer\"><div id=\"memberblock\">".($displaycolumns ? "<div class=\"column\">" : "");
-       //  while($author = e107::getDb()->fetch()) {
-        foreach($result2 AS $author) {
+		while($author = dbassoc($result2)) {
 			$count++;
 			if(empty($author['stories'])) $author['stories'] = 0; // For bridges site that may not have author prefs set.
 			$output .= (isset($authorlink) ? $authorlink : "<a href=\"viewuser.php?uid=").$author['uid']."\">".stripslashes($author['penname'])."</a> [".$author['stories']."]<br />\n";

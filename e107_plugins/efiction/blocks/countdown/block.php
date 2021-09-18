@@ -1,5 +1,5 @@
 <?php
-if (!defined('e107_INIT')) { exit; }
+if(!defined("_CHARSET")) exit( );
 if(file_exists(_BASEDIR."blocks/countdown/".$language.".php")) include(_BASEDIR."blocks/countdown/".$language.".php");
 else include(_BASEDIR."blocks/countdown/en.php");
 

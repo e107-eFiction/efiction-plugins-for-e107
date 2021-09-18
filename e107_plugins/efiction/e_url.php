@@ -20,133 +20,131 @@ if (!defined('e107_INIT')) { exit; }
 
 class efiction_url // plugin-folder + '_url'
 {
-	
-     public $alias = 'efiction';
+	public $alias = 'efiction';
      
     function config() 
 	{
 		$config = array();
 
-		$config['adminarea'] = array(
-			'alias'         => 'admin.php',
-			'regex'			=> '^{alias}\/?([\?].*)?\/?$', 
-			'sef'			=> '{alias}xx{query}', 
-			'redirect'		=> '{e_PLUGIN}efiction/admin.php$1', 	
-			'sef'			=> 'admin.php',   
-		);
-
 		$config['member'] = array(
             'alias'         => 'member.php',
 			'regex'			=> '^{alias}\/?([\?].*)?\/?$', 
 			'sef'			=> '{alias}', 
-			'redirect'		=> '{e_PLUGIN}efiction/member.php$1', 	 		// file-path of what to load when the regex returns true.
+			'redirect'		=> '{e_PLUGIN}efiction/member.php$1', 	  
 		);
 
 		$config['reviews'] = array(
             'alias'         => 'reviews.php',
 			'regex'			=> '^{alias}\/?([\?].*)?\/?$', 
 			'sef'			=> '{alias}', 
-			'redirect'		=> '{e_PLUGIN}efiction/reviews.php$1', 	 		// file-path of what to load when the regex returns true.
+			'redirect'		=> '{e_PLUGIN}efiction/reviews.php$1', 	  
 		);
 
 		$config['report'] = array(
             'alias'         => 'report.php',
 			'regex'			=> '^{alias}\/?([\?].*)?\/?$', 
 			'sef'			=> '{alias}', 
-			'redirect'		=> '{e_PLUGIN}efiction/report.php$1', 	 		// file-path of what to load when the regex returns true.
+			'redirect'		=> '{e_PLUGIN}efiction/report.php$1', 	 		 
 		);
-
 
 		$config['browse'] = array(
             'alias'         => 'browse.php',
 			'regex'			=> '^{alias}\/?([\?].*)?\/?$', 
 			'sef'			=> '{alias}', 
-			'redirect'		=> '{e_PLUGIN}efiction/browse.php$1', 	 		// file-path of what to load when the regex returns true.
+			'redirect'		=> '{e_PLUGIN}efiction/browse.php$1', 	  
 		);
 
 		$config['authors'] = array(
             'alias'         => 'authors.php',
 			'regex'			=> '^{alias}\/?([\?].*)?\/?$', 
 			'sef'			=> '{alias}', 
-			'redirect'		=> '{e_PLUGIN}efiction/authors.php$1', 	 		// file-path of what to load when the regex returns true.
+			'redirect'		=> '{e_PLUGIN}efiction/authors.php$1', 	  
 		);
 
 		$config['rss'] = array(
             'alias'         => 'rss.php',
 			'regex'			=> '^{alias}\/?([\?].*)?\/?$', 
 			'sef'			=> '{alias}', 
-			'redirect'		=> '{e_PLUGIN}efiction/rss.php$1', 	 		// file-path of what to load when the regex returns true.
+			'redirect'		=> '{e_PLUGIN}efiction/rss.php$1', 	 		 
 		);
-
 
 		$config['searching'] = array(
             'alias'         => 'searching.php',
 			'regex'			=> '^{alias}\/?([\?].*)?\/?$', 
 			'sef'			=> '{alias}', 
-			'redirect'		=> '{e_PLUGIN}efiction/searching.php$1', 	 		// file-path of what to load when the regex returns true.
+			'redirect'		=> '{e_PLUGIN}efiction/searching.php$1', 	 
 		);
 
 		$config['series'] = array(
-            'alias'         => 'manageseries.php',
+            'alias'         => 'series.php',
 			'regex'			=> '^{alias}\/?([\?].*)?\/?$', 
 			'sef'			=> '{alias}', 
-			'redirect'		=> '{e_PLUGIN}efiction/manageseries.php$1',  	// file-path of what to load when the regex returns true.
+			'redirect'		=> '{e_PLUGIN}efiction/series.php$1',  	 
 		);
 
 		$config['stories'] = array(
             'alias'         => 'stories.php',
 			'regex'			=> '^{alias}\/?([\?].*)?\/?$', 
 			'sef'			=> '{alias}', 
-			'redirect'		=> '{e_PLUGIN}efiction/stories.php$1', 	 		// file-path of what to load when the regex returns true.
-		);  
+			'redirect'		=> '{e_PLUGIN}efiction/stories.php$1', 	 		 
+		); 
+        
+		$config['rules'] = array(
+            'alias'         => 'submission.php',
+			'regex'			=> '^{alias}', 
+			'sef'			=> '{alias}', 
+			'redirect'		=> '{e_PLUGIN}efiction/viewpage.php?page=rules', 	 		 
+		);           
 
 		$config['toplists'] = array(
             'alias'         => 'toplists.php',
 			'regex'			=> '^{alias}\/?([\?].*)?\/?$', 
 			'sef'			=> '{alias}', 
-			'redirect'		=> '{e_PLUGIN}efiction/toplists.php$1', 	 		// file-path of what to load when the regex returns true.
+			'redirect'		=> '{e_PLUGIN}efiction/toplists.php$1', 	 
 		);   
-
 
 		$config['viewuser'] = array(
             'alias'         => 'viewuser.php',
 			'regex'			=> '^{alias}\/?([\?].*)?\/?$', 
 			'sef'			=> '{alias}', 
-			'redirect'		=> '{e_PLUGIN}efiction/viewuser.php$1', 	 		// file-path of what to load when the regex returns true.
+			'redirect'		=> '{e_PLUGIN}efiction/viewuser.php$1', 	 	 
 		);   
-
 		
 		$config['viewpage'] = array(
             'alias'         => 'viewpage.php',
 			'regex'			=> '^{alias}\/?([\?].*)?\/?$', 
 			'sef'			=> '{alias}', 
-			'redirect'		=> '{e_PLUGIN}efiction/viewpage.php$1', 	 		// file-path of what to load when the regex returns true.
+			'redirect'		=> '{e_PLUGIN}efiction/viewpage.php$1', 	 
 		);   
 
 		$config['viewseries'] = array(
             'alias'         => 'viewseries.php',
 			'regex'			=> '^{alias}\/?([\?].*)?\/?$', 
 			'sef'			=> '{alias}', 
-			'redirect'		=> '{e_PLUGIN}efiction/viewseries.php$1', 	 		// file-path of what to load when the regex returns true.
+			'redirect'		=> '{e_PLUGIN}efiction/viewseries.php$1', 	 		 
 		);   
  
 		$config['viewstory'] = array(
             'alias'         => 'viewstory.php',
 			'regex'			=> '^{alias}\/?([\?].*)?\/?$', 
 			'sef'			=> '{alias}', 
-			'redirect'		=> '{e_PLUGIN}efiction/viewstory.php$1', 	 		// file-path of what to load when the regex returns true.
+			'redirect'		=> '{e_PLUGIN}efiction/viewstory.php$1', 	 		 
 		);   
+ 
+        $config['admin'] = array(
+            'alias'         => 'admin.php',
+			'regex'			=> '^{alias}\/?([\?].*)?\/?$', 
+			'sef'			=> '{alias}', 
+			'redirect'		=> '{e_PLUGIN}efiction/admin.php$1', 	 		 
+		);  
  
 		$config['index'] = array(
             'alias'         => 'efiction',
-			'regex'			=> '^{alias}\/?$', 						// matched against url, and if true, redirected to 'redirect' below.
-			'sef'			=> '{alias}', 							// used by e107::url(); to create a url from the db table.
-			'redirect'		=> '{e_PLUGIN}efiction/index.php', 		// file-path of what to load when the regex returns true.
+			'regex'			=> '^{alias}\/?([\?].*)?\/?$', 					 
+			'sef'			=> '{alias}', 							 
+			'redirect'		=> '{e_PLUGIN}efiction/efiction.php$1', 		 
 		);
         
 		return $config;
-	}
-	
-
-	
+	}	
 }

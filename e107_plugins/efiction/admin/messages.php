@@ -20,37 +20,26 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if (!defined('e107_INIT')) { exit; }
+if(!defined("_CHARSET")) exit( );
 
-	$caption  = "<div id=\"pagetitle\">"._MESSAGESETTINGS."</div>";
-	$get_message  = e107::getParser()->filter($_GET['message'], 'str'); 
+	$output .= "<div id=\"pagetitle\">"._MESSAGESETTINGS."</div>";
+
 if(isset($_POST['submit'])) {
-	$tmp = e107::getParser()->toDb($_POST['text']);
-	
-	$result = e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_messages SET message_text = '".$tmp."' WHERE message_name = '".$get_message."' LIMIT 1");
-	if($result > 0 ) $output .= write_message(_ACTIONSUCCESSFUL);
-	elseif($result === 0) $output .= e107::getMessage()->addInfo(LAN_NO_CHANGE)->render();
-	else $output .=  write_error(_ERROR);  
+	$result = dbquery("UPDATE ".TABLEPREFIX."fanfiction_messages SET message_text = '".escapestring(descript($_POST['text']))."' WHERE message_name = '".$_GET['message']."' LIMIT 1");
+	if($result) $output .= write_message(_ACTIONSUCCESSFUL);
+	else $output .= write_error(_ERROR);
 }
 else {
-	$message = e107::getDb()->retrieve("SELECT * FROM ".TABLEPREFIX."fanfiction_messages WHERE message_name = '".$_GET['message']."' LIMIT 1");
+	$pagequery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_messages WHERE message_name = '".$_GET['message']."' LIMIT 1");
+	$message =  dbassoc($pagequery);
 	$text = $message['message_text'];
-	if(!$message) e107::getDb()->gen("INSERT INTO `".TABLEPREFIX."fanfiction_messages` (`message_name` , `message_title` , `message_text` ) VALUES ('".$_GET['message']."', '', '')");
-
- 
-	$output .= 
-	   "<div class='sectionheader'><h3>".preg_replace("@\{sitename\}@", SITENAME, $message['message_title'])."</h3></div>";
-
-	$output .= "<div style='width: 100%;'><div  id=\"settingsform\"><form method=\"POST\" enctype=\"multipart/form-data\" action=\"".e_SELF."?action=messages&message=".$get_message."\">";
-	$output .= e107::getForm()->bbarea('text', $text, 'admin', '_common', 'medium', array('counter'=>1));
-	/*
+	if(!$message) dbquery("INSERT INTO `".TABLEPREFIX."fanfiction_messages` (`message_name` , `message_title` , `message_text` ) VALUES ('".$_GET['message']."', '', '')");
+	$output .= "<div class='sectionheader'>".preg_replace("@\{sitename\}@", $sitename, $message['message_title'])."</div>
+		<div style='width: 100%;'><div  id=\"settingsform\"><form method=\"POST\" enctype=\"multipart/form-data\" action=\"admin.php?action=messages&message=".$_GET['message']."\">
 		<textarea rows=\"10\" cols=\"60\" style=\"width: 100%;\" ".($_GET['message'] == "tinyMCE" ? "class='mceNoEditor'" :"")." name=\"text\">$text</textarea>";
-
 	if($tinyMCE && $_GET['message'] != "tinyMCE") 
-		$output .= "<div class='tinytoggle'><input type='checkbox' name='toggle' onclick=\"toogleEditorMode('text');\" checked><label 
-		for='toggle'>"._TINYMCETOGGLE."</label></div>";
-	*/
-		$output .= "<div style='clear: both;'>&nbsp;</div><INPUT type='submit' class='button' id='submit' value='"._SUBMIT."' name='submit'>
+		$output .= "<div class='tinytoggle'><input type='checkbox' name='toggle' onclick=\"toogleEditorMode('text');\" checked><label for='toggle'>"._TINYMCETOGGLE."</label></div>";
+	$output .= "<div style='clear: both;'>&nbsp;</div><INPUT type='submit' class='button' id='submit' value='"._SUBMIT."' name='submit'>
 				</form></div><div style='clear: both;'>&nbsp;</div></div>";
 }
- 
+?>

@@ -1,8 +1,12 @@
 <?php
-
-if (!defined('e107_INIT')) { exit; }
-$blocks = efiction_blocks::get_blocks();
-
+if(!defined("_CHARSET")) exit( );
+$blockquery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_blocks WHERE block_name = 'shoutbox'");
+while($block = dbassoc($blockquery)) {
+	$blocks[$block['block_name']] = unserialize($block['block_variables']);
+	$blocks[$block['block_name']]['title'] = $block['block_title'];
+	$blocks[$block['block_name']]['file'] = $block['block_file'];
+	$blocks[$block['block_name']]['status'] = $block['block_status'];
+}
 if(file_exists("blocks/shoutbox/{$language}.php")) include_once("blocks/shoutbox/{$language}.php");
 else include_once("blocks/shoutbox/en.php");
 	if(isset($_POST['deleteshouts'])) {
@@ -44,7 +48,7 @@ else include_once("blocks/shoutbox/en.php");
 		$blocks['shoutbox']['shoutdate'] = !empty($_POST['customshoutdate']) ? descript(strip_tags($_POST['customshoutdate'])) : descript(strip_tags($_POST['shoutdate']));
 		$blocks['shoutbox']['shoutlimit'] = isset($_POST['shoutlimit']) && isNumber($_POST['shoutlimit']) ? $_POST['shoutlimit'] : 10;
 		$blocks['shoutbox']['guestshouts'] = isset($_POST['guestshouts']) && $_POST['guestshouts'] == _YES ? 1 : 0;
-		efiction_blocks::save_blocks($blocks);
+		save_blocks($blocks);
 	}
 	$defaults = array("m/d/y h:i a", "d/m/y G:i:s", "m-d-y h:i a", "d-m-y G:i:s", "m.d.y h:i a", "d.m.y G:i:s", "M j, Y h:i a", "M j, Y G:i:s", "d M, Y h:i a", "d M, Y G:i:s");
 	$output .= "<form name='shoutopts' method='POST' id='settingsform' action='admin.php?action=blocks&amp;admin=shoutbox'>\n

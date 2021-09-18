@@ -1,9 +1,33 @@
 <?php
-
-if(function_exists("mysqli_connect")) include_once(_BASEDIR."includes/mysqli_functions.php");
-else if(function_exists("mysql_connect")) include_once(_BASEDIR."includes/mysql_functions.php");
-else {
-	include(_BASEDIR."languages/en.php"); // Because we haven't selected a language setting yet
-	die(_FATALERROR._NODBFUNCTIONALITY);
+ 
+function dbquery($query) {
+    return e107::getDb()->gen($query); 
 }
-?>
+
+function dbnumrows($query) {
+ return e107::getDb()->rowCount($query);
+}
+
+function dbassoc($sql) {
+  return e107::getDb()->fetch("assoc");
+}
+
+function dbinsertid($tablename = 0) {
+ return e107::getDb()->lastInsertId();
+}
+
+function dbrow($sql) {
+  return e107::getDb()->fetch('num') ; 
+}
+
+function dbclose() {
+ /* it is done by db handler automatically, just not have this fails */
+ e107::getDb()->close();
+}
+
+// Used to escape text being put into the database.
+function escapestring($str) {
+   if (!is_array($str)) return e107::getDb()->escape($str);
+   return array_map('escapestring', $str);
+}
+ 

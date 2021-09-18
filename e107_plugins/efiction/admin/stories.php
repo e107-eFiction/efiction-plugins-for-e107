@@ -23,20 +23,19 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if (!defined('e107_INIT')) { exit; }
-
+if(!defined("_CHARSET")) exit( );
 function featured( ) {
 	global $tableprefix;
 
 	if($_GET['retire'])
-		mysql_query("UPDATE ".$tableprefix."fanfiction_stories SET featured = 2 WHERE sid = ".$_GET['retire']);
+		dbquery("UPDATE ".$tableprefix."fanfiction_stories SET featured = 2 WHERE sid = ".$_GET['retire']);
 	if($_GET['feature'])
-		mysql_query("UPDATE ".$tableprefix."fanfiction_stories SET featured = 1 WHERE sid = ".$_GET['feature']);
+		dbquery("UPDATE ".$tableprefix."fanfiction_stories SET featured = 1 WHERE sid = ".$_GET['feature']);
 	$fquery = "SELECT stories.*, stories.title as title, author.penname, DATE_FORMAT(stories.updated, '%Y.%m.%d') as updatesort, DATE_FORMAT(stories.date, '$datim') as date, DATE_FORMAT(stories.updated, '$datim') as updated FROM ".$tableprefix."fanfiction_authors as author, ".$tableprefix."fanfiction_stories as stories WHERE stories.featured > 0 AND stories.uid = author.uid ORDER BY stories.featured";
-	$fresult = mysql_query($fquery) or die(_FATALERROR."Query: ".$fquery."<br />Error: (".mysql_errno( ).") ".mysql_error( ));
+	$fresult = dbquery($fquery) or die(_FATALERROR."Query: ".$fquery."<br />Error: (".e107::getDb()->getLastErrorNumber().") ".e107::getDb()->getLastErrorText());
 	$output .= "<center><table class=\"tblborder\" cellpadding=\"5\"><tr><th colspan=\"2\" align=\"center\">"._FEATUREDSTORIES."</th></tr>";
-	if(!mysql_num_rows($fresult)) $output .= "<tr><td colspan=\"2\" align=\"center\">"._NOSTORIES."</td><tr>";
-	while($story = mysql_fetch_array($fresult)) {
+	if(!dbnumrows($fresult)) $output .= "<tr><td colspan=\"2\" align=\"center\">"._NOSTORIES."</td><tr>";
+	while($story = dbassoc($fresult)) {
 		$output .= "<tr><td class=\"tblborder\"><a href=\"viewstory.php?sid=".$story['sid']."\">$story[title]</a> "._BY." <a href=\"viewuser.php?uid=".$story['uid']."\">".$story['penname']."</a></td><td class=\"tblborder\" align=\"center\">".($story['featured'] == 1 ? "<a href=\"admin.php?action=featured&retire=".$story['sid']."\">"._CURRENT."</a>" : "<b>"._RETIRED."</b>")."</td></tr>";
 	}
 	$output .= "</table>"._FEATUREDNOTE;
@@ -49,14 +48,14 @@ function submitted()
 	global $tableprefix, $admincats, $allowed_tags;
 		$output .= "<center><h4>"._SUBMITTED."</h4></center>";
 		$query = "SELECT story.title as storytitle, chapter.uid, chapter.sid, story.catid, chapter.chapid, chapter.inorder, chapter.title, author.penname FROM (".$tableprefix."fanfiction_chapters as chapter, ".$tableprefix."fanfiction_authors as author) LEFT JOIN ".$tableprefix."fanfiction_stories as story ON story.sid = chapter.sid WHERE chapter.validated = '0' AND chapter.uid = author.uid ORDER BY story.title ASC, chapter.inorder ASC";
-		$result = mysql_query($query) or die(_FATALERROR."Query: ".$query."<br />Error: (".mysql_errno( ).") ".mysql_error( ));
+		$result = dbquery($query) or die(_FATALERROR."Query: ".$query."<br />Error: (".e107::getDb()->getLastErrorNumber().") ".e107::getDb()->getLastErrorText());
 		$output .= "<table class=\"tblborder\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\"><tr class=\"tblborder\"><th>"._TITLE."</th><th>"._AUTHOR."</th><th>"._CATEGORY."</th><th>"._OPTIONS."</th></tr>";
 		$array = explode(",", $admincats);
-		while ($story = mysql_fetch_assoc($result))
+		while ($story = dbassoc($result))
 		{
 			unset($catstring);
-			$result3 = mysql_query("SELECT catid, category FROM ".$tableprefix."fanfiction_categories WHERE FIND_IN_SET(catid, '".$story['catid']."')");
-			while($cats = mysql_fetch_array($result3)) {
+			$result3 = dbquery("SELECT catid, category FROM ".$tableprefix."fanfiction_categories WHERE FIND_IN_SET(catid, '".$story['catid']."')");
+			while($cats = dbassoc($result3)) {
 				$catstring[] = "<a href=\"categories.php?catid=".$cats['catid']."\">".$cats['category']."</a>";
 			}
 			if(!$admincats || sizeof(array_intersect(explode(",", $story['catid']), explode(",", $admincats)))) {
@@ -79,12 +78,12 @@ function validate( ) {
 
 	$output .= "<center><h4>"._VIEWSUBMITTED."</h4></center>";
 	if($_GET['validate'] == "yes") {
-		$storyquery = mysql_query("SELECT story.validated, story.catid, story.sid, story.title, story.summary, story.uid, author.penname, chapter.inorder FROM ".$tableprefix."fanfiction_stories as story, ".$tableprefix."fanfiction_chapters  as chapter, ".$tableprefix."fanfiction_authors as author WHERE author.uid = story.uid AND chapter.sid = story.sid AND chapter.chapid ='".$_GET['chapid']."' LIMIT 1");
-		list($validated, $catid, $sid, $title, $summary, $authoruid, $author, $inorder) = mysql_fetch_array($storyquery);
+		$storyquery = dbquery("SELECT story.validated, story.catid, story.sid, story.title, story.summary, story.uid, author.penname, chapter.inorder FROM ".$tableprefix."fanfiction_stories as story, ".$tableprefix."fanfiction_chapters  as chapter, ".$tableprefix."fanfiction_authors as author WHERE author.uid = story.uid AND chapter.sid = story.sid AND chapter.chapid ='".$_GET['chapid']."' LIMIT 1");
+		list($validated, $catid, $sid, $title, $summary, $authoruid, $author, $inorder) = dbassoc($storyquery);
 		if($admincats == "0" || sizeof(array_intersect(explode(",", $catid), explode(",", $admincats)))) {
-			include(_BASEDIR."includes/emailer.php");
+			include("includes/emailer.php");
 			if($validated != "1") {
-				mysql_query("UPDATE ".$tableprefix."fanfiction_stories SET validated = '1', updated = NOW() WHERE sid = '".$_GET['sid']."'");
+				dbquery("UPDATE ".$tableprefix."fanfiction_stories SET validated = '1', updated = NOW() WHERE sid = '".$_GET['sid']."'");
 				$categories = explode(",", $catid);
 				include("functions.php");
 				foreach($categories as $cat) {
@@ -93,8 +92,8 @@ function validate( ) {
 				if($alertson) {
 					$subject = _NEWSTORYAT;
 					$mailtext = sprintf(_AUTHORALERTNOTE, $title, $author, $summary, $sid);
-					$favorites = mysql_query("SELECT author.uid, email, penname FROM ".$tableprefix."fanfiction_favauth as fav, ".$tableprefix."fanfiction_authors as author WHERE fav.favuid = $authoruid AND fav.uid = author.uid");
-					while($favuser = mysql_fetch_array($favorites)) { 
+					$favorites = dbquery("SELECT author.uid, email, penname FROM ".$tableprefix."fanfiction_favauth as fav, ".$tableprefix."fanfiction_authors as author WHERE fav.favuid = $authoruid AND fav.uid = author.uid");
+					while($favuser = dbassoc($favorites)) { 
 						sendemail($favuser['penname'], $favuser['email'], $sitename, $siteemail, $subject, $mailtext, "html");
 					}				
 				}
@@ -102,28 +101,28 @@ function validate( ) {
 			else if($alertson) {
 				$subject = _STORYALERT;
 				$mailtext = sprintf(_STORYALERTNOTE, $title, $author, $sid, $inorder);
-				$favorites = mysql_query("SELECT author.uid, penname, email FROM ".$tableprefix."fanfiction_favstor as fav, ".$tableprefix."fanfiction_authors as author WHERE sid = '$sid' AND fav.uid = author.uid");
-				while($favuser = mysql_fetch_array($favorites)) { 
+				$favorites = dbquery("SELECT author.uid, penname, email FROM ".$tableprefix."fanfiction_favstor as fav, ".$tableprefix."fanfiction_authors as author WHERE sid = '$sid' AND fav.uid = author.uid");
+				while($favuser = dbassoc($favorites)) { 
 					sendemail($favuser['penname'], $favuser['email'], $sitename, $siteemail, $subject, $mailtext, "html");
 				}
 			}
-			mysql_query("UPDATE ".$tableprefix."fanfiction_chapters SET validated = '1' WHERE chapid = '".$_GET['chapid']."'");
-			mysql_query("UPDATE ".$tableprefix."fanfiction_stories SET updated = NOW( ) WHERE sid = '$sid'");
+			dbquery("UPDATE ".$tableprefix."fanfiction_chapters SET validated = '1' WHERE chapid = '".$_GET['chapid']."'");
+			dbquery("UPDATE ".$tableprefix."fanfiction_stories SET updated = NOW( ) WHERE sid = '$sid'");
 			$output .= "<center><b>"._STORYVALIDATED."</b></center>";
 		}
 		else
 			$output .= "<br /><br /><center>"._NOTAUTHORIZEDADMIN."  "._TRYAGAIN."</center><br /><br />";
 	}
 	else {
-			$result = mysql_query("SELECT story.title as storytitle, story.sid, story.catid, story.rid, story.gid, story.charid, story.wid, story.summary as storysummary, chapter.chapid, chapter.title, chapter.storytext, author.penname, chapter.uid as uid FROM ".$tableprefix."fanfiction_authors as author, ".$tableprefix."fanfiction_stories as story, ".$tableprefix."fanfiction_chapters as chapter WHERE chapter.chapid = '".$_GET['chapid']."' AND chapter.sid = story.sid AND chapter.uid = author.uid");
-			$story = mysql_fetch_array($result);
+			$result = dbquery("SELECT story.title as storytitle, story.sid, story.catid, story.rid, story.gid, story.charid, story.wid, story.summary as storysummary, chapter.chapid, chapter.title, chapter.storytext, author.penname, chapter.uid as uid FROM ".$tableprefix."fanfiction_authors as author, ".$tableprefix."fanfiction_stories as story, ".$tableprefix."fanfiction_chapters as chapter WHERE chapter.chapid = '".$_GET['chapid']."' AND chapter.sid = story.sid AND chapter.uid = author.uid");
+			$story = dbassoc($result);
 			$output .= "<b>"._AUTHOR.":</b> ".$story['penname']."<br />";
 			$output .= "<b>"._TITLE.":</b> ".$story['storytitle'].": ".$story['title'];
 			$output .= "<br />";
-			$result3 = mysql_query("SELECT catid, category FROM ".$tableprefix."fanfiction_categories WHERE FIND_IN_SET(catid, '".$story['catid']."')");
+			$result3 = dbquery("SELECT catid, category FROM ".$tableprefix."fanfiction_categories WHERE FIND_IN_SET(catid, '".$story['catid']."')");
 			$catstring = "";
 			$count = 0;
-			while($cats = mysql_fetch_array($result3)) {
+			while($cats = dbassoc($result3)) {
 				if($count > 0) $catstring .= ", ";
 				$catstring .= "<a href=\"categories.php?catid=".$cats['catid']."\">".$cats['category']."</a>";
 				$categories[] = $cats['catid'];
@@ -177,17 +176,17 @@ function yesletter( ) {
 		$subject = stripinput($_POST['subject']);
 		$letter = nl2br(stripinput($_POST['letter']));
 			
-		include(_BASEDIR."includes/emailer.php");
+		include("includes/emailer.php");
 		$result = sendemail($_POST['email'], $_POST['email'], $adminname, $ademail, $subject, $letter, "html");
 
 		if($result) echo "<div style='text-align: center;'>"._EMAILSENT."</div>";
 		else echo "<div style='text-align: center;'>"._ERROR."</div>";
 	}
 	else {
-			$authorquery = mysql_query("SELECT email,penname FROM ".$tableprefix."fanfiction_authors WHERE uid = '".$_GET['uid']."' LIMIT 1");
-			$author = mysql_fetch_array($authorquery);
-			$storyquery = mysql_query("SELECT story.title, chapter.title as chapter FROM ".$tableprefix."fanfiction_stories as story, ".$tableprefix."fanfiction_chapters as chapter WHERE chapter.chapid = '".$_GET['chapid']."' AND chapter.sid = story.sid LIMIT 1");
-			$story = mysql_fetch_array($storyquery);
+			$authorquery = dbquery("SELECT email,penname FROM ".$tableprefix."fanfiction_authors WHERE uid = '".$_GET['uid']."' LIMIT 1");
+			$author = dbassoc($authorquery);
+			$storyquery = dbquery("SELECT story.title, chapter.title as chapter FROM ".$tableprefix."fanfiction_stories as story, ".$tableprefix."fanfiction_chapters as chapter WHERE chapter.chapid = '".$_GET['chapid']."' AND chapter.sid = story.sid LIMIT 1");
+			$story = dbassoc($storyquery);
 			$letter = file_get_contents("messages/thankyou.txt");
 			echo "<body>";
 			echo "<table><tr><td>Story:</td><td>".$story['title'].": ".$story['chapter']."</td></tr>";
@@ -213,7 +212,7 @@ function noletter( ) {
 		$subject = stripinput($_POST['subject']);
 		$letter = nl2br(stripinput($_POST['letter']));
 			
-		include(_BASEDIR."includes/emailer.php");
+		include("includes/emailer.php");
 		$result = sendemail($_POST['email'], $_POST['email'], $adminname, $ademail, $subject, $letter, "html");
 
 		if($result) echo "<div style='text-align: center;'>"._EMAILSENT."</div>";
@@ -221,10 +220,10 @@ function noletter( ) {
 	}
 	else
 	{
-		$authorquery = mysql_query("SELECT email,penname FROM ".$tableprefix."fanfiction_authors WHERE uid = '".$_GET['uid']."' LIMIT 1");
-		$author = mysql_fetch_array($authorquery);
-		$storyquery = mysql_query("SELECT story.title, chapter.title as chapter FROM ".$tableprefix."fanfiction_stories as story, ".$tableprefix."fanfiction_chapters as chapter WHERE chapter.chapid = '".$_GET['chapid']."' AND chapter.sid = story.sid LIMIT 1");
-		$story = mysql_fetch_array($storyquery);
+		$authorquery = dbquery("SELECT email,penname FROM ".$tableprefix."fanfiction_authors WHERE uid = '".$_GET['uid']."' LIMIT 1");
+		$author = dbassoc($authorquery);
+		$storyquery = dbquery("SELECT story.title, chapter.title as chapter FROM ".$tableprefix."fanfiction_stories as story, ".$tableprefix."fanfiction_chapters as chapter WHERE chapter.chapid = '".$_GET['chapid']."' AND chapter.sid = story.sid LIMIT 1");
+		$story = dbassoc($storyquery);
 		$letter = file_get_contents("messages/nothankyou.txt");
 		echo "<body>";
 		echo "<table><tr><td>Story:</td><td>".$story['title'].": ".$story['chapter']."</td></tr>";

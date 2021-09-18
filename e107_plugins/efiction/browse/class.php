@@ -20,7 +20,7 @@
 //
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
-if (!defined('e107_INIT')) { exit; }
+if(!defined("_CHARSET")) exit( );
 
 $current = "";
 
@@ -28,7 +28,7 @@ if(isset($_GET['type_id']) && isNumber($_GET['type_id'])) $type_id = $_GET['type
 if(isset($_GET['classid']) && isNumber($_GET['classid'])) $classid = $_GET['classid'];
 
 if(!empty($classid)) { 
-	$caption = $classtypelist[$type_id]['title'].": ".$classlist[$classid]['name'];
+	$output .= "<div id='pagetitle'>".$classtypelist[$type_id]['title'].": ".$classlist[$classid]['name']."</div>";
 	$disablesorts = array($classtypelist[$type_id]['name']);
 	$storyquery .= " AND FIND_IN_SET('$classid', stories.classes) > 0".$storyquery._ORDERBY;
 	$countquery .= " AND FIND_IN_SET('$classid', stories.classes) > 0";
@@ -38,7 +38,7 @@ if(!empty($classid)) {
 	$searchVars['classin'] = array($classid);
 }
 else if(isset($type_id)) {
-	$caption = $classtypelist[$type_id]['title'];
+	$output .= "<div id='pagetitle'>".$classtypelist[$type_id]['title']."</div>";
 	foreach($classlist as $c => $i) {
 		if($i['type'] == $type_id) $clist[] = "<a href='browse.php?type=class&amp;type_id=$type_id&amp;classid=$c'>".$i['name']."</a><br />";
 	}
@@ -47,7 +47,7 @@ else if(isset($type_id)) {
 	$column = 1;
 	$list = floor($total / $displaycolumns);
 	if($total % $displaycolumns != 0) $list++;
-	$output = "<div id=\"columncontainer\"><div id=\"browseblock\">".($displaycolumns ? "<div class=\"column\">" : "");
+	$output .= "<div id=\"columncontainer\"><div id=\"browseblock\">".($displaycolumns ? "<div class=\"column\">" : "");
 	foreach($clist as $c) {
 		$count++;
 		$output .= $c;
@@ -61,4 +61,3 @@ else if(isset($type_id)) {
 	$output .= "</div>".($displaycolumns ? "</div>" : "")."<div class='cleaner'>&nbsp;</div></div>";
 }
 else $output .= _ERROR;
-$browse_vars['caption'] = $caption;

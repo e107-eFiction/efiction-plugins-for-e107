@@ -22,29 +22,26 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if (!defined('e107_INIT')) { exit; }
-
-	$caption = "<div id=\"pagetitle\">"._CENSOR."</div>";
+if(!defined("_CHARSET")) exit( );
+	$output .= "<div id=\"pagetitle\">"._CENSOR."</div>";
 	if(isset($_POST['submit'])) {
 		if($_POST["words"]) {
-			$tmp = e107::getParser()->filter($_POST["words"],"str");
-			$wordlist = explode(",", trim(strip_tags($tmp)));
+			$wordlist = explode(",", trim(strip_tags($_POST['words'])));
 			foreach($wordlist as $word) {
 				$word = trim($word);
 				if(strlen($word) > 0) $newwords[] = $word;
 			}
 		}
-		$result = e107::getDb()->gen("UPDATE ".MPREFIX."fanfiction_settings SET words = '".(is_array($newwords) ? implode(", ", $newwords) : "")."' WHERE sitekey = '".SITEKEY."'");
-		if($result > 0 ) $output .= write_message(_ACTIONSUCCESSFUL);
-		elseif($result === 0) $output .= e107::getMessage()->addInfo(LAN_NO_CHANGE)->render();
-		else $output .=  write_error(_ERROR);  
+		$result = dbquery("UPDATE ".$settingsprefix."fanfiction_settings SET words = '".(is_array($newwords) ? implode(", ", $newwords) : "")."' WHERE sitekey = '".SITEKEY."'");
+		if($result) $output .= write_message(_ACTIONSUCCESSFUL);
+		else $output .= write_error(_ERROR);
 	}
 	else {
 		if(is_array($words)) $wordlist = implode(", ", $words);
 		else $wordlist = "";
 		$output .= "<div style=\"text-align: center; margin: 1em; \">"._CENSORDIRS."</div>";
-		$output .= "<form method=\"POST\" enctype=\"multipart/form-data\" action=\"".e_SELF."?action=censor\" style=\"width: 500px; margin: 0 auto;\">
-			<textarea class='tbox form-control' name=\"words\" rows=\"7\" cols=\"60\">$wordlist</textarea><br /><INPUT type=\"submit\" class=\"button\" name=\"submit\" value=\""._SUBMIT."\"></form>";
+		$output .= "<form method=\"POST\" enctype=\"multipart/form-data\" action=\"admin.php?action=censor\" style=\"width: 500px; margin: 0 auto;\">
+			<textarea name=\"words\" rows=\"7\" cols=\"60\">$wordlist</textarea><br /><INPUT type=\"submit\" class=\"button\" name=\"submit\" value=\""._SUBMIT."\"></form>";
 	}
 
 ?>

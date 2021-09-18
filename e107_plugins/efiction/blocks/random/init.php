@@ -23,10 +23,8 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if (!defined('e107_INIT')) {
-    exit;
-}
+if(!defined("_CHARSET")) exit( );
 
-$query = 'INSERT INTO '.MPREFIX."fanfiction_blocks(`block_name`, `block_title`, `block_status`, `block_file`, `block_variables`) VALUES('random', 'Random Story', '0', 'random/random.php', '')";
 
-e107::getDb()->gen($query);
+dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_blocks(`block_name`, `block_title`, `block_status`, `block_file`, `block_variables`) VALUES('random', 'Random Story', '0', 'random/random.php', '');");
+?>

@@ -22,12 +22,12 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if (!defined('e107_INIT')) { exit; }
+if(!defined("_CHARSET")) exit( );
 
 if(empty($favorites)) accessDenied( );
 
 if(!isset($uid)) {
-	$caption =  _MANAGEFAVORITES ;
+	$output .= "<div id=\"pagetitle\">"._MANAGEFAVORITES."</div>";
 	$uid = USERUID;
 }
 else {
@@ -50,3 +50,4 @@ else {
 		}
 	}
 	$output .= "</div>\n";
+?>

@@ -20,19 +20,20 @@
 //
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
-if (!defined('e107_INIT')) { exit; }
+if(!defined("_CHARSET")) exit( );
+
 
 $disablesorts = array("ratings");
 $rating = isset($_REQUEST['rating']) ? $_GET['rating'] : false;
 if($rating) {
-	$caption  = _RATING.": ".$ratingslist[$rating]['name'];
+	$output .= "<div id='pagetitle'>"._RATING.": ".$ratingslist[$rating]['name']."</div>";
 	$storyquery .= " AND rid = '$rating'";
 	$storyquery .= _ORDERBY;
 	$countquery .= " AND rid = '$rating'";
 	$numrows = search(_STORYQUERY.$storyquery, _STORYCOUNT.$countquery, $pagelink = "browse.php?");
 }
 else {
-	$caption =  _RATINGS;
+	$output .= "<div id='pagetitle'>"._RATINGS."</div>";
 	$total = count($ratingslist);
 	$count = 0;
 	$column = 1;
@@ -54,4 +55,4 @@ else {
 	}
 }
 
-$browse_vars['caption'] = $caption;
+?>

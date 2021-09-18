@@ -23,41 +23,25 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if (!defined('e107_INIT')) {
-    exit;
-}
+if(!defined("_CHARSET")) exit( );
 
-$block_key = 'featured';
-$template = e107::getTemplate('efiction', 'blocks', $block_key , true, true);
-$blocks = efiction_blocks::get_blocks();  
-$caption = $blocks[$block_key]['title'];
 
-$var = array('BLOCK_CAPTION' => $caption);
-$caption = e107::getParser()->simpleParse($template['caption'], $var);
+if(!defined("_CHARSET")) exit( );
+	$content = "";
+	$count = 0;
+	$limit = isset($blocks['featured']['limit']) ? $blocks['featured']['limit'] : false;
+	$use_tpl = isset($blocks['featured']['tpl']) && $blocks['featured']['tpl'] ? true : false;
+	$query = dbquery(_STORYQUERY." AND stories.featured = '1'".($limit ? " LIMIT $limit" : ""));
+	while($stories = dbassoc($query))
+	{
+		if(!isset($blocks['featured']['allowtags'])) $stories['summary'] = strip_tags($stories['summary']);
+		$stories['summary'] = truncate_text(stripslashes($stories['summary']), (isset($blocks['featured']['sumlength']) ? $blocks['featured']['sumlength'] : 75));
+		if(!$use_tpl) $content .= "<div class='featuredstory'>".title_link($stories)." "._BY." ".author_link($stories)." ".$ratingslist[$stories['rid']]['name']."<br />".$stories['summary']."</div>";
+		else {
+			$tpl->newBlock("featuredblock");
+			include(_BASEDIR."includes/storyblock.php");
+		}
+	}
+	if($use_tpl && dbnumrows($query) > 0) $tpl->gotoBlock("_ROOT");	
 
-$sc = e107::getScParser()->getScObject('story_shortcodes', 'efiction', false);
-$text = '';
-
-$limit = isset($blocks['featured']['limit']) && $blocks['featured']['limit'] > 0 ? $blocks['featured']['limit'] : 1;
-$sumlength = isset($blocks['featured']['sumlength']) && $blocks['featured']['sumlength'] > 0 ? $blocks['featured']['sumlength'] : 75;
-
-$query = _STORYQUERY." AND stories.featured = '1'".($limit ? " LIMIT $limit" : '');
-
-$result = e107::getDb()->retrieve($query, true);
-
-$start = $template['start'];
-$end = $template['end'];
-$tablerender = varset($template['tablerender'], '');
- 
-foreach ($result as $stories) {
-    if (!isset($blocks['featured']['allowtags'])) {
-        $stories['summary'] = e107::getParser()->toText($stories['summary']);
-    } else {
-        $stories['summary'] = e107::getParser()->toHTML($stories['summary'], true, 'SUMMARY');
-    }
-    $stories['sumlength'] = $sumlength;
-    $sc->setVars($stories);
-    $text .= e107::getParser()->parseTemplate($template['item'], true, $sc);
-}
-
-$content = e107::getRender()->tablerender($caption, $start.$text.$end, $tablerender, true);
+?>

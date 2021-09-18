@@ -20,13 +20,13 @@
 //
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
-if (!defined('e107_INIT')) { exit; }
+if(!defined("_CHARSET")) exit( );
 
 // Page Setup
 $current = "series";
 
-$caption =  _SERIES.($let ? " - $let" : "");
- 
+$output .= "<div id=\"pagetitle\">"._SERIES.($let ? " - $let" : "")."</div>".build_alphalinks("browse.php?$terms&amp;", $let);
+
 if($let) {
 	$seriesquery .= (empty($seriesquery) ? "" : " AND ").($let == _OTHER ? " series.title REGEXP '^[^a-z]'" : "series.title LIKE '$let%'");
 }
@@ -64,54 +64,20 @@ if($let) {
 			$scountquery[] = "FIND_IN_SET($class, series.classes) = 0";
 		}
 	}
-    
-    
-$itemsperpage = 5;
-$countquery = _SERIESCOUNT.(!empty($seriesquery) ? " WHERE ".$seriesquery : "");
-$cresult = e107::getDb()->retrieve($countquery);
+
+$count = dbquery(_SERIESCOUNT.(!empty($seriesquery) ? " WHERE ".$seriesquery : ""));
 $query = _SERIESQUERY.(!empty($seriesquery) ? " AND ".$seriesquery : "")." ORDER BY series.title LIMIT $offset, $itemsperpage";
-$sresult = e107::getDb()->retrieve($query, true);
-$numrows = $cresult['count'];
+list($numrows)= dbrow($count);
+$sresult = dbquery($query);
 $count = 0;
- 
-/* series listing starts */
-$template = e107::getTemplate('efiction', 'series', 'listing');
-$sc_serie = e107::getScParser()->getScObject('series_shortcodes', 'efiction', false);
-$seriesblock = e107::getParser()->parseTemplate($template['start'], true, $sc_serie);
-
-$template_key = 'series';
- 
-$browse_vars['numrows'] = $numrows;
-$browse_vars['terms'] =  $terms ;
-foreach($sresult AS $serie)  { 
-  
-    $serie['numrows'] = count(storiesInSeries($serie['seriesid']));
-    $serie['count'] = $count;
- 
-    $sc_serie->setVars($serie);
-    
-    $count++;
-    //include(_BASEDIR."includes/seriesblock.php"); 
-    $item =  e107::getParser()->parseTemplate($template['item'], true, $sc_serie);
-    $seriesblock .= $item;
-}
-
-$seriesblock .= e107::getParser()->parseTemplate($template['end'], true, $sc_serie); 
-
-$seriesblock =  e107::getRender()->tablerender($caption, $seriesblock, 'serie-listing', true);
-$tpl->assign("seriesblock", $seriesblock); 
-
-/* series listing ends */
-     
-//if($numrows > $itemsperpage) $tpl->assign("pagelinks", build_pagelinks("browse.php?$terms&amp;", $numrows, $offset));
- 
+$tpl->newBlock("listings");
+while($stories = dbassoc($sresult)) { include("includes/seriesblock.php"); }	
+$tpl->gotoBlock("listings");
+if($numrows > $itemsperpage) $tpl->assign("pagelinks", build_pagelinks("browse.php?$terms&amp;", $numrows, $offset));
+$tpl->gotoBlock("_ROOT");
 if(!$numrows) {
-   
-    echo e107::getMessage()->addInfo(_NORESULTS);
- 
-	
+	$tpl->gotoBlock("_ROOT");
+	$output .= write_message(_NORESULTS);
 }
-
-//$disablesorts = array("ratings", "sorts", "complete");
- 
-$browse_vars['caption'] = $caption;
+$disablesorts = array("ratings", "sorts", "complete");
+?>

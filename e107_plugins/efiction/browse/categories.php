@@ -20,7 +20,8 @@
 //
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
-if (!defined('e107_INIT')) { exit; }
+if(!defined("_CHARSET")) exit( );
+
 
 $disablesorts = array("categories");
 
@@ -28,9 +29,8 @@ $disablesorts = array("categories");
 	$catid = isset($_GET['catid']) && isNumber($_GET['catid']) ? $_GET['catid'] : -1;
 
 // End variables
-	if($catid == -1) $caption = _CATEGORIES;
-	else $caption = catlist($catid);
-    
+	if($catid == -1) $output .= "<div id=\"pagetitle\">"._CATEGORIES."</div>";
+	else $output .= "<div id=\"pagetitle\">".catlist($catid)."</div>";
 	$subs = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_categories WHERE parentcatid = '$catid' ORDER BY displayorder ASC");
 	$total = dbnumrows($subs);
 	$list = floor($total / $displaycolumns);
@@ -87,4 +87,4 @@ $disablesorts = array("categories");
 		$numrows = search(_STORYQUERY.$storyquery, _STORYCOUNT.$countquery, "browse.php?");
 	}
 	$catid = array($catid);
-	$browse_vars['caption'] = $caption;
+?>

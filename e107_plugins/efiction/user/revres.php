@@ -22,7 +22,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if (!defined('e107_INIT')) { exit; }
+if(!defined("_CHARSET")) exit( );
 
 	$output .= "<div id=\"pagetitle\">"._MANAGEREVIEWS."</div>";
 	if(isset($_POST['submit'])) {
@@ -35,7 +35,7 @@ if (!defined('e107_INIT')) { exit; }
 			$prefsquery = dbquery("SELECT "._UIDFIELD." as uid, "._EMAILFIELD." as email, "._PENNAMEFIELD." as penname, newrespond FROM ".TABLEPREFIX."fanfiction_authorprefs as ap LEFT JOIN "._AUTHORTABLE." ON ap.uid = "._UIDFIELD." WHERE ap.uid = "._UIDFIELD." AND "._UIDFIELD." = '$uid' LIMIT 1");
 			$prefs = dbassoc($prefsquery);
 			if(isset($prefs['newrespond']) && $prefs['newrespond'] == 1) {
-				include(_BASEDIR."includes/emailer.php");
+				include("includes/emailer.php");
 				sendemail($prefs['penname'], $prefs['email'], $sitename, $siteemail, _RESPONSESUBJECT, preg_replace(array("@\{penname\}@", "@\{review\}@"), array(USERPENNAME, $reviewid), _RESPONSETEXT), "html");
 			}
 		}
@@ -50,12 +50,13 @@ if (!defined('e107_INIT')) { exit; }
 		$reviews = dbassoc($result);
 		if(!empty($reviews['respond'])) {
 			$tpl->assign("output", write_message(_ALREADYRESPONDED));
-			$output = $tpl->getOutputContent();  
-            $output = e107::getParser()->parseTemplate($output, true);
-            e107::getRender()->tablerender($caption, $output, $current);
-        	dbclose( );
-            require_once(FOOTERF);  
-			exit( );
+			//$tpl->xprintToScreen( );
+			dbclose( );
+			$text = $tpl->getOutputContent(); 
+			e107::getRender()->tablerender($caption, $text, $current);
+			require_once(FOOTERF); 
+			exit;
+
 		}
 		$type = $reviews['type'];
 		if($type == "SE") $query2 = "SELECT uid FROM ".TABLEPREFIX."fanfiction_series WHERE seriesid = '".$reviews['item']."'";
@@ -86,7 +87,7 @@ if (!defined('e107_INIT')) { exit; }
 				$storyquery = dbquery("SELECT title, uid FROM ".TABLEPREFIX."fanfiction_series WHERE seriesid = '$item' LIMIT 1");
 				list($title, $authoruid) = dbrow($storyquery);
 				$title = stripslashes($title);
-				$title = "<a href=\"manageseries.php?seriesid=$item\">$title</a>";
+				$title = "<a href=\"series.php?seriesid=$item\">$title</a>";
 			}
 			else { 
 				$titlequery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'revtitle'");
@@ -125,3 +126,4 @@ if (!defined('e107_INIT')) { exit; }
 		}
 		else accessDenied( );
 	}
+?>

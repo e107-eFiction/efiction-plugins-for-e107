@@ -23,9 +23,7 @@
 // ----------------------------------------------------------------------
 $current = "update";
 
-// Include some files for page setup and core functions
-include ("header.php");
-require_once(HEADERF);
+include("header.php");
 
 $blocks['news']['status'] = 0;
 $blocks['info']['status'] = 0;
@@ -39,15 +37,16 @@ else include_once("languages/en_admin.php");
 // end basic page setup
 
 if(!isADMIN) {
-    $output .= "<script language=\"javascript\" type=\"text/javascript\">
-    location = \"maintenance.php\";
-    </script>";
-$output = $tpl->getOutputContent();  
-$output = e107::getParser()->parseTemplate($output, true);
-e107::getRender()->tablerender($caption, $output, $current);
-    dbclose( );
-    require_once(FOOTERF);  
-    exit( );
+$output .= "<script language=\"javascript\" type=\"text/javascript\">
+location = \"maintenance.php\";
+</script>";
+$tpl->assign( "output", $output );
+//$tpl->xprintToScreen( );
+dbclose( );
+$text = $tpl->getOutputContent(); 
+e107::getRender()->tablerender($caption, $text, $current);
+require_once(FOOTERF); 
+exit;
 }
 $oldVersion = explode(".", $settings['version']);
 $confirm = isset($_GET['confirm']) ? $_GET['confirm'] : false;
@@ -201,7 +200,7 @@ CREATE TABLE `".TABLEPREFIX."fanfiction_modules` (
 	$series = dbquery("SELECT seriesid FROM ".TABLEPREFIX."fanfiction_series");
 	while($s = dbassoc($series)) {
 		$thisseries = $s['seriesid'];
-		include(_BASEDIR."includes/seriesreviews.php");
+		include("includes/seriesreviews.php");
 	}
 	} // End 3.3 updates
 	// Version 3.3.1 updates
@@ -333,8 +332,9 @@ else {
 }
 else $output .= write_message(_ALREADYUPDATED);
 $tpl->assign( "output", $output );
-    $output = $tpl->getOutputContent();  
-    $output = e107::getParser()->parseTemplate($output, true);
-    e107::getRender()->tablerender($caption, $output, $current);
+//$tpl->xprintToScreen( );
 dbclose( );
-?>
+$text = $tpl->getOutputContent(); 
+e107::getRender()->tablerender($caption, $text, $current);
+require_once(FOOTERF); 
+exit;

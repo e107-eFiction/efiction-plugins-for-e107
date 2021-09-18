@@ -20,7 +20,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if (!defined('e107_INIT')) { exit; }
+if(!defined("_CHARSET")) exit( );
 
 // Validates emails
 function validEmail($str) {
@@ -63,28 +63,70 @@ function recurseCategories($catid) {
 
 // Captcha script validation
 function captcha_confirm() {
-    if(!e107::getSession()->is(SITEKEY."_digit")) return false;
+	if(!e107::getSession()->is(SITEKEY."_digit")) return false;
 	$digit =  e107::getSession()->get(SITEKEY."_digit"); 
 	$userdigit = $_POST['userdigit'];
-    e107::getSession()->clear(SITEKEY."_digit"); 
+	e107::getSession()->clear(SITEKEY."_digit"); 
 	if($digit == md5(SITEKEY.$userdigit) && $userdigit > 1) return true;
 	return false;
 }
 
- 
+// Sanitizes user input to help prevent XSS attacks 
+function descript($text) {
+	// Convert problematic ascii characters to their true values
+	$search = array("40","41","58","65","66","67","68","69","70",
+		"71","72","73","74","75","76","77","78","79","80","81",
+		"82","83","84","85","86","87","88","89","90","97","98",
+		"99","100","101","102","103","104","105","106","107",
+		"108","109","110","111","112","113","114","115","116",
+		"117","118","119","120","121","122");
+	
+	$replace = array("(",")",":","a","b","c","d","e","f","g","h",
+		"i","j","k","l","m","n","o","p","q","r","s","t","u",
+		"v","w","x","y","z","a","b","c","d","e","f","g","h",
+		"i","j","k","l","m","n","o","p","q","r","s","t","u",
+		"v","w","x","y","z");
+
+	$entities = count($search);
+	
+	for ($i=0;$i < $entities;$i++) $text = preg_replace("#(&\#)(0*".$search[$i]."+);*#si", $replace[$i], $text);
+
+	// the following is based on code from bitflux (http://blog.bitflux.ch/wiki/)	
+	// Kill hexadecimal characters completely
+	$text = preg_replace('#(&\#x)([0-9A-F]+);*#si', "", $text);
+
+	// remove any attribute starting with "on" or xmlns
+
+	$text = preg_replace('#(<[^>]+[\\"\'\s])(onmouseover|onmousedown|onmouseup|onmouseout|onmousemove|onclick|ondblclick|onload|xmlns)[^>]*>#iU', ">", $text);
+
+	// remove javascript: and vbscript: protocol
+	
+	$text = preg_replace('#([a-z]*)=([\`\'\"]*)script:#iU', '$1=$2nojscript...', $text);
+	$text = preg_replace('#([a-z]*)=([\`\'\"]*)javascript:#iU', '$1=$2nojavascript...', $text);
+	$text = preg_replace('#([a-z]*)=([\'\"]*)vbscript:#iU', '$1=$2novbscript...', $text);
+
+	//<span style="width: expression(alert('Ping!'));"></span> (only affects ie...)
+	$text = preg_replace('#(<[^>]+)style=([\`\'\"]*).*expression\([^>]*>#iU', "$1>", $text);
+	$text = preg_replace('#(<[^>]+)style=([\`\'\"]*).*behaviour\([^>]*>#iU', "$1>", $text);
+	return $text;
+}
 
 // Call this function when the user tries to do something they shouldn't have access to.
 function accessDenied($str = ""){
 	global $tpl, $output;
 
 	if(!empty($str)) $output = write_error($str);
-	else $output = write_error(_NOTAUTHORIZED);     
- 
-    $output = e107::getParser()->parseTemplate($output, true);    
-    e107::getRender()->tablerender($caption, $output, $current);
-	dbclose( );
-    require_once(FOOTERF); 
-
+	else $output = write_error(_NOTAUTHORIZED);
+	if(!empty($tpl)) {
+		$tpl->assign("output", $output);
+		//$tpl->xprintToScreen( );
+		dbclose( );
+		$text = $tpl->getOutputContent(); 
+		e107::getRender()->tablerender($caption, $text, $current);
+		require_once(FOOTERF); 
+		exit;
+	}
+	else echo $output;
 	exit( );
 }
 
@@ -94,12 +136,12 @@ function errorExit( $msg = ""){
 
 	$output .= write_error(_ERROR.(!empty($msg) ? " " : "").$msg);
 	$tpl->assign("output", $output);
-	    $output = $tpl->getOutputContent();  
-    $output = e107::getParser()->parseTemplate($output, true);
-    e107::getRender()->tablerender($caption, $output, $current);
+	//$tpl->xprintToScreen( );
 	dbclose( );
-    require_once(FOOTERF); 
-	exit( );
+	$text = $tpl->getOutputContent(); 
+	e107::getRender()->tablerender($caption, $text, $current);
+	require_once(FOOTERF); 
+	exit;
 }
 // The next three functions are used to calculate the series reviews and rating
 
@@ -174,15 +216,12 @@ function nl2br2($string) {
 // Formats the text of the story when displayed on screen.
 function format_story($text) {
       $text = trim($text);
-      $text = e107::getParser()->toHTML($text, true, 'BODY'); 
-      return $text;
-      /*
       if(strpos($text, "<br>") === false && strpos($text, "<p>") === false && strpos($text, "<br />") === false) $text = nl2br2($text);
-      //only UTF-8 is supported
+      if(_CHARSET != "ISO-8859-1" && _CHARSET != "US-ASCII") return stripslashes($text);
       $badwordchars = array(chr(212), chr(213), chr(210), chr(211), chr(209), chr(208), chr(201), chr(145), chr(146), chr(147), chr(148), chr(151), chr(150), chr(133));
       $fixedwordchars = array('&#8216;', '&#8217;', '&#8220;', '&#8221;', '&#8212;', '&#8211;', '&#8230;', '&#8216;', '&#8217;', '&#8220;', '&#8221;', '&#8212;', '&#8211;',  '&#8230;' );
       $text = str_replace($badwordchars,$fixedwordchars,stripslashes($text));
-      return $text; */
+      return $text;
 }
 
 // Function to Spam-protect emails.  Is called for the IM fields in the user's profile.
@@ -207,11 +246,11 @@ function title_link($stories) {
 	$rating = $stories['rid'];
 	$warningtext = !empty($ratingslist[$rating]['warningtext']) ? addslashes(strip_tags($ratingslist[$rating]['warningtext'])) : "";
 		if(empty($ratingslist[$rating]['ratingwarning']))
-			$title = "<a href=\"viewstory.php?sid=".$stories['sid']."\">".$stories['title']."</a>";
+			$title = "<a href=\""._BASEDIR."viewstory.php?sid=".$stories['sid']."\">".$stories['title']."</a>";
 		else {
-            $warning = "";
+			$warning = "";
 			$warninglevel = sprintf("%03b", $ratingslist[$rating]['ratingwarning']);
-			if($warninglevel[2] && !e107::getSession()->is(SITEKEY."_warned/{$rating}")) {
+			if($warninglevel[2] && !e107::getSession()->is(SITEKEY."_warned_{$rating}")) {
 				$location = "viewstory.php?sid=".$stories['sid']."&amp;warning=$rating";
 				$warning = $warningtext;
 			}
@@ -225,9 +264,9 @@ function title_link($stories) {
 			}
 			if(!empty($warning)) {
 				$warning = preg_replace("@'@", "\'", $warning);
-				$title = "<a href=\"javascript:if(confirm('".$warning."')) location = '$location'\">".$stories['title']."</a>";
+				$title = "<a href=\"javascript:if(confirm('".$warning."')) location = '"._BASEDIR."$location'\">".$stories['title']."</a>";
 			}
-			else $title = "<a href=\"viewstory.php?sid=".$stories['sid']."\">".$stories['title']."</a>";
+			else $title = "<a href=\""._BASEDIR."viewstory.php?sid=".$stories['sid']."\">".$stories['title']."</a>";
 		}
 	return $title;
 }
@@ -235,13 +274,13 @@ function title_link($stories) {
 // Same with the author list
 function author_link($stories) {
 	if(is_array($stories['coauthors'])) {
-		$authlink[] = "<a href=\"viewuser.php?uid=".$stories['uid']."\">".$stories['penname']."</a>";
+		$authlink[] = "<a href=\""._BASEDIR."viewuser.php?uid=".$stories['uid']."\">".$stories['penname']."</a>";
 		$coauth = dbquery("SELECT "._PENNAMEFIELD." as penname, co.uid FROM ".TABLEPREFIX."fanfiction_coauthors AS co LEFT JOIN "._AUTHORTABLE." ON co.uid = "._UIDFIELD." WHERE co.sid = '".$stories['sid']."'");
 		foreach($stories['coauthors'] AS $k => $v) {
-			$authlink[] = "<a href=\"viewuser.php?uid=".$k."\">".$v."</a>";
+			$authlink[] = "<a href=\""._BASEDIR."viewuser.php?uid=".$k."\">".$v."</a>";
 		}
 	}
-	return isset($authlink) ? implode(", ", $authlink) : "<a href=\"viewuser.php?uid=".$stories['uid']."\">".$stories['penname']."</a>";
+	return isset($authlink) ? implode(", ", $authlink) : "<a href=\""._BASEDIR."viewuser.php?uid=".$stories['uid']."\">".$stories['penname']."</a>";
 }
 
 // Used to truncate text (summaries in blocks for example) to a set length.  An improvement on the old version as this keeps words intact
@@ -357,8 +396,23 @@ function replace_naughty($text) {
 	$text = preg_replace($naughtywords, $replace, $text);
 	return $text;
 }
- 
- 
+
+// Format for messages sent back from various forms and actions 
+function write_message($str) {
+	return "<div style='text-align: center; margin: 1em;'>$str</div>";
+}
+
+// Formats error messages sent back from various forms and actions
+function write_error($str) {
+	return "<div style='text-align: center; margin: 1em;' class='errortext'>$str</div>";
+}
+
+// Checks that the given $num is actually a number.  Used to help prevent XSS attacks.
+function isNumber($num) {
+	if(empty($num)) return false;
+	if(!is_string($num)) return false;
+	return preg_match("/^[0-9]+$/", $num);
+}
 
 // May be needed for sites that have bridged the authors table
 function check_prefs($uid) {
@@ -382,20 +436,15 @@ function build_alphalinks($url, $let) {
 
 // Function builds the pagination links
 function build_pagelinks($url, $total, $offset = 0, $columns = 1) {
-   // efiction::build_pagelinks($url, $total, $offset, $columns1, 'bootstrap4');
-   
-	global  $linkstyle, $linkrange;
-    
-    $itemsperpage =  efiction_settings::get_single_setting('itemsperpage') ;
-	if($itemsperpage < 1  ) $itemsperpage = 10;
- 
+	global $itemsperpage, $linkstyle, $linkrange;
 	$pages = "";
 	$itemsperpage = $itemsperpage * $columns;
 
 	if($itemsperpage >= $total) return;
+ 	if($itemsperpage == 0) return;   
 
 	if(empty($linkrange)) $linkrange = 4;
-
+ 
 	$totpages = floor($total/$itemsperpage) + ($total % $itemsperpage ? 1 : 0);
 	$curpage = floor($offset/$itemsperpage) + 1;
 	if(!$linkstyle) $startrange = $curpage;
@@ -414,7 +463,6 @@ function build_pagelinks($url, $total, $offset = 0, $columns = 1) {
 	if($stoprange < $totpages && $linkstyle > 0) $pages .= "<span class='ellipses'>...</span> <a href='".$url."offset=".(($totpages - 1) * $itemsperpage)."'>$totpages</a>\n";
 	if ($curpage < $totpages && $linkstyle != 1) $pages .=  " <a href='".$url."offset=".($offset+$itemsperpage)."' id='plnext'>["._NEXT."]</a>";
 	return "<div id=\"pagelinks\">$pages</div>";
-    
 }
 
 // Function that returns the ratings picks 
@@ -456,14 +504,14 @@ function catlist($catid) {
 			while(isset($thiscat)) {
 				if(isset($link)) $link = " > ".$link;
 				else $link = "";
-				if($action != "printable") $link = "<a href='browse.php?type=categories&amp;catid=$thiscat'>".$catlist[$thiscat]['name']."</a>".$link;
+				if($action != "printable") $link = "<a href='"._BASEDIR."browse.php?type=categories&amp;catid=$thiscat'>".$catlist[$thiscat]['name']."</a>".$link;
 				else $link = $catlist[$thiscat]['name'].$link;
 				if($catlist[$thiscat]['pid'] == -1) unset($thiscat);
 				else $thiscat = $catlist[$thiscat]['pid'];
 			}
 			$categorylinks[] = $link;
 		}
-		else $categorylinks[] = "<a href='browse.php?type=categories&amp;catid=$cat'>".$catlist[$cat]['name']."</a>";
+		else $categorylinks[] = "<a href='"._BASEDIR."browse.php?type=categories&amp;catid=$cat'>".$catlist[$cat]['name']."</a>";
 	}
 	return implode(", ", $categorylinks);
 }
@@ -476,7 +524,7 @@ function charlist($characters) {
 	$charlinks = array( );
 	foreach($characters as $c) {
 		if(empty($charlist[$c]['name'])) continue;
-		if($action != "printable") $charlinks[] = "<a href='browse.php?type=characters&amp;charid=$c'>".$charlist[$c]['name']."</a>";
+		if($action != "printable") $charlinks[] = "<a href='"._BASEDIR."browse.php?type=characters&amp;charid=$c'>".$charlist[$c]['name']."</a>";
 		else $charlinks[] = $charlist[$c]['name'];
 	}
 	return implode(", ", $charlinks);
@@ -505,7 +553,6 @@ function search($storyquery, $countquery, $pagelink = "searching.php?", $pagetit
 		$count = 0;                     
 		while($stories = dbassoc($result3)) {       
 			$tpl->newBlock("storyblock");
-            
 			include(_BASEDIR."includes/storyblock.php"); 
 		}
 		$tpl->gotoBlock("_ROOT");		
@@ -529,79 +576,4 @@ function search($storyquery, $countquery, $pagelink = "searching.php?", $pagetit
 	$tpl->gotoBlock("_ROOT");
 	return $numrows;
 }
-
-function original_link($stories) {
-    $original_url = '';
-    $source = $stories['original_url']; 
-    $title = $stories['original_title']; 
-	if($source) {
-      if (strpos($source, 'http') === 0) {
-          $original_url =  "<a target='_blank'  rel='noindex, nofollow' href='".$stories['original_url']."'>{$title}</a>";
-      }
-      else {
-         $original_url = "<a target='#'  rel='noindex, nofollow'>{$title}</a><br>Originál nie je volne dostupný"; 
-      }
-	}
-	return $original_url;
-}
-
- 
-
-
-function preklad_link($stories) {
-    $original_url = '';
-    $source = $stories['preklad_url']; 
-	if($source) {
-      if (strpos($source, 'http') === 0) {
-          $original_url =  "<a target='_blank' href=\"".$stories['preklad_url']."\">Link na preklad</a> <br>V prípade, že link nefunguje, nahláste to prosím. ";
-      }
-      else {
-         $original_url = "Link na preklad nie je uvedený"; 
-      }
-	}
-	return $original_url;
-}
-
-    function storyimage($story = array() ) {
-      
- 		 $category_icon = $story['image'];  
-         
-         if($category_icon != '' ) {
-         $settings =  array('legacyPath'=>'{e_IMAGE}topics/', 'w'=> 0, 'h'=>0);
-
-		$settings['class']     = 'img img-fluid';
-		$settings['legacy']    = array('{e_IMAGE}topics/');
-		$settings['media'] = 'topics';
-	    $settings['path'] = 'topics';
-        
-        $category_icon = str_replace('../', '', trim($category_icon));
-                            
-		if($category_icon[0] == '{')
-		{
-				$src =  e107::getParser()->replaceConstants($category_icon, 'full');	
-		}
-		else {
-
-			$src = $settings['legacyPath'].$category_icon;
-			$src =  e107::getParser()->replaceConstants($src, 'full');
-		}
-        
-        $icon = e107::getParser()->toImage($src, $settings);      	 
-        return $src; 
-       }
-       else {
-        if($story['unnuke_topicid'] > 0) {
-       
-         $topicquery = dbquery("SELECT topicname, topicimage AS image  FROM ".TABLEPREFIX."unnuke_topics WHERE topicid = {$story['unnuke_topicid']}");
-         
-         if($topicquery) list($topicname,  $topicimage) = dbrow($topicquery);
-         $topic['image'] = $topicimage;
-         $icon =  storyimage($topic);
-         return $icon;
-          
-        }
-       
-       } 
-       
-    }
 ?>

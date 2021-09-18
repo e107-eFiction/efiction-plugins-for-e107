@@ -37,7 +37,7 @@ if(!defined("SITEKEY")) define("SITEKEY", $settings['sitekey']);
 unset($settings['sitekey']);
 if(!defined("TABLEPREFIX")) define("TABLEPREFIX", $settings['tableprefix']);
 unset($settings['tableprefix']);
-$debug = 0;
+ 
 include("../languages/".$language.".php");
 include("../languages/".$language."_admin.php");
 $file_name = str_replace(" ", "_", $sitename).date("m-d-Y").".sql";
@@ -47,8 +47,8 @@ Header("Content-Disposition: attachment; filename='$file_name'");
 
 session_start( );
 require_once("../includes/queries.php");
-require_once("../inc/get_session_vars.php");
-$debug = false;  // Because we don't want debug info mucking up our backup.
+require_once("../includes/get_session_vars.php");
+ 
 
 if(!isADMIN) die( );
 

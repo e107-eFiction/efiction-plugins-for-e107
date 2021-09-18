@@ -22,7 +22,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if (!defined('e107_INIT')) { exit; }
+if(!defined("_CHARSET")) exit( );
 
 function preview_story($stories) {
 	global $extendcats, $skindir, $catlist, $charlist, $store, $storiespath, $classlist, $featured, $retired, $rr, $reviewsallowed, $star, $halfstar, $ratingslist, $classtypelist, $dateformat, $recentdays, $current;
@@ -31,7 +31,7 @@ function preview_story($stories) {
 		if(isset($_GET['textsize'])) $textsize = $_GET['textsize'];
 		else $textsize = 0;
 		
-		if(file_exists("./$skindir/viewstory.tpl")) $tpl = new TemplatePower("$skindir/viewstory.tpl");
+		if(file_exists("$skindir/viewstory.tpl")) $tpl = new TemplatePower("$skindir/viewstory.tpl");
 		else $tpl = new TemplatePower(_BASEDIR."default_tpls/viewstory.tpl");
 		$tpl->prepare( );			
 		include(_BASEDIR."includes/storyblock.php");

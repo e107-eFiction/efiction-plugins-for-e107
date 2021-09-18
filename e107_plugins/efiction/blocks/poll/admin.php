@@ -1,6 +1,5 @@
 <?php
-
-if (!defined('e107_INIT')) { exit; };
+if(!defined("_CHARSET")) exit( );
 
 global $language, $tinyMCE, $allowed_tags;
 $blockquery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_blocks WHERE block_name = 'poll'");
@@ -10,7 +9,7 @@ while($block = dbassoc($blockquery)) {
 	 $blocks[$block['block_name']]['file'] = $block['block_file'];
 	$blocks[$block['block_name']]['status'] = $block['block_status'];
 }
-include(_BASEDIR."blocks/".$blocks['poll']['file']);
+include("blocks/".$blocks['poll']['file']);
 	if(isset($_GET['delete']) && isNumber($_GET['delete'])) {
 		$delete = dbquery("DELETE FROM ".TABLEPREFIX."fanfiction_poll WHERE poll_id = '$_GET[delete]' LIMIT 1");
 		if($delete) $output .= write_message(_ACTIONSUCCESSFUL);
@@ -35,11 +34,11 @@ include(_BASEDIR."blocks/".$blocks['poll']['file']);
 		}
 		$new_opts = escapestring(implode("|#|", $new_opts));
 		$newpoll = dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_poll(`poll_question`, `poll_opts`, `poll_start`) VALUES('$poll_question', '$new_opts', NOW( ))");
-		include(_BASEDIR."blocks/".$blocks['poll']['file']);
+		include("blocks/".$blocks['poll']['file']);
 		$output .= "<div style='text-align: center;'><b>"._CURRENT.":</b><br /><div class=\"tblborder\" style=\"width: 200px; margin: 0 auto; text-align: left;\">$content</div><br /></div>";
 	}
 	if($currentpoll && !isset($_POST['close_current'])) {
-		include(_BASEDIR."blocks/".$blocks['poll']['file']);
+		include("blocks/".$blocks['poll']['file']);
 		$output .= "<div style='text-align: center;'><b>"._CURRENT.":</b><br /><div class=\"tblborder\" style=\"width: 200px; margin: 0 auto; text-align: left;\">$content</div><br /></div>";
 		$output .= "<form method=\"POST\" enctype=\"multipart/form-data\" action=\"admin.php?action=blocks&amp;admin=poll\" style='text-align: center;'><INPUT type=\"submit\" class=\"button\" name=\"close_current\" value=\""._CLOSEPOLL."\"></form>";
 	}

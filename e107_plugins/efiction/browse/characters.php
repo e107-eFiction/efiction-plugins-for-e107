@@ -20,7 +20,7 @@
 //
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
-if (!defined('e107_INIT')) { exit; }
+if(!defined("_CHARSET")) exit( );
 
 $current = "characters";
 $charid = isset($_GET['charid']) && isNumber($_GET['charid']) ? $_GET['charid'] : 0;
@@ -28,13 +28,12 @@ $charid = isset($_GET['charid']) && isNumber($_GET['charid']) ? $_GET['charid'] 
 if($charid > 0) {
 	$charquery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_characters WHERE charid = '$charid' LIMIT 1");
 	$char = dbassoc($charquery);
-	$caption = stripslashes($char['charname']);
-    $output = "<div id='story'>".format_story($char['bio'])."</div>";
+	$output = "<div id='pagetitle'>".stripslashes($char['charname'])."</div>\n<div id='story'>".format_story($char['bio'])."</div>";
 	$numrows = search(_STORYQUERY.$storyquery._ORDERBY, _STORYCOUNT.$countquery, "browse.php?");
 }
 else {
-	$caption =  _CHARACTERS.($let ? " - $let" : "");
-    $output =  build_alphalinks("browse.php?$terms&amp;", $let)."</div>";
+	$output .= "<div id=\"pagetitle\">"._CHARACTERS.($let ? " - $let" : "")."</div>".build_alphalinks("browse.php?$terms&amp;", $let);
+
 	if($let == _OTHER) $query = " charname REGEXP '^[^a-z]'";
 	else if($let) $query = " charname LIKE '$let%'";
 	else $query = "";
@@ -71,4 +70,4 @@ else {
 	$numrows = 0;
 }	
 	if($charid > 0) $charlist1 = $charid;
-	$browse_vars['caption'] = $caption;
+?>

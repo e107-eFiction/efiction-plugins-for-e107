@@ -20,11 +20,11 @@
 //
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
-if (!defined('e107_INIT')) { exit; }
+if(!defined("_CHARSET")) exit( );
 
 $current = "toplists";
 
-	$caption = _10LISTS;
+	$output = "<div id='pagetitle'>"._10LISTS."</div>";
 	$lists = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_panels WHERE panel_type = 'L' AND panel_hidden != '1' AND panel_level = '0' ORDER BY panel_order");
 	while($l = dbassoc($lists)) {
 		$clist[] = "<a href='toplists.php?list=".$l['panel_name']."'>".$l['panel_title']."</a><br />";
@@ -34,7 +34,7 @@ $current = "toplists";
 	$column = 1;
 	$list = floor($total / $displaycolumns);
 	if($total % $displaycolumns != 0) $list++;
-	$output = "<div id=\"columncontainer\"><div id=\"browseblock\">".($displaycolumns ? "<div class=\"column\">" : "");
+	$output .= "<div id=\"columncontainer\"><div id=\"browseblock\">".($displaycolumns ? "<div class=\"column\">" : "");
 	foreach($clist as $c) {
 		$count++;
 		$output .= $c;
@@ -46,4 +46,3 @@ $current = "toplists";
 		}
 	}
 	$output .= "</div>".($displaycolumns ? "</div>" : "")."<div class='cleaner'>&nbsp;</div></div>";
-	$browse_vars['caption'] = $caption;

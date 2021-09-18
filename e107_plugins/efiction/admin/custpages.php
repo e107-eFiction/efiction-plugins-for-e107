@@ -22,7 +22,8 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if (!defined('e107_INIT')) { exit; }
+if(!defined("_CHARSET")) exit( );
+
 
 	$output .= "<div id=\"pagetitle\">"._CUSTPAGES."</div>";
 if(isset($_GET['delete']) && isNumber($_GET['delete'])) {
@@ -90,7 +91,7 @@ else {
 	$output .= "<table class=\"tblborder\" style=\"margin: 0 auto;\"><tr><th class=\"tblborder\">"._ID."</th><th class=\"tblborder\">"._NAME."</th><th class=\"tblborder\">"._TITLE."</th><th class=\"tblborder\">"._OPTIONS."</th></tr>";
 	while($msg = dbassoc($listquery)) {
 		// Hidden messages they're listed in the settings.
-		if($msg['message_name'] == "welcome" ||  $msg['message_name'] == "nothankyou" || $msg['message_name'] == "thankyou" ||
+		if($msg['message_name'] == "nothankyou" || $msg['message_name'] == "thankyou" ||
 		$msg['message_name'] == "copyright" || $msg['message_name'] == "printercopyright") continue;
 		$output .= "<tr><td class=\"tblborder\">$msg[message_id]</td><td class=\"tblborder\">$msg[message_name]</td><td class=\"tblborder\"><a href='viewpage.php?page=$msg[message_name]'>$msg[message_title]</a></td>
 		<td class=\"tblborder\"><a href=\"admin.php?action=custpages&amp;edit=$msg[message_id]\">"._EDIT."</a> | 

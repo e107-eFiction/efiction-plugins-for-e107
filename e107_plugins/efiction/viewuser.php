@@ -24,37 +24,110 @@
 $current = "viewuser";
 
 // Include some files for page setup and core functions
-require_once(HEADERF);
-include ("header.php");
-include(_BASEDIR."includes/pagesetup.php");	
 
-// FIX THIS !!!
+include ("header.php");
+
+//make a new TemplatePower object
+if(file_exists("$skindir/user.tpl")) $tpl = new TemplatePower( "$skindir/user.tpl" );
+else $tpl = new TemplatePower(_BASEDIR."default_tpls/user.tpl");
+if(file_exists("$skindir/listings.tpl")) $tpl->assignInclude( "listings", "./$skindir/listings.tpl" );
+else $tpl->assignInclude( "listings",_BASEDIR."default_tpls/listings.tpl" );
+$tpl->assignInclude( "header", "$skindir/header.tpl" );
+$tpl->assignInclude( "footer", "$skindir/footer.tpl" );
+if(file_exists("$skindir/profile.tpl")) $tpl->assignInclude("profile", "$skindir/profile.tpl");
+else $tpl->assignInclude("profile", _BASEDIR."default_tpls/profile.tpl");
+include(_BASEDIR."includes/pagesetup.php");
 // If uid isn't a number kill the script with an error message.  The only way this happens is a hacker.
 if(empty($uid)) {
 	if(!isMEMBER) accessDenied( );
 	else $uid = USERUID;
-}
-
-$userinfo = e107::getDb()->retrieve("SELECT *, UNIX_TIMESTAMP(date) as date FROM "._AUTHORTABLE." LEFT JOIN ".TABLEPREFIX."fanfiction_authorprefs as ap ON ap.uid = "._UIDFIELD." WHERE "._UIDFIELD." = '$uid' LIMIT 1");
-
-if($userinfo) {
-	$userinfo['user_id'] = fiction_authors::get_single_user_by_author($uid);  //used for e107 stuff
-	$userinfo['action'] = $action;  //used for tabs
-	$userinfo['current'] = $viewuser; //default for tablerender
-	$viewuser_template = e107::getTemplate('efiction', 'user', 'user');
-	
-	$sc_viewuser = e107::getScBatch('user', 'efiction');
-	$sc_viewuser->setVars($userinfo);
-
-	$viewuser_title = e107::getParser()->parseTemplate($viewuser_template['title'], true, $sc_viewuser);
-	$viewuser_content = e107::getParser()->parseTemplate($viewuser_template['content'], true, $sc_viewuser);
-	
-	$viewuser_tablerender = varset($viewuser_template['tablerender'], 'user');
-	
-//	e107::getRender()->tablerender($viewuser_title, $viewuser_content, $viewuser_tablerender );
 } 
-else {
-	accessDenied();
+
+if($displayprofile) include(_BASEDIR."user/profile.php");  
+else if(isADMIN && uLEVEL < 3) {
+	$result2 = dbquery("SELECT * FROM "._AUTHORTABLE." LEFT JOIN ".TABLEPREFIX."fanfiction_authorprefs as ap ON ap.uid = "._UIDFIELD." WHERE "._UIDFIELD." = '$uid' LIMIT 1");
+	$userinfo = dbassoc($result2);
+	$adminopts = "<div class=\"adminoptions\"><span class='label'>"._ADMINOPTIONS.":</span> ".(isset($userinfo['validated']) && $userinfo['validated'] ? "[<a href=\"admin.php?action=members&amp;revoke=$uid\" class=\"vuadmin\">"._REVOKEVAL."</a>] " : "[<a href=\"admin.php?action=members&amp;validate=$uid\" class=\"vuadmin\">"._VALIDATE."</a>] ")
+    ."[<a href=\"member.php?action=editbio&amp;uid=$uid\" class=\"vuadmin\">"._EDIT."</a>] [<a href=\"admin.php?action=members&amp;delete=$uid\" class=\"vuadmin\">"._DELETE."</a>]";
+	$adminopts .= " [<a href=\"admin.php?action=members&amp;".($userinfo['level'] < 0 ? "unlock=".$userinfo['uid']."\" class=\"vuadmin\">"._UNLOCKMEM : "lock=".$userinfo['uid']."\" class=\"vuadmin\">"._LOCKMEM)."</a>]";
+	$adminopts .= " [<a href=\"admin.php?action=admins&amp;".(isset($userinfo['level']) && $userinfo['level'] > 0 ? "revoke=$uid\" class=\"vuadmin\">"._REVOKEADMIN."</a>] [<a href=\"admin.php?action=admins&amp;do=edit&amp;uid=$uid\" class=\"vuadmin\">"._EDITADMIN : "do=new&amp;uid=$uid\" class=\"vuadmin\">"._MAKEADMIN)."</a>]</div>";
+	$tpl->assign("adminoptions", $adminopts);
 }
-require_once(FOOTERF);  
-exit( );
+
+$infoquery = dbquery("SELECT "._PENNAMEFIELD." as penname FROM "._AUTHORTABLE." WHERE "._UIDFIELD." = '$uid' LIMIT 1");
+
+list($penname) = dbrow($infoquery);
+$tpl->assign("pagetitle", "<div id='pagetitle'>$penname</div>");
+$panelquery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_panels WHERE ".($action ? "panel_name = '$action' AND (panel_type = 'P' OR panel_type = 'F')" : "panel_type = 'P' AND panel_hidden = 0 ORDER BY panel_order ASC")." LIMIT 1");
+ 
+if($panelquery) {
+	$panel = dbassoc($panelquery);   
+	if(!empty($panel['panel_url']) && file_exists(_BASEDIR.$panel['panel_url'])) include(_BASEDIR.$panel['panel_url']);
+	else if(file_exists(_BASEDIR."user/".$panel['panel_name'].".php")) include(_BASEDIR."user/".$panel['panel_name'].".php");
+	else $output .= write_error("(1)"._ERROR);
+}
+else if($action) $output .= write_error("(2)"._ERROR);
+
+$tpl->gotoBlock("_ROOT");
+$panelquery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_panels WHERE panel_hidden != '1' AND panel_level = '0' AND (panel_type = 'P'".($favorites ? " OR panel_type = 'F'" : "").") ORDER BY panel_type DESC, panel_order ASC, panel_title ASC");
+$numtabs = dbnumrows($panelquery);
+$tabwidth = floor(100 / $numtabs);
+if(!$panelquery) $output .= write_error("(3)"._ERROR);
+
+// Special tab counts
+$codequery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'userTabs'");
+while($code = dbassoc($codequery)) {
+	eval($code['code_text']);
+}
+
+while($panel = dbassoc($panelquery)) {
+	$panellink = "";
+	if(substr($panel['panel_name'], -2, 2) == "by") {
+		$itemcount = 0;
+		if($panel['panel_name'] == "storiesby") {
+			$count = dbquery("SELECT stories FROM ".TABLEPREFIX."fanfiction_authorprefs WHERE uid = '$uid'");
+		}
+		else {
+			if(substr($panel['panel_name'], 0, 3) == "val") {
+				$table = substr($panel['panel_name'], 3);
+				$table = substr($table, 0, strlen($table) - 2);
+				$valid = 1;
+			}
+			else {
+				$table = $panel['panel_name'];
+				if(substr($panel['panel_name'], 0, strlen($panel['panel_name']) - 2) == "stories") $valid = 1;
+				else $valid = 0;
+			}
+			$count = dbquery("SELECT COUNT(uid) FROM ".TABLEPREFIX."fanfiction_".substr($table, 0, strlen($panel['panel_name']) - 2)." WHERE (uid = '$uid'".($panel['panel_name'] == "storiesby" ? " OR FIND_IN_SET($uid, coauthors) > 0" : "").")".($valid ? " AND validated > 0" : "").($panel['panel_name'] == "reviewsby" ? " AND review != 'No Review'" : ""));
+		}
+		list($itemcount) = dbrow($count);
+	}
+	if(substr($panel['panel_name'], 0, 3) == "fav" && $type = substr($panel['panel_name'], 3)) {
+		$itemcount = 0;
+		$countquery = dbquery("SELECT COUNT(item) FROM ".TABLEPREFIX."fanfiction_favorites WHERE uid = '$uid' AND type = '$type'");
+		list($itemcount) = dbrow($countquery);
+	}
+	if($panel['panel_name'] == "favlist") {
+		$itemcount = 0;
+		$countquery = dbquery("SELECT COUNT(item) FROM ".TABLEPREFIX."fanfiction_favorites WHERE uid = '$uid'");
+		list($itemcount) = dbrow($countquery);
+	}
+	if(!empty($tabCounts[$panel['panel_name']])) $itemcount = $tabCounts[$panel['panel_name']];
+	$panellinkplus = "<a href=\"viewuser.php?action=".$panel['panel_name']."&amp;uid=$uid\">".preg_replace("<\{author\}>", $penname, stripslashes($panel['panel_title'])).(isset($itemcount) ? " [$itemcount]" : "")."</a>\n";
+	$panellink = "<a href=\"viewuser.php?action=".$panel['panel_name']."&amp;uid=$uid\">".preg_replace("<\{author\}>", $penname, stripslashes($panel['panel_title']))."</a>\n";
+	$tpl->newBlock("paneltabs");
+	$tpl->assign("tabwidth", $tabwidth);
+	$tpl->assign("class", $action == $panel['panel_name'] || (empty($action) && $panel['panel_order'] == 1 && $panel['panel_type'] == "P") ? "id='active'" : "");
+	$tpl->assign("link", $panellink);
+	$tpl->assign("linkcount", $panellinkplus);
+	$tpl->assign("count", (isset($itemcount) ? " [$itemcount]" : ""));
+	unset($panellink, $panellinkplus, $itemcount);
+}
+$tpl->gotoBlock("_ROOT");	
+$tpl->assign( "output", $output );
+//$tpl->xprintToScreen( );
+dbclose( );
+$text = $tpl->getOutputContent(); 
+e107::getRender()->tablerender($caption, $text, $current);
+require_once(FOOTERF); 
+exit;

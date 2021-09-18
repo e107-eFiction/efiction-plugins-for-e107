@@ -69,7 +69,7 @@ if (!class_exists('efiction_authors')) {
 
             return $var;
         }
-
+           
         public static function get_single_author_by_user($user_id = null)
         {
             $user_id = intval($user_id);
@@ -84,8 +84,9 @@ if (!class_exists('efiction_authors')) {
 
             return efiction_authors::get_single_author($author_uid);
         }
-
-        public static function get_user_id_by_author($uid = null)
+        
+        
+         public static function get_user_id_by_author_uid($uid = null)
         {
             $uid = intval($uid);
 
@@ -93,24 +94,15 @@ if (!class_exists('efiction_authors')) {
                 return false;
             }
 
-            $where = ' user_plugin_efiction_author = '.$uid;
+            $where = ' user_plugin_efiction_author_uid = '.$uid;
 
             $user_id = e107::getDb()->retrieve('user_extended', '	user_extended_id', $where);
-
+ 
             return $user_id;
         }
+        
 
-        /* used for author select in storyform */
-        public static function get_authors_list()
-        {
-            $authors = array();
-            $authorquery = 'SELECT author.penname as penname, author.uid as uid FROM #fanfiction_authors as author ORDER BY author.penname';
-            $authorsarray = e107::getDb()->retrieve($authorquery, true);
-            foreach ($authorsarray as $authorresult) {
-                $authors[$authorresult['uid']] = $authorresult['penname'];
-            }
-            return $authors;
-        }
+        
     }
 
     new efiction_authors();

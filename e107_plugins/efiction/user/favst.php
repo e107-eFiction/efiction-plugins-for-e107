@@ -22,13 +22,12 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if (!defined('e107_INIT')) { exit; }
-
+if(!defined("_CHARSET")) exit( );
 if(empty($favorites)) accessDenied( );
 
 	if(empty($uid)) {
 		$uid = USERUID;
-        $caption = _YOURSTATS;
+		$output .= "<div id='pagetitle'>"._YOURSTATS."</div>";
 	}
 	$add = isset($_GET['add']) ? $_GET['add'] : false;
 	$edit = isset($_GET['edit']) ? $_GET['edit'] : false;
@@ -93,28 +92,24 @@ if(empty($favorites)) accessDenied( );
 				$tpl->newBlock("storyblock");
 				include(_BASEDIR."includes/storyblock.php");
 				if(!empty($stories['comments']) || USERUID == $uid || isADMIN) {
-
-					$template = e107::getTemplate('efiction', 'efiction', 'favcomment', true, true); 
-
-                    $comment_vars["number"] = $x;
-                    $comment_vars["uid"] = $author['uid'];
-                    $comment_vars["penname"] = $author['penname'];
-					if(USERUID == $uid) 
-                    $comment_vars["commentoptions"] = "<div class='adminoptions'><span class='label'>"._OPTIONS.":</span> <a href=\"member.php?action=favst&amp;edit=".$stories['sid']."\">"._EDIT."</a> | <a href=\"member.php?action=favau&amp;delete=".$stories['sid']."\">"._REMOVEFAV."</a></div>";
-                    $comment_vars["oddeven"] = ($x % 2 ? "odd" : "even");
-					$comment_vars["comment"] = format_story($stories['comments']);
-                    $text = e107::getParser()->simpleParse($template['favst'], $comment_vars, true); 
- 
-			
-					$tpl->assign("comment", $text);
-					$tpl->gotoBlock( "listings" );
+				if(file_exists("$skindir/favcomment.tpl")) $cmt = new TemplatePower( "$skindir/favcomment.tpl" );
+				else $cmt = new TemplatePower( BASEDIR."default_tpls/favcomment.tpl" );
+				$cmt->prepare( );
+				$cmt->newBlock("comment");
+				$cmt->assign("comment", $stories['comments'] ? "<div class='comments'><span class='label'>"._COMMENTS.": </span>".strip_tags($stories['comments'])."</div>" : "");
+				if(USERUID == $uid) 
+				$cmt->assign("commentoptions", "<div class='adminoptions'><span class='label'>"._OPTIONS.":</span> <a href=\"member.php?action=favst&amp;edit=".$stories['sid']."\">"._EDIT."</a> | <a href=\"member.php?action=favst&amp;delete=".$stories['sid']."\">"._REMOVEFAV."</a></div>");
+				$cmt->assign("oddeven", ($count % 2 ? "odd" : "even"));
+				$tpl->assign("comment", $cmt->getOutputContent( ));
+				$tpl->gotoBlock( "listings" );
 				}
 			}	
 			if($storycount > $itemsperpage) {
 				$tpl->gotoBlock("listings");
-				$tpl->assign("pagelinks", build_pagelinks(e_PAGE."?action=favst&amp;uid=$uid&amp;", $storycount, $offset));
+				$tpl->assign("pagelinks", build_pagelinks(basename($_SERVER['PHP_SELF'])."?action=favst&amp;uid=$uid&amp;", $storycount, $offset));
 			}
 		}
 		else $output .= write_message(_NORESULTS);
 		$tpl->gotoBlock( "_ROOT" );
 	}
+?>

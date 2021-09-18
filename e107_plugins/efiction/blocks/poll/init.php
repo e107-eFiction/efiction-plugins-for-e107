@@ -23,28 +23,24 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if (!defined('e107_INIT')) {
-    exit;
-}
+if(!defined("_CHARSET")) exit( );
 
-$query = 'INSERT INTO '.MPREFIX."fanfiction_blocks(`block_name`, `block_title`, `block_status`, `block_file`, `block_variables`) VALUES('poll', 'Poll', '0', 'poll/poll.php', '')";
-e107::getDb()->gen($query);
-$query = 'CREATE TABLE IF NOT EXISTS `'.MPREFIX."fanfiction_poll_votes` (
+
+dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_blocks(`block_name`, `block_title`, `block_status`, `block_file`, `block_variables`) VALUES('poll', 'Poll', '0', 'poll/poll.php', '');");
+dbquery("CREATE TABLE IF NOT EXISTS `".TABLEPREFIX."fanfiction_poll_votes` (
   `vote_id` int(11) NOT NULL auto_increment,
   `vote_user` int(11) NOT NULL default '0',
   `vote_opt` int(11) NOT NULL default '0',
   `vote_poll` int(11) NOT NULL default '0',
   PRIMARY KEY  (`vote_id`),
   KEY `vote_user` (`vote_user`,`vote_poll`)
-) ENGINE=MyISAM;" ;
-e107::getDb()->gen($query);
-$query = 'CREATE TABLE IF NOT EXISTS `'.MPREFIX.'fanfiction_poll` (
+) ENGINE=MyISAM;") ;
+dbquery("CREATE TABLE IF NOT EXISTS `".TABLEPREFIX."fanfiction_poll` (
 `poll_id` INT NOT NULL AUTO_INCREMENT ,
 `poll_question` VARCHAR( 250 ) NOT NULL ,
 `poll_opts` TEXT NOT NULL ,
 `poll_start` DATETIME NOT NULL ,
 `poll_end` DATETIME NULL ,
 `poll_results` VARCHAR( 250 ) NULL ,
-PRIMARY KEY ( `poll_id` ))';
-
-e107::getDb()->gen($query);
+PRIMARY KEY ( `poll_id` ))");
+?>

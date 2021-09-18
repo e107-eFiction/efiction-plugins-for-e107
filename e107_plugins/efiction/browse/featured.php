@@ -20,13 +20,11 @@
 //
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
-if (!defined('e107_INIT')) { exit; }
-
-	$caption  = $panel['panel_title'];
+if(!defined("_CHARSET")) exit( );
+	$output .= "<div id=\"pagetitle\">".$panel['panel_title']."</div>";
 		
 	$storyquery .= " AND stories.featured > 0".$storyquery;
 	$countquery .= " AND featured > 0";
 
 	$numrows = search(_STORYQUERY.$storyquery._ORDERBY, _STORYCOUNT.$countquery, "browse.php?");
-
-	$browse_vars['caption'] = $caption;
+?>

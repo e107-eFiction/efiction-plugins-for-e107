@@ -22,13 +22,12 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if (!defined('e107_INIT')) { exit; }
-
+if(!defined("_CHARSET")) exit( );
 if(empty($favorites)) accessDenied( );
 
 	if(empty($uid)) {
 		$uid = USERUID;
-        $caption = _YOURSTATS;
+		$output .= "<div id='pagetitle'>"._YOURSTATS."</div>";
 	}
 	$add = isset($_GET['add']) && isNumber($_GET['add']) ? $add = $_GET['add'] : false;
 	$edit = isset($_GET['edit']) && isNumber($_GET['edit']) ? $_GET['edit'] : false;
@@ -57,7 +56,7 @@ if(empty($favorites)) accessDenied( );
 	else if(($add || $edit) && !isset($_POST['submit'])) {
 		$stories = dbassoc(dbquery("SELECT series.*, "._PENNAMEFIELD." as penname FROM ".TABLEPREFIX."fanfiction_series as series, "._AUTHORTABLE." WHERE series.uid = "._UIDFIELD." AND seriesid = '".($add ? $add : $edit)."' LIMIT 1"));
 		$tpl->newBlock("listings");
-		include(_BASEDIR."includes/seriesblock.php");
+		include("includes/seriesblock.php");
 		$tpl->gotoBlock("listings");
 		
 		if($add) {
@@ -87,24 +86,25 @@ if(empty($favorites)) accessDenied( );
 		$list = dbquery($storyquery."  LIMIT $offset, $itemsperpage");
 		$count = 0;
 		while($stories = dbassoc($list)) { 
-			include(_BASEDIR."includes/seriesblock.php"); 
+			include("includes/seriesblock.php"); 
 			if(file_exists("$skindir/favcomment.tpl")) $cmt = new TemplatePower( "$skindir/favcomment.tpl" );
-			else $cmt = new TemplatePower( _BASEDIR."default_tpls/favcomment.tpl" );
+			else $cmt = new TemplatePower( BASEDIR."default_tpls/favcomment.tpl" );
 			$cmt->prepare( );
 			$cmt->newBlock("comment");
 			$cmt->assign("comment", $stories['comments'] ? "<div class='comments'><span class='label'>"._COMMENTS.": </span>".strip_tags($stories['comments'])."</div>" : "");
 			if(USERUID == $uid) 
-			$cmt->assign("commentoptions", "<div class='adminoptions'><span class='label'>"._OPTIONS.":</span> <a href=\"member.php?action=favse&amp;edit=".$stories['seriesid']."\">"._EDIT."</a> | <a href=\"member.php?action=favse&amp;delete=".$stories['seriesid']."\">"._REMOVEFAV."</a></div>");
+				$cmt->assign("commentoptions", "<div class='adminoptions'><span class='label'>"._OPTIONS.":</span> <a href=\"member.php?action=favse&amp;edit=".$stories['seriesid']."\">"._EDIT."</a> | <a href=\"member.php?action=favse&amp;delete=".$stories['seriesid']."\">"._REMOVEFAV."</a></div>");
 			$cmt->assign("oddeven", ($count % 2 ? "odd" : "even"));
 			$tpl->assign("comment", $cmt->getOutputContent( ));
 			$count++;
 		}
 		if($seriescount > $itemsperpage) {
 			$tpl->gotoBlock("listings");
-			$tpl->assign("pagelinks", build_pagelinks(e_PAGE."?action=favse&amp;uid=$uid&amp;", $seriescount, $offset));
+			$tpl->assign("pagelinks", build_pagelinks(basename($_SERVER['PHP_SELF'])."?action=favse&amp;uid=$uid&amp;", $seriescount, $offset));
 		}
 
 	}
 	else $output .= write_message(_NORESULTS);
 	}
 	$tpl->gotoBlock( "_ROOT" );
+?>

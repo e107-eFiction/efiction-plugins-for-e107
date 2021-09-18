@@ -23,41 +23,42 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if (!defined('e107_INIT')) {
-    exit;
+if(!defined("_CHARSET")) exit( );
+
+
+
+global $language;
+$content = "";
+$blockquery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_blocks WHERE block_name = 'categories'");
+while($block = dbassoc($blockquery)) {
+	$blocks[$block['block_name']] = unserialize($block['block_variables']);
+	$blocks[$block['block_name']]['title'] = $block['block_title'];
+	 $blocks[$block['block_name']]['file'] = $block['block_file'];
+	$blocks[$block['block_name']]['status'] = $block['block_status'];
 }
- 
-$block_key = 'categories';
-include _BASEDIR.'blocks/'.$blocks[$block_key]['file'];
-
-if (isset($_POST['submit'])) {
-    $blocks['categories']['columns'] = $_POST['columns'];
-    $blocks['categories']['template'] = $_POST['template'];
-    efiction_blocks::save_blocks($blocks);
-    $output .= '<center>'._ACTIONSUCCESSFUL.'</center>';
-} else {
-    $output .= "<div style='text-align: center;'><span class='h4 text-primary'>"._CURRENT.' '.LAN_PREVIEW.':</span><br /><hr class="preview" > '.$content.'<hr class="preview" ></div>';
-
-    $text = '';
-    $frm = e107::getForm();
-    $optionpath = e_PLUGIN.'efiction/blocks/'.$block_key.'/'.$block_key.'_options.php';
-
-    if ((file_exists($optionpath))) {
-        require_once $optionpath;
-        $settings = $options;
-    }
-    $output .= '
-<form method="POST" enctype="multipart/form-data" action="'.e_SELF.'?action=blocks&amp;admin='.$block_key.'"> 
-<table class="tblborder table table-bordered">';
-    if ($settings['fields'] > 0) {
-        foreach ($settings['fields'] as $fieldkey => $field) {
-            $text .= '<tr><td >'.$field['title'].': </td><td>';
-            $text .= $frm->renderElement($fieldkey, $blocks[$block_key][$fieldkey], $field);
-            $text .= '</td></tr>';
-        }
-    } else {
-    }
-    $output .= $text ;
-    $output .= "</table>
-<div class='text-center'><input type=\"submit\" name=\"submit\" class=\"button btn btn-submit btn-primary\" id=\"submit\" value=\""._SUBMIT.'"></div></form></div> ';
+if(empty($blocks['categories']['tpl'])) {
+	include("blocks/".$blocks['categories']['file']);
+	$tpl->gotoBlock("_ROOT");
 }
+if(file_exists("blocks/categories/{$language}.php")) include("blocks/categories/{$language}.php");
+else include("blocks/categories/en.php");
+	if(isset($_POST['submit'])) {
+		$blocks['categories']['columns'] = $_POST['columns'];
+		$blocks['categories']['template'] = $_POST['template'];
+		$output .= "<center>"._ACTIONSUCCESSFUL."</center>";
+		save_blocks( $blocks );
+	}
+	else  {
+		$template = (!empty($blocks['categories']['template']) ? $blocks['categories']['template'] : "{image} {link} [{count}] {description}"); 
+		if(empty($blocks['categories']['tpl'])) $output .= "<div style='text-align: center;'><b>"._CURRENT.":</b><br /><div class=\"tblborder\" style=\"width: 80%; margin: 0 auto; text-align: left;\">$content</div><br /></div>";
+		$output .= "<div><form method=\"POST\" id=\"settingsform\" enctype=\"multipart/form-data\" action=\"admin.php?action=blocks&admin=categories\">
+			<textarea name=\"template\" id=\"template\" rows=\"5\" cols=\"40\">$template</textarea><br />";
+		if($tinyMCE) 
+			$output .= "<div class='tinytoggle'><input type='checkbox' name='toggle' onclick=\"toogleEditorMode('template');\"><label for='toggle'>"._TINYMCETOGGLE."</label></div>";	
+		$output .= "<select name=\"columns\" class=\"textbox\" style='margin: 3px;'><option value=\"0\"".(empty($blocks['categories']['columns']) ? " selected" : "").">"._ONECOLUMN."</option>
+					<option value=\"1\"".(!empty($blocks['categories']['columns']) ? " selected" : "").">"._MULTICOLUMN."</option></select> 
+			<select name=\"tpl\" class=\"textbox\" style='margin: 3px;'><option value=\"0\"".(empty($blocks['categories']['tpl']) ? " selected" : "").">"._DEFAULT."</option>
+					<option value=\"1\"".(!empty($blocks['categories']['tpl']) ? " selected" : "").">"._USETPL."</option></select><br />
+			<INPUT type=\"submit\" class=\"button\" name=\"submit\" value=\""._SUBMIT."\"></form><div style='clear: both;'>&nbsp;</div>".write_message(_CATBLOCKNOTE)."</div>";
+	}
+?>

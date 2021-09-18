@@ -23,8 +23,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if (!defined('e107_INIT')) { exit; }
-
+if(!defined("_CHARSET")) exit( );
 if(uLEVEL > 3) accessDenied();
 		$output .= "<div id=\"pagetitle\">"._NEWS."</div>";
 		if(isset($_POST['submit'])) {
@@ -73,7 +72,7 @@ if(uLEVEL > 3) accessDenied();
 	
 			$result = dbquery("SELECT n.*, UNIX_TIMESTAMP(n.time) as date, count(c.cid) as comments FROM ".TABLEPREFIX."fanfiction_news as n LEFT JOIN ".TABLEPREFIX."fanfiction_comments as c ON  n.nid = c.nid GROUP BY n.nid ORDER BY time DESC LIMIT $offset, $itemsperpage");
 			if(file_exists("$skindir/newsbox.tpl")) $news = new TemplatePower( "$skindir/newsbox.tpl" );
-			else $news = new TemplatePower(_BASEDIR."default_tpls/newsbox.tpl" );
+			else $news = new TemplatePower( "default_tpls/newsbox.tpl" );
 			$news->prepare();
 			$count = 0;
 			while($stories = dbassoc($result)) {
@@ -86,7 +85,7 @@ if(uLEVEL > 3) accessDenied();
 				$news->assign("newsdate", date("$dateformat $timeformat", $stories['date']) );
 				$news->assign("oddeven", ($count % 2 ? "even" : "odd"));
 				if($newscomments == "1")
-					$news->assign("newscomments", "<a href=\"news.php?action=newsstory&amp;nid=".$stories['nid']."\">".$stories['comments']." "._COMMENTS."</a>");
+					$news->assign("newscomments", "<a href=\"ffnews.php?action=newsstory&amp;nid=".$stories['nid']."\">".$stories['comments']." "._COMMENTS."</a>");
 				if(isADMIN) 
 					$news->assign("adminoptions", "<a href=\"admin.php?action=news&amp;form=".$stories['nid']."\">"._EDIT."</a> | <a href=\"admin.php?action=news&amp;delete=".$stories['nid']."\">"._DELETE."</a>");
 				$count++;

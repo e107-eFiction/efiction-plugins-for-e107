@@ -22,7 +22,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if (!defined('e107_INIT')) { exit; }
+if(!defined("_CHARSET")) exit( );
 
 $stat = isset($_GET['stat']) ? $_GET['stat'] : false;
 if(!empty($_GET['favstor'])) $stat = "favstor";
@@ -41,7 +41,7 @@ else {
 $output = $pagetitle;
 $storyquery = dbquery("SELECT s.title, s.sid, s.rating, s.reviews, s.count, count(fs.item) as fscount FROM ".TABLEPREFIX."fanfiction_stories as s LEFT JOIN ".TABLEPREFIX."fanfiction_favorites as fs ON s.sid = fs.item AND fs.type = 'ST' LEFT JOIN ".TABLEPREFIX."fanfiction_coauthors AS c ON s.sid = c.sid WHERE (s.uid = '$uid' OR c.uid = '$uid') AND s.validated > 0 GROUP BY s.sid");
 $storycount = dbnumrows($storyquery);
-$thislink = e_PAGE == "viewuser.php" ? "?uid=$uid&amp;" : "?";
+$thislink = basename($_SERVER['PHP_SELF']).(basename($_SERVER['PHP_SELF']) == "viewuser.php" ? "?uid=$uid&amp;" : "?");
 $authorof[] = "<a href='".$thislink."action=stats&amp;stat=stories'>$storycount "._STORIES."</a>";
 if($stat == "stories" && dbnumrows($storyquery)) {
 	$hidechapters = isset($_GET["chapters"]) ? $_GET["chapters"] : false;
@@ -70,7 +70,7 @@ $authorof[] =  "<a href='".$thislink."action=stats&amp;stat=series'>$seriescount
 if($stat == "series" && dbnumrows($seriesquery)) {
 	$output .= "<center><h4>"._SERIES."</h4></center><table class=\"tblborder\"  width=\"90%\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\"><tr><th>"._TITLE."</th>".($reviewsallowed ? "<th>"._REVIEWS."</th>" : "").($favorites ? "<th>"._FAVORITE."</th>" : "")."</tr>";
 	while($series = dbassoc($seriesquery)) {
-		$output .= "<tr><td class=\"tblborder\"><a href=\"manageseries.php?seriesid=$series[seriesid]\">".stripslashes($series['title'])."</a> ".ratingpics($series['rating'])."</td>".($reviewsallowed ? "<td class=\"tblborder\" align=\"center\"><a href=\"reviews.php?type=SE&amp;item=$series[seriesid]\">$series[reviews]</a></td>" : "").($favorites ? "<td class=\"tblborder\" align=\"center\">".($series['count'] ? "<a href=\"member.php?action=stats&amp;favseries=$series[seriesid]\">$series[count]</a>" : "0")."</td>" : "")."</td></tr>";
+		$output .= "<tr><td class=\"tblborder\"><a href=\"series.php?seriesid=$series[seriesid]\">".stripslashes($series['title'])."</a> ".ratingpics($series['rating'])."</td>".($reviewsallowed ? "<td class=\"tblborder\" align=\"center\"><a href=\"reviews.php?type=SE&amp;item=$series[seriesid]\">$series[reviews]</a></td>" : "").($favorites ? "<td class=\"tblborder\" align=\"center\">".($series['count'] ? "<a href=\"member.php?action=stats&amp;favseries=$series[seriesid]\">$series[count]</a>" : "0")."</td>" : "")."</td></tr>";
 		$serieslist[] = $series['seriesid'];
 	}
 	$output .= "</table>";
@@ -95,7 +95,7 @@ if($favorites) {
 		$countquery = "SELECT count(uid) FROM ".TABLEPREFIX."fanfiction_favorites WHERE type = 'ST' AND item = '$favstor'";
 		$authorquery = "SELECT ap.stories, "._PENNAMEFIELD." as penname, "._UIDFIELD." as uid FROM ".TABLEPREFIX."fanfiction_favorites as fav LEFT JOIN "._AUTHORTABLE." ON fav.uid = "._UIDFIELD." LEFT JOIN  ".TABLEPREFIX."fanfiction_authorprefs AS ap ON ap.uid = fav.uid WHERE fav.item = '$favstor' AND fav.type = 'ST' GROUP BY fav.uid";
 		$pagelink= $thislink."action=stats&amp;favstor=$favstor".($offset > 0 ? "&amp;offset=$offset" : "")."&amp;";
-		include(_BASEDIR."includes/members_list.php");
+		include("includes/members_list.php");
 	}
 	else if(isset($_GET['favseries']) && isNumber($_GET['favseries'])) {
 		$favseries = $_GET['favseries'];
@@ -105,14 +105,14 @@ if($favorites) {
 		$countquery = "SELECT count(uid) FROM ".TABLEPREFIX."fanfiction_favorites WHERE item = '$favseries' AND type = 'SE'";
 		$authorquery = "SELECT ap.stories,"._PENNAMEFIELD." as penname, "._UIDFIELD." as uid FROM ".TABLEPREFIX."fanfiction_favorites as fav LEFT JOIN "._AUTHORTABLE." ON fav.uid = "._UIDFIELD." LEFT JOIN ".TABLEPREFIX."fanfiction_authorprefs AS ap ON ap.uid = fav.uid WHERE fav.item = '$favseries' AND fav.type = 'SE' GROUP BY fav.uid";
 		$pagelink= $thislink."action=stats&amp;favseries=$favseries".($offset > 0 ? "&amp;offset=$offset" : "")."&amp;";
-		include(_BASEDIR."includes/members_list.php");
+		include("includes/members_list.php");
 	}
 	else if($stat == "favauthor") {
 		$output =  "<div class='sectionheader'>"._FAVORITE.": $penname</div>";
 		$countquery = "SELECT count(uid) FROM ".TABLEPREFIX."fanfiction_favorites WHERE item = '$uid' AND type = 'AU'";
 		$authorquery = "SELECT ap.stories, "._PENNAMEFIELD." as penname, "._UIDFIELD." as uid FROM ".TABLEPREFIX."fanfiction_favorites AS fav LEFT JOIN "._AUTHORTABLE." ON fav.uid = "._UIDFIELD." LEFT JOIN ".TABLEPREFIX."fanfiction_authorprefs as ap ON ap.uid = fav.uid WHERE  fav.item = '$uid' AND fav.type = 'AU' GROUP BY fav.uid";
 		$pagelink= $thislink."action=stats&amp;stat=favauthor".($offset > 0 ? "&amp;offset=$offset" : "")."&amp;";
-		include(_BASEDIR."includes/members_list.php");
+		include("includes/members_list.php");
 	}
 
 	$favlist = array( );
@@ -130,3 +130,4 @@ if($favorites) {
 	}
 	if(empty($stat)) $output .= "<div class='authorstats'><span class='label'>"._FAVOF.": </span> <a href='".$thislink."action=stats&amp;stat=favauthor'>$favcount "._MEMBERS."</a><br /><span class='label'>".(USERUID == $uid ? _YOURFAVORITES : _FAVORITESOF." $penname").": </span>".implode(", ", $favlist)."</div>";
 }
+?>

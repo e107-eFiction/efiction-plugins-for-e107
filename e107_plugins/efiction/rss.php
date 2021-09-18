@@ -19,48 +19,43 @@
 //
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
-error_reporting(0);
 
-include_once '../../class2.php';
-
-define ("_BASEDIR", e_PLUGIN."efiction/"); 
-
-include_once(_BASEDIR."includes/dbfunctions.php");    
-include_once(_BASEDIR."config.php"); 
-
+define("_BASEDIR", "");
+  include_once("includes/dbfunctions.php");    
+  include_once("config.php"); 
 $settingsresults = dbquery("SELECT sitename, url, siteemail, slogan, language, tableprefix, dateformat FROM ".$settingsprefix."fanfiction_settings WHERE sitekey = '$sitekey'");
 $settings = dbassoc($settingsresults);
 foreach($settings as $var => $val) {
 	$$var = $val;
 }
-$tp = e107::getParser();
-
-e107::lan('efiction');
-
-define("TABLEPREFIX", MPREFIX);
+define("TABLEPREFIX", $tableprefix);
 define("SITEKEY", $sitekey);
   include_once("includes/queries.php");
   if(file_exists("languages/{$language}.php")) include("languages/{$language}.php");
   else include("languages/en.php");
-  
+  ob_start ("ob_gzhandler"); 
 
- 
+function xmlentities ( $string )
+{
+   return str_replace ( array ( '&', '"', "'", '<', '>' ), array ( '&amp;' , '&quot;', '&apos;' , '&lt;' , '&gt;' ), $string );
+}
+
 $ratlist = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_ratings");
 while($rate = dbassoc($ratlist)) {
 	$ratings[$rate['rid']] = $rate['rating'];
 }
 
- 
-
-  $rss = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+  $rss="<?xml version=\"1.0\" encoding=\""._CHARSET."\"?>\n"; 
   $rss.="<rss version=\"2.0\">\n"; 
   $rss.="<channel>\n"; 
   $rss.="<copyright>Copyright ".date("Y")."</copyright>\n"; 
   $rss.="<lastBuildDate>".date("r")."</lastBuildDate>\n"; 
-  $rss.="<description>".$tp->toRss($slogan)."</description>\n"; 
+  $rss.="<description>".xmlentities($slogan)."</description>\n"; 
   $rss.="<link>$url</link>\n"; 
-  $rss.="<title>".$tp->toRss($sitename)."</title>\n"; 
-  
+  $rss.="<title>".xmlentities( $sitename)."</title>\n"; 
+  $rss.="<managingEditor>$siteemail</managingEditor>\n"; 
+  $rss.="<webMaster>$siteemail</webMaster>\n"; 
+  $rss.="<language>$language</language>\n"; 
 
 $query = _STORYQUERY." ORDER BY updated DESC LIMIT 20";
 $results = dbquery($query);
@@ -73,20 +68,20 @@ while($story = dbassoc($results)) {
 		}
     }
     foreach($story['authors'] AS $k => $v) {
-	$story['authors'][$k] = $tp->toRss($v);
+	$story['authors'][$k] = strip_tags(xmlentities( $v));
     }
     $rss.= "<item>
-	<title>".$tp->toRss($story['title'])." "._BY." ".implode(", ", $story['authors'])." [".$ratings[$story['rid']]."]</title>
+	<title>".strip_tags(xmlentities($story['title']))." "._BY." ".implode(", ", $story['authors'])." [".$ratings[$story['rid']]."]</title>
 	<link>$url/viewstory.php?sid=".$story['sid']."</link>
-	<description>".$tp->toRss($story['summary'])."</description>
+	<description>".strip_tags(xmlentities($story['summary']))."</description>
 	<pubDate>".date("r",$story['updated'])."</pubDate>
      </item>\n";  
 } 
 
   $rss.="</channel>
 </rss>"; 
-ob_start ("ob_gzhandler");
-  header("Content-type: application/rss+xml", true); 
+
+  header("Content-type: application/rss+xml"); 
   header("Cache-Control: must-revalidate"); 
   header("Expires: ".gmdate("D, d M Y H:i:s", time() + 3600) . " GMT"); 
 

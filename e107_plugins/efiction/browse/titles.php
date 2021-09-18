@@ -20,15 +20,14 @@
 //
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
-if (!defined('e107_INIT')) { exit; }
+if(!defined("_CHARSET")) exit( );
 
 // Page Setup
 $current = "titles";
-	$caption = _TITLES.($let ? " - $let" : "");
-    $output .=  build_alphalinks("browse.php?$terms&amp;", $let)."</div>";
+	$output .= "<div id=\"pagetitle\">"._TITLES.($let ? " - $let" : "")."</div>".build_alphalinks("browse.php?$terms&amp;", $let);
+
 	if($let == _OTHER) $storyquery .= " AND stories.title REGEXP '^[^a-z]'";
 	else if(!empty($let)) $storyquery .= " AND stories.title LIKE '$let%'";
 	$storyquery  .= _ORDERBY;
 	$numrows = search(_STORYQUERY.$storyquery, _STORYCOUNT.$storyquery, "browse.php?");
-
-	$browse_vars['caption'] = $caption;
+?>

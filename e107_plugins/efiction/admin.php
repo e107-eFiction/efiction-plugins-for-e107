@@ -19,7 +19,6 @@
 //
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
-if (!defined('e107_INIT')) { exit; }
 
 $current = "adminarea";
 
@@ -27,41 +26,42 @@ if(isset($_GET['action']) && ($_GET['action'] == "categories" || $_GET['action']
 
 $disableTiny = true;
 
-// Include some files for page setup and core functions
-require_once(HEADERF);
 include ("header.php");
-
-
+ 
 //make a new TemplatePower object
 if(file_exists("$skindir/default.tpl")) $tpl = new TemplatePower( "$skindir/default.tpl" );
 else $tpl = new TemplatePower(_BASEDIR."default_tpls/default.tpl");
 include(_BASEDIR."includes/pagesetup.php");
-
-e107::lan('efiction',true );
+if(file_exists("languages/".$language."_admin.php")) include_once("languages/".$language."_admin.php");
+else include_once("languages/en_admin.php");
 // end basic page setup
 
-	// check that user has permissions to perform this action before going further.  Otherwise kick 'em
+// check that user has permissions to perform this action before going further.  Otherwise kick 'em
 	if(!isADMIN) accessDenied( );
 	$adminquery = dbquery("SELECT categories FROM ".TABLEPREFIX."fanfiction_authorprefs WHERE uid = '".USERUID."' LIMIT 1");
 	list($admincats) = dbrow($adminquery);
 	if(empty($admincats)) $admincats = "0";
-
-	//displays available admin panels 
 	$output = "<div style='text-align: center; margin: 1em;'>";
- 
-	$panellist = efiction_panels::get_admin_panels(); 
-
+	$panelquery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_panels WHERE panel_hidden != '1' AND panel_type = 'A' AND panel_level >= ".uLEVEL." ORDER BY panel_level DESC, panel_order ASC, panel_title ASC");
+	if(!dbnumrows($panelquery)) $output .= _FATALERROR;
+	$panellist = array();
+	while($panel = dbassoc($panelquery)) {
+		if(!$panel['panel_url']) $panellist[$panel['panel_level']][]= "<a href=\""._BASEDIR."admin.php?action=".$panel['panel_name']."\">".$panel['panel_title']."</a>";
+		else $panellist[$panel['panel_level']][] = "<a href=\""._BASEDIR.$panel['panel_url']."\">".$panel['panel_title']."</a>";
+	}
 	foreach($panellist as $accesslevel => $row) {
 		$output .= implode(" | ", $row)."<br />";
 	}
 	$output .= "</div>\n";
-
 	if($action) {
-		$panel =  efiction_panels::get_single_panel($action, "A"); //level is checked inside
-		if($panel) {  
+		$panelquery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_panels WHERE panel_name = '$action' AND panel_type = 'A' LIMIT 1");
+		if(dbnumrows($panelquery)) {
+			$panel = dbassoc($panelquery);
+			if((isset($panel['panel_level']) ? $panel['panel_level'] : 0) >= uLEVEL) {
 				if($panel['panel_url'] && file_exists(_BASEDIR.$panel['panel_url'])) require_once(_BASEDIR.$panel['panel_url']);
-				else if (file_exists(_BASEDIR."admin/{$action}.php")) require_once(_BASEDIR."admin/{$action}.php");
-
+				else if (file_exists(_BASEDIR."admin/{$action}.php")) require_once("admin/{$action}.php");
+			}
+			else accessDenied( );
 		}
 	}
 	else {
@@ -79,9 +79,10 @@ e107::lan('efiction',true );
 		$output .= write_message(_RUNNINGVERSION);
 	}	
 	$tpl->assign( "output", $output );
-    $output = $tpl->getOutputContent();  
-    $output = e107::getParser()->parseTemplate($output, true);
-    e107::getRender()->tablerender($caption, $output, $current);
+	//$tpl->xprintToScreen( );
 	dbclose( );
-    require_once(FOOTERF);  
-    exit( );
+	$text = $tpl->getOutputContent(); 
+	e107::getRender()->tablerender($caption, $text, $current);
+	require_once(FOOTERF); 
+	exit;
+ 

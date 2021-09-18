@@ -1,34 +1,22 @@
 <?php
-	$template = e107::getTemplate('efiction', 'blocks', 'recent', true, true);
+if(!defined("_CHARSET")) exit( );
+	$count = 0;
+	$content = "";
+	$use_tpl = isset($blocks['recent']['tpl']) && $blocks['recent']['tpl'] ? true : false;
+	if(isset($blocks['recent']['num'])) $numupdated = $blocks['recent']['num'];
+	else $numupdated = 1;
+	$result5 = dbquery(_STORYQUERY." ORDER BY stories.updated DESC LIMIT $numupdated");
+	while($stories = dbassoc($result5))
+	{
+		if(!isset($blocks['recent']['allowtags'])) $stories['summary'] = strip_tags($stories['summary']);
+		$stories['summary'] = truncate_text(stripslashes($stories['summary']), (!empty($blocks['recent']['sumlength']) ? $blocks['recent']['sumlength'] : 75));
+		if(!$use_tpl) $content .= "<div class='recentstory'>".title_link($stories)." "._BY." ".author_link($stories)." ".$ratingslist[$stories['rid']]['name']."<br />".stripslashes($stories['summary'])."</div>";
+		else {
+			$tpl->newBlock("recentblock");
+			include(_BASEDIR."includes/storyblock.php");
+		}
 
-    $blocks = efiction_blocks::get_blocks();
- 
-    $caption = $blocks['recent']['title'];
-	$var = array('BLOCK_CAPTION' => $caption);
-	$caption = e107::getParser()->simpleParse($template['caption'], $var);
-
-    $sc = e107::getScParser()->getScObject('story_shortcodes', 'efiction', false);
-    $text = '';
- 
-    $limit 		= isset($blocks['recent']['num']) && $blocks['recent']['num'] > 0 ? $blocks['recent']['num'] : 10;
-	$sumlength  = isset($blocks['recent']['sumlength']) && $blocks['recent']['sumlength'] > 0 ? $blocks['recent']['sumlength'] :75;
-
-    $query = _STORYQUERY." ORDER BY stories.updated DESC LIMIT  $limit";
-    $result = e107::getDb()->retrieve($query, true);
- 
-	$start = $template['start']; 
-	$end = $template['end'];
-    $tablerender= varset($template['tablerender'], '');
- 
-    foreach ($result as $stories) {
-        if (!isset($blocks['recent']['allowtags'])) {
-            $stories['summary'] = e107::getParser()->toText($stories['summary']);
-        } else {
-            $stories['summary'] = e107::getParser()->toHTML($stories['summary'], true, 'SUMMARY');
-        }
-		$stories['sumlength'] = $sumlength;
-        $sc->setVars($stories);
-        $text .= e107::getParser()->parseTemplate($template['item'], true, $sc);
-    }
-
-	$content =  e107::getRender()->tablerender($caption, $start.$text.$end, $tablerender, true);
+	}	
+	if($use_tpl && dbnumrows($result5) >0) $tpl->gotoBlock("_ROOT");	
+	unset($updated, $result5);
+?>

@@ -39,75 +39,73 @@
 if (!class_exists('efiction_pagelinks')) {
     class efiction_pagelinks
     {
-        public function __construct()
-        {
-        }
- 
-        /* list of available efiction links for user - access checked */
-    	public static function sitelinks()
-        {
+		
+		/* list of available efiction links for user - access checked */
+		public static function sitelinks()
+		{
+			require_once(_BASEDIR."includes/get_session_vars.php");
+            
             $linkquery = 'SELECT * from '.MPREFIX.'fanfiction_pagelinks ORDER BY link_access ASC' ;
-            $records = e107::getDb()->retrieve($linkquery, true);
-    		 
-            $userlinks = array();
-            foreach ($records as $link) { 
-                if ($link['link_access'] && !isMEMBER) {
-                    continue;
-                }
-                if ($link['link_access'] == 2 && uLEVEL < 1) {
-                    continue;
-                }
-                if ($link['link_name'] == 'register' && isMEMBER) {
-                    continue;
-                }
-                if (strpos($link['link_url'], 'http://') === false && strpos($link['link_url'], 'https://') === false) {
-                    $link['link_url'] = e_HTTP.$link['link_url'];
-                }
-     
-    			$userlinks[$link['link_name']]  = $link;
-                
-            }
-    
-            return $userlinks;
-        }
-        
-    	public static function get_sitelinks()
+			$records = e107::getDb()->retrieve($linkquery, true);
+ 
+			$userlinks = array();
+			foreach ($records as $link) { 
+				if ($link['link_access'] && !isMEMBER) {
+					continue;
+				}
+				if ($link['link_access'] == 2 && uLEVEL < 1) {
+					continue;
+				}
+				if ($link['link_name'] == 'register' && isMEMBER) {
+					continue;
+				}
+				if (strpos($link['link_url'], 'http://') === false && strpos($link['link_url'], 'https://') === false) {
+					$link['link_url'] = e_HTTP.$link['link_url'];
+				}
+		
+				$userlinks[$link['link_name']]  = $link;
+				
+			}
+ 
+			return $userlinks;
+		}
+
+		public static function get_sitelinks()
         {
             $userlinks = self::sitelinks();
     
             return $userlinks;
         }
-        
-        /* list of available efiction links for user - access checked - with different keys and final link tag */
-    	public static function get_pagelinks($current = '') 
-        {
-            $links = self::get_sitelinks();
-            $pagelinks = array();
-            foreach($links AS $link) {
- 
-	           $pagelinks[$link['link_name']] = array(
-                "id" => $link['link_id'], 
-                "text" => $link['link_text'], 
-                "url" => $link['link_url'], 
-                "link" => "<a class='efiction_links' href=\"".$link['link_url']."\" title=\"".$link['link_text']."\"".($link['link_target'] ? " target=\"_blank\"" : "").(!empty($link['link_key']) ? " accesskey='".$link['link_key']."'" : "").($current == $link['link_name'] ? " id=\"current\"" : "").">".$link['link_text']."</a>");
-            }
-          
-            return $pagelinks;
-        } 
-        
-     
-      /* for link shortcode - return single link tag */  
-      public function get_userlink($key = null)
-      {
-          if (null === $key) {
-              return  null;
-          }
-  
-          $links = self::get_pagelinks();  
-          $ret = isset($links[$key]['link']) ? $links[$key]['link'] : null;
-          return $ret;
-      }       
-    }
 
-    new efiction_pagelinks();
+		/* list of available efiction links for user - access checked - with different keys and final link tag */
+		public static function get_pagelinks($current = '') 
+		{
+			$links = self::get_sitelinks();
+			$pagelinks = array();
+			foreach($links AS $link) 
+			{
+				$pagelinks[$link['link_name']] = array(
+						"id" => $link['link_id'], 
+						"text" => $link['link_text'], 
+						"url" => $link['link_url'], 
+						"link" => "<a class='efiction_links efiction_".$link['link_name']."' href=\"".$link['link_url']."\" title=\"".$link['link_text']."\"".($link['link_target'] ? " target=\"_blank\"" : "").(!empty($link['link_key']) ? " accesskey='".$link['link_key']."'" : "").($current == $link['link_name'] ? " id=\"current\"" : "").">".$link['link_text']."</a>");
+			}
+				
+			return $pagelinks;
+		}
+        
+        
+        /* for link shortcode - return single link tag */  
+        public function get_single_link($key = null)
+        {
+            if (null === $key) {
+                return  null;
+            }
+    
+            $links = self::get_pagelinks();    
+            $ret = isset($links[$key]['link']) ? $links[$key]['link'] : null;
+            return $ret;
+        } 
+       
+    }
 }

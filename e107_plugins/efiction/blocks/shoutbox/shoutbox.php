@@ -1,5 +1,5 @@
 <?php
-if (!defined('e107_INIT')) { exit; }
+if(!defined("_CHARSET")) exit( );
 
 if(file_exists(_BASEDIR."blocks/shoutbox/{$language}.php")) include_once(_BASEDIR."blocks/shoutbox/{$language}.php");
 else include_once(_BASEDIR."blocks/shoutbox/en.php");

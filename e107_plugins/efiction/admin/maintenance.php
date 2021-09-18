@@ -22,43 +22,13 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if (!defined('e107_INIT')) { exit; }
+if(!defined("_CHARSET")) exit( );
 
 $maint = isset($_GET['maint']) ? $_GET['maint'] : false;
 $output .= "<div id='pagetitle'>"._ARCHIVEMAINT."</div>";
 if($maint == "update") {
 	if(file_exists("admin/update.php")) include_once("admin/update.php");
 }
-if($maint == "dates") {
-    $authorquery = "SELECT *, user_id AS user_id, UNIX_TIMESTAMP(date) as date 
-     FROM "._AUTHORTABLE." LEFT JOIN ".TABLEPREFIX."fanfiction_authorprefs as ap ON ap.uid = "._UIDFIELD    ;
-
-    $authordata = e107::getDb()->retrieve($authorquery, true);
-    foreach($authordata AS $author) {
-     $uid = $author['uid'];    
-     $user_id = $author['user_id'];    
-     $date = $author['date'];   
-     if($user_id > 0 ) {
-        $userinfo  = e107::user($user_id);   
-        if($userinfo['user_join'] > 0) {
-            if(is_null( $date )) {
-                 $mysqldate = date('Y-m-d H:i:s', $userinfo['user_join']);  
-                  
-                  $update = array(
-      			'date' => $mysqldate,
-      			 'WHERE'   => "uid = '".$uid ."'"
-      
-      		        );
-                  $result = e107::getDb()->update('fanfiction_authors', $update  ); 
-                 
-  
-            }     
-        }
-     }
-    }
-  	$output .= write_message(_ACTIONSUCCESSFUL); 
-}
-
 if($maint == "reviews") {
 	dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET rating = '0', reviews = '0'"); // Set them all to 0 before we re-insert.
 	$stories = dbquery("SELECT AVG(rating) as average, item FROM ".TABLEPREFIX."fanfiction_reviews WHERE type = 'ST' AND rating != '-1' GROUP BY item");
@@ -82,7 +52,7 @@ if($maint == "reviews") {
 	$series = dbquery("SELECT seriesid FROM ".TABLEPREFIX."fanfiction_series");
 	while($s = dbassoc($series)) {
 		$thisseries = $s['seriesid'];
-		include(_BASEDIR."includes/seriesreviews.php");
+		include("includes/seriesreviews.php");
 	}
 	// For modules which may allow reviews.
 	$codequery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'revfix'");
@@ -103,17 +73,7 @@ else if($maint == "stories") {
 			else $alist[$ca['uid']] = $ca['count'];
 		}
 		foreach($alist AS $a => $s) {
-        
-                                $insert = array(
-                                'stories'       => $s   ,
-                                'uid'       => $a , 
-                                '_DUPLICATE_KEY_UPDATE' => 1
-                                );
- 
-                                e107::getDB()->insert("fanfiction_authorprefs", $insert);
-       
-                                
-		//	dbquery("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET stories = '$s' WHERE uid = '$a' LIMIT 1");
+			dbquery("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET stories = '$s' WHERE uid = '$a' LIMIT 1");
 		}
 		$count =  dbquery("SELECT SUM(wordcount) as count, sid FROM ".TABLEPREFIX."fanfiction_chapters WHERE validated = '1' GROUP BY sid");
 		while($c = dbassoc($count)) {
@@ -250,7 +210,6 @@ else {
 	<li><a href='admin/backup.php' target='_new'>"._BACKUP."</a> <A HREF=\"#\" class=\"pophelp\">[?]<span>"._HELP_BACKUP."</span></A></li>
 	<li><a href='admin/backup_utf8.php' target='_new'>"._BACKUP."</a> (UTF-8) <A HREF=\"#\" class=\"pophelp\">[?]<span>"._HELP_BACKUP."</span></A></li>
 	<li><a href='admin.php?action=maintenance&amp;maint=update'>"._UPDATE."</a>  <A HREF=\"#\" class=\"pophelp\">[?]<span>"._HELP_UPDATE."</span></A></li>
-    <li><a href='admin.php?action=maintenance&amp;maint=dates'>Member since date fix</a> </li>
 </ul>";
 }
 ?>

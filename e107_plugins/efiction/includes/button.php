@@ -1,16 +1,12 @@
 <?php
 
-
 if (!defined('e107_INIT'))
 {
 	require_once(__DIR__.'/../../../class2.php');
 }
 
-session_start();
+define("_BASEDIR", "../");
 
-define ("_BASEDIR", e_PLUGIN."efiction/");
-
-require_once("../config.php");
 e107::getSession()->clear(SITEKEY."_digit"); 
 
 $image = imagecreate(140, 40);
@@ -79,8 +75,8 @@ for ($i = 0; $i < 5; $i++) {
 
 $digit = "$cnum[0]$cnum[1]$cnum[2]$cnum[3]$cnum[4]";
 
-e107::getSession()->set(SITEKEY."_digit", md5($sitekey.$digit));
-
+e107::getSession()->set(SITEKEY."_digit", md5(SITEKEY.$digit));
+ 
 header("Expires: Tue, 11 Jun 1985 05:00:00 GMT");  
 header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");  
 header("Cache-Control: no-store, no-cache, must-revalidate");  

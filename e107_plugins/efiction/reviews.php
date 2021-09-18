@@ -23,18 +23,15 @@
 //Begin basic page setup
 
 $current = "reviews";
-
-// Include some files for page setup and core functions
 include ("header.php");
-require_once(HEADERF);
-
 
 //make a new TemplatePower object
 if(file_exists("$skindir/reviews.tpl")) $tpl = new TemplatePower( "$skindir/reviews.tpl" );
 else $tpl = new TemplatePower(_BASEDIR."default_tpls/reviews.tpl");
 if(file_exists("$skindir/reviewblock.tpl")) $tpl->assignInclude("reviewsblock", "$skindir/reviewblock.tpl" );
-else $tpl->assignInclude("reviewsblock", _BASEDIR."default_tpls/reviewblock.tpl");
- 
+else $tpl->assignInclude("reviewsblock", "default_tpls/reviewblock.tpl");
+$tpl->assignInclude( "header", "./$skindir/header.tpl" );
+$tpl->assignInclude( "footer", "./$skindir/footer.tpl" );
 
 //let TemplatePower do its thing, parsing etc.
 $tpl->prepare();
@@ -64,8 +61,7 @@ if($action == "delete") {
 	list($author) = dbrow($authorquery);
 	if($author != USERUID && !$notauthor && ($revdelete < 2 || ($revdelete == 1 && $reviewuid))) accessDenied( );
 	$delete = isset($_GET['delete']) ? $_GET['delete'] : false;
- 
-    $caption = _DELETEREVIEW;
+	$output .= "<div id=\"pagetitle\">"._DELETEREVIEW."</div>";
 	if($delete == "yes") {
 		if($type == "ST") {
 			$query = dbquery("SELECT uid FROM ".TABLEPREFIX."fanfiction_stories WHERE sid = $item LIMIT 1");
@@ -122,8 +118,7 @@ else if($action == "edit" || $action == "add") {
 		$chapquery = dbquery("SELECT chapid FROM ".TABLEPREFIX."fanfiction_chapters WHERE sid = '$item' AND inorder = '1' LIMIT 1");
 		list($chapid) = dbrow($chapquery);
 	}
- 
-    $caption = _REVIEW;
+	$tpl->assign("pagetitle", "<div id =\"pagetitle\">"._REVIEW."</div>");
 	if(isset($_POST['submit'])) {
 		$reviewer = isset($_POST['reviewer']) ? escapestring(descript(strip_tags($_POST['reviewer'], $allowed_tags))) : "";
 		$review = format_story(strip_tags(descript($_POST['review']), $allowed_tags));
@@ -236,7 +231,7 @@ else if($action == "edit" || $action == "add") {
 				$result = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_reviews WHERE reviewid = '$reviewid' LIMIT 1");
 				$review = dbassoc($result);
 			}
-			include(_BASEDIR."includes/reviewform.php");
+			include("includes/reviewform.php");
 			$output .= $form;
 		}
 	}
@@ -263,7 +258,7 @@ else {
 		$storyquery = dbquery("SELECT title, uid FROM ".TABLEPREFIX."fanfiction_series WHERE seriesid = '$item' LIMIT 1");
 		list($title, $authoruid) = dbrow($storyquery);
 		$titletext = $title;
-		$title = "<a href=\"manageseries.php?seriesid=$item\">".stripslashes($title)."</a>";
+		$title = "<a href=\"series.php?seriesid=$item\">".stripslashes($title)."</a>";
 	}
 	else { 
 		$titlequery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'revtitle'");
@@ -271,8 +266,7 @@ else {
 			eval($code['code_text']);
 		}
 	}
- 
-    $caption = _REVIEWSFOR; 
+	$tpl->assign("pagetitle", "<div id=\"pagetitle\">"._REVIEWSFOR." $title</div>");
 	if($type == "SE") {
 		$jumpmenu = "";
 		$stinseries = dbquery("SELECT sid, subseriesid, inorder FROM ".TABLEPREFIX."fanfiction_inseries WHERE seriesid = '$item'");
@@ -388,7 +382,7 @@ else {
 		if(empty($reviews['respond']) && (USERUID == $authoruid || (isset($coauthors) && in_array(USERUID, $coauthors)))) $adminlink .= " [<a href=\"member.php?action=revres&amp;reviewid=".$reviews['reviewid']."\">"._RESPOND."</a>]";
 		$tpl->newBlock("reviewsblock");
 		$tpl->assign("reviewer"   , $reviewer );
-		$tpl->assign("reportthis", "[<a href=\""._BASEDIR."report.php?action=report&amp;url=reviews.php?reviewid=".$reviews['reviewid']."\">"._REPORTTHIS."</a>]");
+		$tpl->assign("reportthis", "[<a href=\""._BASEDIR."contact.php?action=report&amp;url=reviews.php?reviewid=".$reviews['reviewid']."\">"._REPORTTHIS."</a>]");
 		$tpl->assign("review"   , stripslashes($reviews['review']));
 		$tpl->assign("reviewdate", date("$dateformat $timeformat", $reviews['date']) );
 		$tpl->assign("rating", ratingpics($reviews['rating']) );
@@ -414,17 +408,15 @@ else {
 		if(isMEMBER || $anonreviews) {
 			$item = $item;
 			$type = $type;
-			include(_BASEDIR."includes/reviewform.php");
+			include("includes/reviewform.php");
 		}
 		else $form = write_message(sprintf(_LOGINTOREVIEW, strtolower($pagelinks['login']['link']), strtolower($pagelinks['register']['link'])));
 	}
 	$tpl->assign("reviewform", $form);
 
 }
-$tpl->assign("output", $output);
-$output = $tpl->getOutputContent();  
-$output = e107::getParser()->parseTemplate($output, true);
-e107::getRender()->tablerender($caption, $output, $current);
-dbclose( );
-require_once(FOOTERF);  
-?>
+//$tpl->xprintToScreen( );
+$text = $tpl->getOutputContent(); 
+e107::getRender()->tablerender($caption, $text, $current);
+require_once(FOOTERF); 
+exit;

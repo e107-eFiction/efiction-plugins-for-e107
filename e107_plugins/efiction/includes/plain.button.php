@@ -2,12 +2,11 @@
 
 if (!defined('e107_INIT'))
 {
-	require_once(__DIR__.'/../../class2.php');
+	require_once(__DIR__.'/../../../class2.php');
 }
 
-session_start();
 
-define ("_BASEDIR", e_PLUGIN."efiction/");
+define("_BASEDIR", "../");
 include("../config.php");
 
 e107::getSession()->clear(SITEKEY."_digit"); 

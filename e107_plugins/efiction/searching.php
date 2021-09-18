@@ -35,19 +35,17 @@ if (isset($_GET['action']) && $_GET['action'] == 'advanced') {
 
 $displayform = 1;
 
-// Include some files for page setup and core functions
-include ("header.php");
-require_once(HEADERF);
+include 'header.php';
 
-if (file_exists(_BASEDIR."$skindir/browse.tpl")) {
-    $tpl = new TemplatePower(_BASEDIR."$skindir/browse.tpl");
+if (file_exists("$skindir/browse.tpl")) {
+    $tpl = new TemplatePower("$skindir/browse.tpl");
 } else {
-    $tpl = new TemplatePower(_BASEDIR.'default_tpls/browse.tpl');
+    $tpl = new TemplatePower('default_tpls/browse.tpl');
 }
 if (file_exists("$skindir/listings.tpl")) {
-    $tpl->assignInclude('listings', "$skindir/listings.tpl");
+    $tpl->assignInclude('listings', "./$skindir/listings.tpl");
 } else {
-    $tpl->assignInclude('listings', _BASEDIR."default_tpls/listings.tpl");
+    $tpl->assignInclude('listings', './default_tpls/listings.tpl');
 }
 
 include 'includes/pagesetup.php';
@@ -56,7 +54,7 @@ $searchtype = (isset($_REQUEST['searchtype']) ? $_REQUEST['searchtype'] : 'simpl
 $searchterm = (isset($_REQUEST['searchterm']) ? escapestring($_REQUEST['searchterm']) : false);
 
 if (isset($_POST['submit']) || isset($_GET['offset'])) {
-    $caption = _RESULTS;
+    $output .= '<div id="pagetitle">'._RESULTS.'</div>';
     $query = array();
     $countquery = array();
     $scountquery = array();
@@ -66,12 +64,12 @@ if (isset($_POST['submit']) || isset($_GET['offset'])) {
         $query .= ' '._ORDERBY;
         search($query, $countquery);
         $tpl->assign('output', $output);
-        $output = $tpl->getOutputContent();  
-$output = e107::getParser()->parseTemplate($output, true);
-e107::getRender()->tablerender($caption, $output, $current);;
-        dbclose();
-        require_once(FOOTERF);  
-        exit( );
+		//$tpl->xprintToScreen( );
+		dbclose( );
+		$text = $tpl->getOutputContent(); 
+		e107::getRender()->tablerender($caption, $text, $current);
+		require_once(FOOTERF); 
+		exit;
     }
     if ($searchterm && strlen($searchterm) < 3) {
         errorExit(_SEARCHTERMTOOSHORT);
@@ -99,12 +97,12 @@ e107::getRender()->tablerender($caption, $output, $current);;
                 $countquery = 'SELECT COUNT(stories.sid) FROM '.TABLEPREFIX.'fanfiction_stories as stories LEFT JOIN '.TABLEPREFIX."fanfiction_coauthors as coauth ON coauth.sid = stories.sid WHERE stories.validated > 0 AND (FIND_IN_SET(stories.uid, '$authors') > 0 OR FIND_IN_SET(coauth.uid, '$authors') > 0)";
                 search($query, $countquery);
                 $tpl->assign('output', $output);
-                $output = $tpl->getOutputContent();  
-$output = e107::getParser()->parseTemplate($output, true);
-e107::getRender()->tablerender($caption, $output, $current);;
-                dbclose();
-                require_once(FOOTERF);  
-                exit( );
+				//$tpl->xprintToScreen( );
+				dbclose( );
+				$text = $tpl->getOutputContent(); 
+				e107::getRender()->tablerender($caption, $text, $current);
+				require_once(FOOTERF); 
+				exit;
             } else {
                 $query[] = '1 = 0';
                 $countquery[] = '1 = 0';
@@ -190,7 +188,6 @@ e107::getRender()->tablerender($caption, $output, $current);;
     } else {
         $rid = array();
     }
- 
     if (count($rid) > 0) {
         $rid = array_filter($rid, 'isNumber');
         $query[] = findclause('rid', $rid);
@@ -297,8 +294,7 @@ e107::getRender()->tablerender($caption, $output, $current);;
     }
 } else {
     if ($searchtype == 'simple') {
-        $caption = _SIMPLE;
-        $output .= "<div style=\"text-align: center;'><form method=\"post\" enctype=\"multipart/form-data\" action=\"searching.php\">
+        $output .= '<div id="pagetitle">'._SIMPLE."</div><div style='text-align: center;'><form method=\"post\" enctype=\"multipart/form-data\" action=\"searching.php\">
 		<div class=\"tblborder\" style=\"width: 320px; padding: 5px; margin: 0 auto;\">
 		<select name=\"searchtype\">
 		<option value=\"penname\">"._PENNAME.'</option>
@@ -311,8 +307,7 @@ e107::getRender()->tablerender($caption, $output, $current);;
         $output .= '<INPUT type="submit" class="button" name="submit" value="'._SUBMIT.'" size="20">
 		<div style="font-size: 8pt; text-align: right;"><a href="searching.php?searchtype=advanced">'._ADVANCED.'</a></div></div></form></div>';
     } else {
-        $caption = _ADVANCED;
-        $output .= '<div>
+        $output .= '<div id="pagetitle">'._ADVANCED.'</div><div>
 			<form method="POST" name="form" enctype="multipart/form-data" action="searching.php?searchtype=advanced">
 			<div class="tblborder" style="width: 90%; margin: 0 auto; padding: 10px;">';
         if ($multiplecats) {
@@ -381,11 +376,10 @@ e107::getRender()->tablerender($caption, $output, $current);;
         $output .= "<div id='submitdiv'><input name=\"submit\" id=\"submit\" value=\""._SUBMIT.'" type="submit" class="button"></div></div></form></div>';
     }
 }
-
-$tpl->assign("output", $output);
-$output = $tpl->getOutputContent();  
-$output = e107::getParser()->parseTemplate($output, true);
-e107::getRender()->tablerender($caption, $output, $current);
-dbclose();
-    require_once(FOOTERF);  
-    exit( );
+$tpl->assign('output', $output);
+//$tpl->xprintToScreen( );
+dbclose( );
+$text = $tpl->getOutputContent(); 
+e107::getRender()->tablerender($caption, $text, $current);
+require_once(FOOTERF); 
+exit;

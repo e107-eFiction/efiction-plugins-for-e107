@@ -20,45 +20,93 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
- 
+// Force the argument separator to be standards compliant
+
 if (!defined('e107_INIT'))
 {
 	require_once(__DIR__.'/../../class2.php');
 }
- 
 
-require_once(_BASEDIR."config.php");
+ //e_ROUTE is available
+if(e_CURRENT_PLUGIN == "efiction") {
+ define("THEME_LAYOUT", "efiction");
+}
+ 
+require_once(HEADERF); 
+//THEME_LAYOUT is available
 
 $settings = efiction_settings::get_settings();
- 
-if(isset($skin)) $globalskin = $skin; 
- 
-define("STORIESPATH", $settings['storiespath']);
-unset($settings['storiespath']);
+//print_a($settings);
 foreach($settings as $var => $val) {
-	$$var = stripslashes($val);
+  	$$var = stripslashes($val);
+}
+ 
+include_once(_BASEDIR."includes/queries.php");
+
+require_once(_BASEDIR."includes/get_session_vars.php");
+ 
+
+@ ini_set('arg_separator.output','&amp;'); 
+if(isset($_GET['debug'])) @ error_reporting(E_ALL);
+if(isset($_GET['benchmark'])) {
+	list($usec, $sec) = explode(" ", microtime());
+	$start = ((float)$usec + (float)$sec);
+}
+$headerSent = false;
+
+if(get_magic_quotes_gpc()){
+	foreach($_POST as $var => $val) {
+		$_POST[$var] = is_array( $val ) ? array_map( 'stripslashes', $val ) : stripslashes( $val );
+	}
+	foreach($_GET as $var => $val) {
+		$_GET[$var] = is_array( $val ) ? array_map( 'stripslashes', $val ) : stripslashes( $val );
+	}
+}
+
+// Defines the character set for your language/location
+define("_CHARSET", CHARSET);
+
+// Prevent possible XSS attacks via $_GET.
+foreach ($_GET as $v) {
+	if(preg_match('@<script[^>]*?>.*?</script>@si', $v) ||
+		preg_match("'@<iframe[^>]*?>.*?</script>@si'", $v) ||
+		preg_match("'@<applet[^>]*?>.*?</script>@si'", $v) ||
+		preg_match("'@<meta[^>]*?>.*?</script>@si'", $v) ||
+		preg_match('@<[\/\!]*?[^<>]*?>@si', $v) ||
+		preg_match('@<style[^>]*?>.*?</style>@siU', $v) ||
+		preg_match('@<![\s\S]*?--[ \t\n\r]*>@', $v)) {
+		include("languages/en.php"); // no language set yet, so default to English.	
+		die (_POSSIBLEHACK);
+	}
 } 
+unset($v);
+ 
+// clear the global variables if register globals is on.
+
+if(ini_get('register_globals')) {
+	$arrayList = array_merge($_GET, $_POST, $_COOKIE);
+	foreach($arrayList as $k => $v) {
+		unset($GLOBALS[$k]);
+	}
+}                   
+ 
+ 
+
+
+
 if(isset($_GET['debug'])) $debug = 1;
 if(!$displaycolumns) $displaycolumns = 1; // shouldn't happen, but just in case.
 if($words) $words = explode(", ", $words);
 else $words = array( );
-// Fix for sites with 2.0 or 1.1 running as well as 3.0 with register_globals on.
-$defaultskin = 'e107';
-
-if(isset($globalskin)) $skin = $globalskin;
-
+ 
 if(isset($_GET['action'])) $action = strip_tags($_GET['action']);
 else $action = false;
 
-
-
-//because alphabet
 if(file_exists(_BASEDIR."languages/{$language}.php")) include (_BASEDIR."languages/{$language}.php");
 else include (_BASEDIR."languages/en.php");
 
-require_once(_BASEDIR."includes/queries.php");
-require_once(_BASEDIR."includes/corefunctions.php");
 
+include_once(_BASEDIR."includes/corefunctions.php");
 
 // Check and/or set some variables used at various points throughout the script
 if(isset($_GET['offset'])) $offset = $_GET['offset'];
@@ -82,48 +130,48 @@ if(isset($PHP_SELF)) $PHP_SELF = htmlspecialchars(descript($PHP_SELF), ENT_QUOTE
 
 // Set these variables to start.
 $agecontsent = false; $viewed = false; 
- 
-require_once("inc/get_session_vars.php");
- 
-if(isset($_GET['skin'])) {
-	$siteskin = $_GET['skin'];
-    e107::getSession()->set(SITEKEY."_skin", $siteskin); 
-}
-
-$v = explode(".", $version);   
-include(_BASEDIR."version.php");   
-$newV = explode(".", $version);    
+ /*
+$v = explode(".", $version);
+include("version.php");
+$newV = explode(".", $version);
 //if($v[0] == $newV[0] && ($v[1] < $newV[1] || (isset($newV[2]) && $v[2] < $newV[2]))) {
 foreach($newV AS $k => $l) {
 	if($newV[$k] > $v[$k] || (!empty($newV[$k]) && empty($v[$k]))) {
-		if(isADMIN && e_PAGE != "update.php") {
+		if(isADMIN && basename($_SERVER['PHP_SELF']) != "update.php") {
 			header("Location: update.php");
+			exit( );
 		}
-		else if(!isADMIN && e_PAGE != "maintenance.php" && !(isset($_GET['action']) && $_GET['action'] == "login")) {
+		else if(!isADMIN && basename($_SERVER['PHP_SELF']) != "maintenance.php" && !(isset($_GET['action']) && $_GET['action'] == "login")) {
 			header("Location: maintenance.php");
 			exit( );
 		}
 	}
 }
 
-if(e107::getSession()->is(SITEKEY."_skin")) $siteskin = e107::getSession()->get(SITEKEY."_skin");
-if($maintenance && !isADMIN && e_PAGE != "maintenance.php" && !(isset($_GET['action']) && $_GET['action'] == "login")) {
+ 
+
+
+if($maintenance && !isADMIN && basename($_SERVER['PHP_SELF']) != "maintenance.php" && !(isset($_GET['action']) && $_GET['action'] == "login")) {
 	header("Location: maintenance.php");
 	exit( );
 }
+*/
+$blockquery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_blocks");
+while($block = dbassoc($blockquery)) {
+	$blocks[$block['block_name']] = unserialize($block['block_variables']);
+	$blocks[$block['block_name']]['title'] = $block['block_title'];
+	$blocks[$block['block_name']]['file'] = $block['block_file'];
+	$blocks[$block['block_name']]['status'] = $block['block_status'];
+}
 
-$blocks = efiction::blocks();
- 
+// This session variable is used to track the story views
 if(e107::getSession()->is(SITEKEY."_viewed")) $viewed = e107::getSession()->get(SITEKEY."_viewed"); 
 
 if(isset($_GET['ageconsent'])) e107::getSession()->set(SITEKEY."_ageconsent", 1);
 if(isset($_GET['warning'])) e107::getSession()->set(SITEKEY."_warned_{$_GET['warning']}", 1);
- 
- 
-if(is_dir(_BASEDIR."skins/$siteskin")) $skindir = _BASEDIR."skins/$siteskin";
-else if(is_dir(_BASEDIR."skins/".$settings['skin'])) $skindir = _BASEDIR."skins/".$defaultskin;
-else $skindir = _BASEDIR."default_tpls";
 
+if(file_exists("languages/{$language}.php")) require_once ("languages/{$language}.php");
+else require_once ("languages/en.php");
 
 if(USERUID) {
 	$prefs = dbquery("SELECT sortby, storyindex, tinyMCE FROM ".TABLEPREFIX."fanfiction_authorprefs WHERE uid = '".USERUID."'");
@@ -159,134 +207,113 @@ if($current == "viewuser" && isNumber($uid)) {
 	$titleinfo = "$sitename :: $penname";
 }
  
-if(isset($displayform) && $displayform == 1) {
+//echo _DOCTYPE."<html><head>";
+ /*
+if(!isset($titleinfo)) $titleinfo = "$sitename :: $slogan";
+if(isset($metaDesc)) echo "<meta name='description' content='$metaDesc'>";
+echo "<title>$titleinfo</title>";
+*/
+ 
+/*
 
-e107::js('url',  _BASEDIR."includes/userselect.js" , 'jquery' );
-e107::js('url',  _BASEDIR."includes/xmlhttp.js" , 'jquery' );
-  $inlinecode = "
-    lang = new Array( );
+if(!isset($_GET['action']) || $_GET['action'] != "printable") {
+ 
+<link rel=\"alternate\" type=\"application/rss+xml\" title=\"$sitename RSS Feed\" href=\""._BASEDIR."rss.php\">";
+if(!empty($tinyMCE)) {
+	echo "<script language=\"javascript\" type=\"text/javascript\" src=\""._BASEDIR."tinymce/js/tinymce/tinymce.min.js\"></script>
+	<script language=\"javascript\" type=\"text/javascript\"><!--";
+	$tinymessage = dbquery("SELECT message_text FROM ".TABLEPREFIX."fanfiction_messages WHERE message_name = 'tinyMCE' LIMIT 1");
+	list($tinysettings) = dbrow($tinymessage);
+	if(!empty($tinysettings) && $current != "adminarea") {
+		echo $tinysettings;
+	}
+	else {
+		echo "
+	tinymce.init({
+  		selector: 'textarea:not(.mceNoEditor)',
+  		menubar: false,
+		language: '$language',
+  		theme: 'modern',
+		skin: 'lightgray',
+		min_height: 200,
+		plugins: [
+		    'autolink lists link image charmap paste preview hr anchor pagebreak',
+		    'searchreplace wordcount visualblocks visualchars code fullscreen',
+		    'insertdatetime media nonbreaking save table contextmenu directionality',
+		    'emoticons template textcolor colorpicker textpattern imagetools toc textcolor table'
+		],
+		paste_word_valid_elements: 'b,strong,i,em,h1,h2,u,p,ol,ul,li,a[href],span,color,font-size,font-color,font-family,mark,table,tr,td',
+		  		paste_retain_style_properties : 'all',
+		paste_strip_class_attributes: 'none',
+		toolbar1: 'undo redo | insert styleselect | bold italic underline strikethrough | link image | alignleft aligncenter alignright alignjustify',
+		toolbar2: 'preview | bullist numlist | forecolor backcolor emoticons | fontselect |  fontsizeselect wordcount',
+		image_advtab: true,
+		templates: [
+		    { title: 'Test template 1', content: 'Test 1' },
+		    { title: 'Test template 2', content: 'Test 2' }
+		],
+		content_css: [
+		    '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
+		    '//www.tinymce.com/css/codepen.min.css'
+		],";
+		if(USERUID) 
+			echo "		external_image_list_url : '".STORIESPATH."/".USERUID."/images/imagelist.js',";
+		echo "
+		theme_modern_resizing: true,".($current == "adminarea" ? "\n\t\tentity_encoding: 'raw'" : "\n\t\tinvalid_elements: 'script,object,applet,iframe'")."
+   });
+	
+";
+	}
+	echo "
+var tinyMCEmode = true;
+	function toogleEditorMode(id) {
+		var elm = document.getElementById(id);
 
-lang['Back2Cats'] = '"._BACK2CATS."';
-lang['ChooseCat'] = '"._CHOOSECAT."';
-lang['Categories'] = '"._CATEGORIES."';
-lang['Characters'] = '"._CHARACTERS."';
-lang['MoveTop'] = '"._MOVETOP."';
-lang['TopLevel'] = '"._TOPLEVEL."';
-lang['CatLocked'] = '"._CATLOCKED."';
-basedir = '"._BASEDIR."';
-
-categories = new Array( );
-characters = new Array( );
-\n";
-      
-   e107::js('inline', $inlinecode); 
+		if (tinyMCE.getInstanceById(id) == null)
+			tinyMCE.execCommand('mceAddControl', false, id);
+		else
+			tinyMCE.execCommand('mceRemoveControl', false, id);
+	}
+";
+ 
+echo " --></script>";
+}
 }
  
-
-if(!$displaycolumns) $displaycolumns = 1;
-$colwidth = floor(100/$displaycolumns);
+*/
+if(file_exists("extra_header.php")) include_once("extra_header.php");
+if(file_exists("$skindir/extra_header.php")) include_once("$skindir/extra_header.php");
  
+ 
+/*
 if(!empty($_GET['action']) && $_GET['action'] == "printable") {
-	if(file_exists("$skindir/printable.css")) echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"$skindir/printable.css\">";
-	else echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"default_tpls/printable.css\">";
-    
-    e107::css('url', _BASEDIR.'default_tpls/printable.css');
-    
-    $inlinescript = "
-    if (window.print) {
-        window.print() ;  
-      } else {
-          var WebBrowser = '<OBJECT ID=\"WebBrowser1\" WIDTH=0 HEIGHT=0 CLASSID=\"CLSID:8856F961-340A-11D0-A96B-00C04FD705A2\"></OBJECT>';
-      document.body.insertAdjacentHTML('beforeEnd', WebBrowser);
-          WebBrowser1.ExecWB(6, 2);//Use a 1 vs. a 2 for a prompting dialog box    WebBrowser1.outerHTML = \"\";  
-      }";
-      
-   e107::js('footer-inline', $inlinescript);  
+	 
+	echo "<script type='text/javascript'>
+<!--
+if (window.print) {
+    window.print() ;  
+} else {
+    var WebBrowser = '<OBJECT ID=\"WebBrowser1\" WIDTH=0 HEIGHT=0 CLASSID=\"CLSID:8856F961-340A-11D0-A96B-00C04FD705A2\"></OBJECT>';
+document.body.insertAdjacentHTML('beforeEnd', WebBrowser);
+    WebBrowser1.ExecWB(6, 2);//Use a 1 vs. a 2 for a prompting dialog box    WebBrowser1.outerHTML = \"\";  
 }
-else { 
-
-$inlinestyle = '
-    #columncontainer { margin: 1em auto; width: 100%; padding: 5%;}
-    #browseblock, #memberblock { width: 100%; padding: 0; margin: 0; float: left; border: 0px solid transparent; }
-    .column { float: left; width: '.($colwidth - 1).'%; }
-    html>body .column { width: '.$colwidth.'%; }
-    .cleaner { clear: both; height: 1px; font-size: 1px; margin: 0; padding: 0; background: transparent; }
-    #settingsform { margin: 0; padding: 0; border: none; }
-    #settingsform FORM { width: 100%; margin: 0 10%; }
-    #settingsform LABEL { float: left; display: block; width: 30%; text-align: right; padding-right: 10px; clear: left; }
-    #settingsform DIV { clear: both;}
-    #settingsform .fieldset SPAN { float: left; display: block; width: 30%; text-align: right; padding-right: 10px; clear: left;}
-    #settingsform .fieldset LABEL { float: none; width: auto; display: inline; text-align: left; clear: none; }
-    #settingsform { float: left; margin: 1ex 10%; }
-    #settingsform .tinytoggle { text-align: center; }
-    #settingsform .tinytoggle LABEL { float: none; display: inline; width: auto; text-align: center; padding: 0; clear: none; }
-    #settingsform #submitdiv { text-align: center; width: 100%;clear: both; height: 3em; }
-    #settingsform #submitdiv #submit { position: absolute; z-index: 10001; margin: 1em; }
-    a.pophelp{
-        position: relative; /* this is the key*/
-        vertical-align: super;
-    }
-    
-    a.pophelp:hover{z-index:100; border: none; text-decoration: none;}
-    
-    a.pophelp span{display: none; position: absolute; top: -25em; left: 20em; }
-    
-    a.pophelp:hover span{ /*the span will display just on :hover state*/
-        display:block;
-        position: absolute;
-        top: -3em; left: 8em; width: 225px;
-        border:1px solid #000;
-        background-color:#CCC; color:#000;
-        text-decoration: none;
-        text-align: left;
-        padding: 5px;
-        font-weight: normal;
-        visibility: visible;
-    }
-    .required { color: red; }
-    .shim {
-    	position: absolute;
-    	display: none;
-    	height: 0;
-    	width:0;
-    	margin: 0;
-    	padding: 0;
-    	z-index: 100;
-    }
-    
-    .ajaxOptList {
-    	background: #CCC;
-    	border: 1px solid #000;
-    	margin: 0;
-    	position: absolute;
-    	padding: 0;
-    	z-index: 1000;
-    	text-align: left;
-    }
-    .ajaxListOptOver {
-    	padding: 4px;
-    	background: #CCC;
-    	margin: 0;
-    }
-    .ajaxListOpt {
-    	background: #EEE;
-    	padding: 4px;
-    	margin: 0;
-    }
-    .multiSelect {
-    	width: 300px;
-    };
- 
-';
- 
-
-e107::css('inline', $inlinestyle );
- 
-e107::css('url',  $skindir."/style.css");
- 
+-->
+</script>";
 }
-
+else {
  
+<meta name='viewport' content='width=device-width, initial-scale=1.0' />
+";
+}
+echo "</head>";
+*/
+$headerSent = true;
 include (_BASEDIR."includes/class.TemplatePower.inc.php");
  
+if($debug == 1) {
+	@ error_reporting(E_ALL);
+	echo "\n<!-- \$_COOKIE \n"; print_r($_COOKIE); echo " -->";
+	echo "\n<!-- \$_POST \n"; print_r($_POST); echo " -->";
+}
  
+

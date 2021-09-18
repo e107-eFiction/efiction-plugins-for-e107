@@ -22,7 +22,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if (!defined('e107_INIT')) { exit; }
+if(!defined("_CHARSET")) exit( );
 
 $chapid = isset($_GET['chapid']) && isNumber($_GET['chapid']) ? $_GET['chapid'] : 0;
 
@@ -35,7 +35,7 @@ $chapid = isset($_GET['chapid']) && isNumber($_GET['chapid']) ? $_GET['chapid'] 
 	if(isset($_POST['submit'])) {
 		$subject = strip_tags(descript($_POST['subject']));
 		$letter = stripslashes(descript($_POST['letter']));
-		include(_BASEDIR."includes/emailer.php");
+		include("includes/emailer.php");
 		$result = sendemail($_POST['authorname'], $_POST['authoremail'], $adminname, $ademail, $subject, $letter, "html");
 		if($result) echo write_message(_EMAILSENT);
 		else echo write_error(_ERROR);

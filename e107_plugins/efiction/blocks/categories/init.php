@@ -23,12 +23,8 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if (!defined('e107_INIT')) {
-    exit;
-}
+if(!defined("_CHARSET")) exit( );
 
-$blocks['categories'] = array('title' => 'Main Categories', 'status' => '0', 'file' => 'categories/categories.php');
 
-$query = 'INSERT INTO '.MPREFIX."fanfiction_blocks(`block_name`, `block_title`, `block_status`, `block_file`, `block_variables`) VALUES('categories', 'Main Categories', '0', 'categories/categories.php', '')";
-
-e107::getDb()->gen($query);
+$blocks["categories"] = array("title" => "Main Categories", "status" => "0", "file" => "categories/categories.php");
+?>

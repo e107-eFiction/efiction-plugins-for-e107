@@ -21,20 +21,19 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if (!defined('e107_INIT')) { exit; }
-
+if(!defined("_CHARSET")) exit( );
 	if(!isset($count)) $count = 0;
 	$adminlinks = "";
 	$tpl->newBlock("seriesblock");
 	$tpl->assign("seriesid", $stories['seriesid']);
-	$tpl->assign("author", "<a href=\"viewuser.php?uid=".$stories['uid']."\">".stripslashes($stories['penname'])."</a>");
-	$tpl->assign("title", "<a href=\"viewseries.php?seriesid=".$stories['seriesid']."\">".stripslashes($stories['title'])."</a>");
+	$tpl->assign("author", "<a href=\""._BASEDIR."viewuser.php?uid=".$stories['uid']."\">".stripslashes($stories['penname'])."</a>");
+	$tpl->assign("title", "<a href=\""._BASEDIR."viewseries.php?seriesid=".$stories['seriesid']."\">".stripslashes($stories['title'])."</a>");
 	$tpl->assign("summary", stripslashes($stories['summary']));
 	$tpl->assign("score", ratingpics($stories['rating']));
 	$tpl->assign("numstories", $stories['numstories']);
 	if($reviewsallowed == "1") {
-		$tpl->assign("reviews", "<a href=\"reviews.php?type=SE&amp;item=".$stories['seriesid']."\">"._REVIEWS."</a>");
-		$tpl->assign("numreviews", "<a href=\"reviews.php?type=SE&amp;item=".$stories['seriesid']."\">$stories[reviews]</a>");
+		$tpl->assign("reviews", "<a href=\""._BASEDIR."reviews.php?type=SE&amp;item=".$stories['seriesid']."\">"._REVIEWS."</a>");
+		$tpl->assign("numreviews", "<a href=\""._BASEDIR."reviews.php?type=SE&amp;item=".$stories['seriesid']."\">$stories[reviews]</a>");
 	}
 	$tpl->assign("category", ($stories['catid'] ? catlist($stories['catid']) : _NONE));
 	$tpl->assign("characters", $stories['characters'] ? charlist($stories['characters']) : _NONE);
@@ -61,7 +60,7 @@ if (!defined('e107_INIT')) { exit; }
 	$parents = dbquery("SELECT s.title, s.seriesid FROM ".TABLEPREFIX."fanfiction_inseries as i, ".TABLEPREFIX."fanfiction_series as s WHERE s.seriesid = i.seriesid AND i.subseriesid = '".$stories['seriesid']."'");
 	$plinks = array( );
 	while($p = dbassoc($parents)) {
-		$plinks[] = "<a href='viewseries.php?seriesid=".$p['seriesid']."'>".$p['title']."</a>";
+		$plinks[] = "<a href='"._BASEDIR."viewseries.php?seriesid=".$p['seriesid']."'>".$p['title']."</a>";
 	}
 	$tpl->assign("parentseries", count($plinks) ? implode(", ", $plinks) : _NONE);
 	if(!isset($seriescode)) {
@@ -81,9 +80,9 @@ if (!defined('e107_INIT')) { exit; }
 		$tpl->assign("addtofaves", $addtofaves);
 	}
 	if((isADMIN && uLEVEL < 4) || (USERUID != 0 && USERUID == $stories['uid'])) {
-		$tpl->assign("adminoptions", "<div class=\"adminoptions\"><span class='label'>"._ADMINOPTIONS.":</span> [<a href=\"manageseries.php?action=add&amp;add=stories&amp;seriesid=".$stories['seriesid']."\">"._ADD2SERIES."</a>] [<a href=\"series.php?action=edit&amp;seriesid=".$stories['seriesid']."\">"._EDIT."</a>] [<a href=\""._BASEDIR."series.php?action=delete&amp;seriesid=".$stories['seriesid']."\">"._DELETE."</a>]".(!empty($adminlinks) ? " ".$adminlinks : "")."</div>");
+		$tpl->assign("adminoptions", "<div class=\"adminoptions\"><span class='label'>"._ADMINOPTIONS.":</span> [<a href=\""._BASEDIR."series.php?action=add&amp;add=stories&amp;seriesid=".$stories['seriesid']."\">"._ADD2SERIES."</a>] [<a href=\""._BASEDIR."series.php?action=edit&amp;seriesid=".$stories['seriesid']."\">"._EDIT."</a>] [<a href=\""._BASEDIR."series.php?action=delete&amp;seriesid=".$stories['seriesid']."\">"._DELETE."</a>]".(!empty($adminlinks) ? " ".$adminlinks : "")."</div>");
 	}
-	else if($stories['isopen'] == 2 && USERUID) $tpl->assign("adminoptions", "[<a href=\"manageseries.php?action=add&amp;add=stories&amp;seriesid=".$stories['seriesid']."\">"._ADD2SERIES."</a>] ".(!empty($adminlinks) ? " ".$adminlinks : ""));
-	$tpl->assign("reportthis", "[<a href=\"report.php?action=report&amp;url=manageseries.php?seriesid=".$stories['seriesid']."\">"._REPORTTHIS."</a>]");
+	else if($stories['isopen'] == 2 && USERUID) $tpl->assign("adminoptions", "[<a href=\""._BASEDIR."series.php?action=add&amp;add=stories&amp;seriesid=".$stories['seriesid']."\">"._ADD2SERIES."</a>] ".(!empty($adminlinks) ? " ".$adminlinks : ""));
+	$tpl->assign("reportthis", "[<a href=\""._BASEDIR."contact.php?action=report&amp;url=series.php?seriesid=".$stories['seriesid']."\">"._REPORTTHIS."</a>]");
 	$count++;
 ?>

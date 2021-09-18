@@ -1,36 +1,20 @@
 <?php
 
-if (!defined('e107_INIT')) { exit; }
-
-$template = e107::getTemplate('efiction', 'blocks', 'random', true, true);
-$blocks = efiction_blocks::get_blocks();
-
-$caption = $blocks['random']['title'];
-$var = array('BLOCK_CAPTION' => $caption);
-$caption = e107::getParser()->simpleParse($template['caption'], $var);
-
-$sc = e107::getScParser()->getScObject('story_shortcodes', 'efiction', false);
-$text = '';
-
-$limit = isset($blocks['random']['limit']) && $blocks['random']['limit'] > 0 ? $blocks['random']['limit'] : 1;
-$sumlength  = isset($blocks['random']['sumlength']) && $blocks['random']['sumlength'] > 0 ? $blocks['random']['sumlength'] :75;
-
-$query = _STORYQUERY." ORDER BY rand( ) DESC LIMIT $limit";
-$result = e107::getDb()->retrieve($query, true);
-
-$start = $template['start']; 
-$end = $template['end'];
-$tablerender= varset($template['tablerender'], '');
-
-foreach ($result as $stories) {
-	if (!isset($blocks['random']['allowtags'])) {
-		$stories['summary'] = e107::getParser()->toText($stories['summary']);
-	} else {
-		$stories['summary'] = e107::getParser()->toHTML($stories['summary'], true, 'SUMMARY');
+if(!defined("_CHARSET")) exit( );
+	$count = 0;
+	$content = "";
+	$use_tpl = isset($blocks['random']['tpl']) && $blocks['random']['tpl'] ? true : false;
+	$limit = isset($blocks['random']['limit']) && $blocks['random']['limit'] > 0 ? $blocks['random']['limit'] : 1;
+	$randomquery = dbquery(_STORYQUERY." ORDER BY rand( ) DESC LIMIT $limit");
+	if($use_tpl && dbnumrows($randomquery) >0) $tpl->newBlock("randomblock");
+	while($stories = dbassoc($randomquery))
+	{
+		if(!isset($blocks['random']['allowtags'])) $stories['summary'] = strip_tags($stories['summary']);
+		$stories['summary'] = truncate_text(stripslashes($stories['summary']), (isset($blocks['random']['sumlength']) ? $blocks['random']['sumlength'] : 75));
+		if(!$use_tpl) $content .= "<div class='randomstory'>".title_link($stories)." "._BY." ".author_link($stories)." ".$ratingslist[$stories['rid']]['name']."<br />".$stories['summary']."</div>";
+		else {
+			include(_BASEDIR."includes/storyblock.php");
+		}
 	}
-	$$stories['sumlength'] = $sumlength ;
-	$sc->setVars($stories);
-	$text .= e107::getParser()->parseTemplate($template['item'], true, $sc);
-}
-
-$content =  e107::getRender()->tablerender($caption, $start.$text.$end, $tablerender, true);
+	if($use_tpl && dbnumrows($randomquery) >0) $tpl->gotoBlock("_ROOT");	
+?>

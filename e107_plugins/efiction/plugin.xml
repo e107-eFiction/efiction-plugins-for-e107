@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<e107Plugin name="efiction" lan="LAN_001" version="1.0.3" date="2021-06-12" compatibility="2.3.1" installRequired="true" >
+<e107Plugin name="efiction" lan="LAN_PLUGIN_EFICTION_NAME" version="1.0.0" date="2021-09-17" compatibility="2.3.1" installRequired="true" >
 	<author name="Jimako" url="https://www.e107sk.com" />
 	<summary lan="">eFiction integration software for e107 CMS </summary>
 	<description lan="">eFiction is a software program that enables users to run automated original or fanfiction archives on their websites.</description>
@@ -11,13 +11,16 @@
 	<category>content</category>
 	<copyright>e107sk</copyright>
 	<adminLinks>
-		<link url="admin_config.php" description="" icon="images/icon_64.png" iconSmall="images/icon_16.png"  icon128="images/icon_128.png"  primary="true" >LAN_CONFIGURE</link>
+		<link url="admin.php" description="" icon="images/icon_64.png" iconSmall="images/icon_16.png"  icon128="images/icon_128.png"  primary="true" >LAN_CONFIGURE</link>
 	</adminLinks>
+	<siteLinks>
+		<link url="{e_PLUGIN}efiction/efiction.php" perm='everyone' sef='index'>LAN_PLUGIN_EFICTION</link>
+	</siteLinks>    
 	<extendedFields>
-		<field name="betareader" type='EUF_RADIO' text="Beta-reader" default='0' active="true" system="0" values="LAN_YES,LAN_NO" />	
-		<field name="author" type='EUF_DB_FIELD' text="Author" default='0' active="true" system="0" parms="^,^^,^^,^0^,^^,^" 
+		<field name="author_uid" type='EUF_DB_FIELD' text="Author" default='0' active="true" system="0" parms="^,^^,^^,^0^,^^,^" 
 			values="fanfiction_authors,uid,penname,penname" read="255" write="250" applicable="253" signup="0" />
-		<field name="level" type='EUF_DROPDOWN' text="Level" default='0' active="true" system="0" parms="^,^^,^^,^0^,^^,^" 
+	    <field name="betareader" type='EUF_RADIO' text="Beta-reader" default='0' active="true" system="0" values="LAN_YES,LAN_NO" />
+       	<field name="level" type='EUF_DROPDOWN' text="Level" default='0' active="true" system="0" parms="^,^^,^^,^0^,^^,^" 
 			values="1,2,3,4" read="255" write="250" applicable="253" signup="0" />
-		</extendedFields>
+    </extendedFields>
 </e107Plugin>

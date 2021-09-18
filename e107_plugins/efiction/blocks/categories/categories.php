@@ -23,22 +23,21 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if (!defined('e107_INIT')) { exit; }
+if(!defined("_CHARSET")) exit( );
 
-$multiplecats = efiction_settings::get_single_setting('multiplecats');
-$displaycolumns = efiction_settings::get_single_setting('displaycolumns');
-$settings = efiction_settings::get_settings();
- 
+
+
 	if($multiplecats) {
 		$displaycolumns = $displaycolumns ? $displaycolumns : 1;
 		$query = "SELECT * FROM ".TABLEPREFIX."fanfiction_categories WHERE parentcatid = '-1' ORDER BY displayorder";
-		$result4 = e107::getDb()->retrieve($query, true);
-		$total = count($result4);
+		$result4 = dbquery($query);
+        /* or die(_FATALERROR."Query: ".$query."<br />Error: (".e107::getDb()->getLastErrorNumber().") ".e107::getDb()->getLastErrorText()); */
+		$total = dbnumrows($result4);
 		$count = 0;
 		$collist = array( );
 		if($total) {
 			if(!empty($blocks['categories']['tpl'])) {
-				foreach($result4 AS $categories) {
+				while($categories = dbassoc($result4)) {
 					$list = floor($total / $displaycolumns);
 					if($total % $displaycolumns != 0) $list++;
 					$tpl->newBlock("categoriesblock");
@@ -61,7 +60,7 @@ $settings = efiction_settings::get_settings();
 				$count = 0;
 				$template = (!empty($blocks['categories']['template']) ? stripslashes($blocks['categories']['template']) : "{image} {link} [{count}] {description}"); 
 				$search = array("@\{image\}@", "@\{link\}@", "@\{count\}@", "@\{description\}@");
-				foreach($result4 AS $categories) { 
+				while($categories = dbassoc($result4)) {
 					unset($catinfo);
 					$count++;
 					$replace = array(
@@ -89,7 +88,7 @@ $settings = efiction_settings::get_settings();
 				}
 				else {
 					$content .= "<div id=\"categoryblock\">";
-					foreach($collist as $c) { 
+					foreach($collist as $c) {
 						$content .= "<div class=\"row\">".$c."</div>";
 					}
 					$content .= "</div>";
@@ -97,4 +96,4 @@ $settings = efiction_settings::get_settings();
 			}
 		}
 	}
- 
+?>

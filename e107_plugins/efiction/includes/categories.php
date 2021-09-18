@@ -21,26 +21,34 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if (!defined('e107_INIT')) {
-    exit;
-}
+if(!defined("_CHARSET")) exit( );
 
 // Adds the categories selection section to a form.
 
-if (!isset($catid)) {
-    $catid = array();
+if(!isset($catid)) $catid = array( );
+
+$output .= "<div style='width: 99.9%; float: left;'>\r\n
+		<div style='width: 40%; float: left;'><label for='catoptions'>"._CATOPTIONS."</label> <br />
+		<select name='catoptions' id='catoptions' multiple='multiple' size='8' onchange='resetCats(\"catoptions\");' style='width: 100%;'>";
+$selectedCats = "";
+$cats = array( );
+foreach($catlist as $cat => $info) {
+	if($info['pid'] == -1) 
+		$output .= "<option value='$cat'".(isset($info['locked']) ? " class='locked'" : "").">".$info['name']."</option>\r\n";
+	if((is_array($catid) && in_array($cat, $catid)) && $info['locked'] != 1) {
+		$selectedCats .= "<option value='$cat'>".$info['name']."</option>\r\n";
+		$cats[] = $cat;
+	}
 }
-
-$output .= "<div ><label class='col-form-label' for='catid'>"._CATOPTIONS.'</label> <br />';
-
-$rows = e107::getDb()->retrieve('fanfiction_categories', '*', true, true);
-foreach ($rows as $row) {
-	$categories[$row['catid']] = $row['category'];
-}
-
-$options = array('title' => _SELECTCATS, 'inline' => true,  'useKeyValues' => 1);
-$output .= e107::getForm()->checkboxes('catid', $categories, $catid, $options);
-
-$output .= '
-
-</div>';
+$output .= "</select></div>
+		<div style='float: left; width: 20%; text-align: center; padding-top: 3em;'>
+			<input type='button' class='button' value='>' name='Select' onClick='addCat(\"catoptions\", \"selectCats\");'><br /><br />
+			<input type='button' class='button' value='"._REMOVE."' onClick='removeCat(\"selectCats\");'>
+		</div>
+		<div style='width: 40%; float: left;'>
+			<label for='catoptions'>"._SELECTCATS."</label> ".(count($cats) < 1 ? "<span style=\"font-weight: bold; color: red\">*</span>" : "")."<br />
+			<select name='selectCats' id='selectCats' multiple='multiple' size='8' style='width: 100%;'>".
+			(!empty($selectedCats) ? $selectedCats : "")."</select></div>
+		</div>
+		<input type='hidden' name='catid' id='catid' value='".(isset($cats) ? implode(",", $cats) : "")."'>";
+?>

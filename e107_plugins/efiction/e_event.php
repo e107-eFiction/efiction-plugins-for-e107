@@ -12,7 +12,7 @@ if (!defined('e107_INIT')) { exit; }
 
  
 
-class eficion_event // plugin-folder + '_event'
+class efiction_event // plugin-folder + '_event'
 {
 
 	/**
@@ -34,6 +34,12 @@ class eficion_event // plugin-folder + '_event'
 			'function'	=> "create_author_account", // ..run this function (see below).
 		);
         
+		$event[] = array(
+			'name'	=> "user_profile_edit", // when this is triggered... (see http://e107.org/developer-manual/classes-and-methods#events)
+			'function'	=> "create_author_account", // ..run this function (see below).
+		);        
+ 
+        
         //userdatachanged
         
 /*
@@ -46,53 +52,110 @@ class eficion_event // plugin-folder + '_event'
 
 	}
     
+	function check_author_account($data) // the method to run.
+	{
+            $userData = e107::user(USERID);
+            $author_uid = $userData['user_plugin_efiction_author_uid']; 
+            $author_level = $userData['user_plugin_efiction_level'];
  
+    }
+    
 	function create_author_account($data) // the method to run.
 	{
 
         $efiction_prefs = e107::pref('efiction');
-        
-        if($efiction_prefs['pref_author_after_login']) {
+        // $efiction_prefs['pref_author_after_login']
+        if(true) {
         
             $userData = e107::user(USERID);
-            $author_uid = $userData['user_plugin_efiction_author']; 
+            $author_uid = $userData['user_plugin_efiction_author_uid']; 
             $author_level = $userData['user_plugin_efiction_level'];
             
             if($author_uid)  {
-             //? check if ID is correct?
+                  /* if already exists author with that penname, unattached to user, it is solved by _DUPLICATE_KEY_UPDATE */
+                  /* cheks prefs */
+                  $authorquery = "SELECT  
+        			author.uid as author_uid, 
+        			author.penname as penname, 
+        			author.email as email, 
+        			author.password as password 
+        			FROM #fanfiction_authors as author  
+                    WHERE author.uid = ".$author_uid." LIMIT 1" ; 
+                    if($authordata = e107::getDb()->retrieve($authorquery))  { 
+                       $authorprefsquery = "SELECT #fanfiction_authorprefs as ap ON ap.uid = ".$author_uid." LIMIT 1";
+                       if($authordprefsdata = e107::getDb()->retrieve($authorprefsquery))  { 
+                       }
+                       else { 
+                             $insert2 = array(
+        						'uid'    =>  $author_uid,
+        						'_DUPLICATE_KEY_UPDATE' => 1
+        					 );
+        					 e107::getDB()->insert("fanfiction_authorprefs", $insert2);
+                       }
+                    }
             }
             else {
-            
-                    $insert = array(
-					'penname' => $userData['user_name'], 
-					'email' => $userData['user_email'],  
-					'password' => '', //delete 
-					'date' => $userData['user_join'],   
-					'_DUPLICATE_KEY_UPDATE' => 1
-				);
-				$dbinsertid = e107::getDB()->insert("fanfiction_authors", $insert);
-				if($dbinsertid)	{
-					
-					$insert2 = array(
-						'uid'    =>  $dbinsertid,
-						'level' => 1,  //main admin
-						'_DUPLICATE_KEY_UPDATE' => 1
-					);
-					e107::getDB()->insert("fanfiction_authorprefs", $insert2);
-				
-                        //update e107 extended field
-                        $qry = "
-                  		INSERT INTO `#user_extended` (user_extended_id, user_plugin_efiction_author)
-                  		VALUES (USERID, $dbinsertid)
-                  		ON DUPLICATE KEY UPDATE user_plugin_efiction_author = $dbinsertid
-                  		";
-                        
-                        $sql->gen($qry);
-                        
-                        e107::setRegistry('core/e107/user/'.USERID);
-    
-                    }	
-                        
+                 /* check penname */
+                $authorquery = "SELECT  
+      			author.uid as author_uid, 
+      			author.penname as penname, 
+      			author.email as email, 
+      			author.password as password 
+      			FROM #fanfiction_authors as author  
+                WHERE author.penname = '".$userData['user_name']."' OR author.email = '".$userData['user_email']."' "  ; 
+ 
+                $authordata = e107::getDb()->retrieve($authorquery);
+                
+                if($authordata = e107::getDb()->retrieve($authorquery))  {
+                    /* if the name and email are the same */
+                    if($authordata['email'] ==  $userData['user_email'] && $authordata['penname'] ==  $userData['user_name'])
+                    {
+ 
+                        /* not generate author */
+                        $ue = new e107_user_extended;
+      	                $ue->user_extended_setvalue(USERID, 'user_plugin_efiction_author_uid', USERID);
+                        $ue->user_extended_setvalue(USERID, 'user_plugin_efiction_level', 1);
+                    }  
+                    else 
+                    {
+                
+                       $message = "Something is wrong with possible Author account. Your email or penname could be used with different user account. Contact administrators";
+                       echo e107::getMessage()->addWarning($message)->render();
+                       //todo warning
+                    } 
+                }
+                /* penname doesn't exist */ 
+                else 
+                {
+                  
+                   $insert = array(
+  					'penname' => $userData['user_name'], 
+  					'email' => $userData['user_email'],  
+  					'password' => '', //delete 
+  					'date' => $userData['user_join'], 
+                      'user_id' => USERID,  
+  					'_DUPLICATE_KEY_UPDATE' => 1
+    				);
+    				$dbinsertid = e107::getDB()->insert("fanfiction_authors", $insert);
+                    
+    				if($dbinsertid)	{
+   
+  					$insert2 = array(
+  						'uid'    =>  $dbinsertid,
+  						'_DUPLICATE_KEY_UPDATE' => 1
+  					);
+  					e107::getDB()->insert("fanfiction_authorprefs", $insert2);
+  				
+                     $ue = new e107_user_extended;
+  	                 $ue->user_extended_setvalue(USERID, 'user_plugin_efiction_author_uid', $dbinsertid);
+                     $ue->user_extended_setvalue(USERID, 'user_plugin_efiction_level', 1);
+                          
+                     e107::getDb()->gen($qry);
+                          
+                     e107::setRegistry('core/e107/user/'.USERID);
+  
+                }      
+                }        
             }
         }
  

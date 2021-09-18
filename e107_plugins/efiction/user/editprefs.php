@@ -22,7 +22,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if (!defined('e107_INIT')) { exit; }
+if(!defined("_CHARSET")) exit( );
 
 	$output = "<div id='pagetitle'>".($action == "register" ? _SETPREFS : _EDITPREFS)."</div>";
 	if(isset($_POST['submit'])) {
@@ -33,13 +33,15 @@ if (!defined('e107_INIT')) { exit; }
 		$tinyMCE = isset($_POST['tinyMCE']) && $_POST['tinyMCE'] == "on" ? 1 : 0;
 		$storyindex = isset($_POST['storyindex']) && $_POST['storyindex'] == "on" ? 1 : 0;
 		$sortby = isset($_POST['sortby']) && $_POST['sortby'] == 1 ? 1 : 0;
-		dbquery("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET alertson = '$useralertson', newreviews = '$newreviews', newrespond = '$newrespond', ageconsent = '$ageconsent', tinyMCE ='$tinyMCE',  storyindex = '$storyindex', sortby = '$sortby' WHERE uid = '".USERUID."'");
+		$skinnew = descript(strip_tags($_POST['skinnew']));
+		if($skinnew != $skin) e107::getSession()->set(SITEKEY."_skin", $skinnew);
+		dbquery("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET alertson = '$useralertson', newreviews = '$newreviews', newrespond = '$newrespond', ageconsent = '$ageconsent', tinyMCE ='$tinyMCE', userskin = '$skinnew', storyindex = '$storyindex', sortby = '$sortby' WHERE uid = '".USERUID."'");
 		$output .= write_message(_ACTIONSUCCESSFUL." "._BACK2ACCT);
 	}
 	else {
 		$result = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_authorprefs WHERE uid = '".USERUID."' LIMIT 1");
 		if(dbnumrows($result) == 0) {
-			dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_authorprefs(`uid` ) VALUES('".USERUID."' )");
+			dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_authorprefs(`uid`, `userskin`) VALUES('".USERUID."', '$skin')");
 			$result = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_authorprefs WHERE uid = '".USERUID."' LIMIT 1");
 		}
 		$user = dbassoc($result);
@@ -58,6 +60,20 @@ if (!defined('e107_INIT')) { exit; }
 		$output .= "<label for='sortby'>"._DEFAULTSORT.": </label><select name='sortby' class='textbox'>
 				<option value='1'".($user['sortby'] ? " selected" : "").">"._MOSTRECENT."</option>
 				<option value='0'".(!$user['sortby'] ? " selected" : "").">"._ALPHA."</option>
-			</select><A HREF=\"#\" class=\"pophelp\">[?]<span>"._HELP_DEFAULTSORT."</span></A><br />";
-		$output .= "<INPUT type=\"submit\" class=\"button\" id=\"submit\" name=\"submit\" value=\""._SUBMIT."\"></form>";
+			</select><A HREF=\"#\" class=\"pophelp\">[?]<span>"._HELP_DEFAULTSORT."</span></A><br />
+			<label for='skinnew'>"._SKIN.":</label> <select name=\"skinnew\">";
+		if(!isset($hiddenskins)) $hiddenskins = array( );
+		if(is_string($hiddenskins)) $hiddenskins = explode(",", $hiddenskins);
+			$directory = opendir(_BASEDIR."skins");
+		while($filename = readdir($directory)) {
+			if($filename== "." || $filename== ".." || !is_dir(_BASEDIR."skins/".$filename) || (in_array($filename, $hiddenskins) && !isADMIN)) continue;
+			$skinlist[strtolower($filename)] = "<option value=\"$filename\"".($siteskin == $filename ? " selected" : "").">$filename</option>";
+		}
+		ksort($skinlist);
+		foreach($skinlist as $s) { $output .= $s; }
+		unset($skinlist, $s);
+		closedir($directory);
+		$output .= "</select><A HREF=\"#\" class=\"pophelp\">[?]<span>"._HELP_SKIN."</span></A><br /><INPUT type=\"submit\" class=\"button\" id=\"submit\" name=\"submit\" value=\""._SUBMIT."\"></form>";
 	}
+
+?>

@@ -56,6 +56,7 @@ if(dbnumrows($shouts) > 0) {
 }
 else $output .= write_message(_NOSHOUTS);
 $tpl->assign("output", "<div id='pagetitle'>"._SHOUTARCHIVE."</div>\n\n$output");
-$tpl->printToScreen();
-
-?>
+//$tpl->xprintToScreen( );
+$text = $tpl->getOutputContent(); 
+e107::getRender()->tablerender($caption, $text, $current);
+ 

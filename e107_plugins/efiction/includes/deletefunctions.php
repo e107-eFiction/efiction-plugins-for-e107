@@ -20,7 +20,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if (!defined('e107_INIT')) { exit; }
+if(!defined("_CHARSET")) exit( );
 
 function deleteStory($story) {
 	global $store, $logging;
@@ -144,7 +144,7 @@ function deleteUser($uid) {
 	while($story = dbassoc($stories)) {
 		deleteSeries($story['seriesid']);
 	}
-	
+	dbquery("DELETE FROM ".TABLEPREFIX."fanfiction_authorinfo WHERE uid = '".$uid."'");
 	dbquery("DELETE FROM ".TABLEPREFIX."fanfiction_favorites WHERE uid = '".$uid."'");
 	dbquery("DELETE FROM ".TABLEPREFIX."fanfiction_favorites WHERE item = '".$uid."' AND type = 'AU'");
 	dbquery("UPDATE ".TABLEPREFIX."fanfiction_comments SET uid = '0' WHERE uid = '".$uid."'");

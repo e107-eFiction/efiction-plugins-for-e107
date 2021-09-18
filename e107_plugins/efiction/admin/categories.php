@@ -22,7 +22,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if (!defined('e107_INIT')) { exit; }
+if(!defined("_CHARSET")) exit( );
 
 function build_cat_row($thiscat, $thiscatinfo) {
 	global $catlist, $oddeven, $onpic, $down, $up;
@@ -40,7 +40,7 @@ function build_cat_row($thiscat, $thiscatinfo) {
 		if($catinfo['pid'] == $thiscatinfo['pid'] && $thiscatinfo['order'] < $catinfo['order']) $downlink = "<a href=\"admin.php?action=categories&go=down&displayorder=".$thiscatinfo['order']."&parentcatid=".$thiscatinfo['pid']."\">$down</a>";
 		if($catinfo['pid'] == $thiscat) $subs .= build_cat_row($cat, $catinfo);
 	}
-	if($subs) $output .= "<img onclick=\"javascript:displayCatRows('$thiscat')\" name='c_$thiscat' alt='on' src='".($onpic ? $onpic : _BASEDIR."images/row_on.gif")."'> ";
+	if($subs) $output .= "<img onclick=\"javascript:displayCatRows('$thiscat')\" name='c_$thiscat' alt='on' src='".($onpic ? $onpic : "images/row_on.gif")."'> ";
 	$output .= $thiscatinfo['name']."</td>\n
 	<td class='tblborder'>$downlink</td>\n
 	<td class='tblborder' width=\"13\">$uplink</td>\n
@@ -99,12 +99,12 @@ function relevelcategory($cat, $leveldown) {
 		if(isset($_POST['catid']) && $_POST['parentcatid'] == $_POST['catid']) {
 			$output .= write_error(_ACTIONCANCELLED." "._CATERROR);
 			$tpl->assign( "output", $output );
-    $output = $tpl->getOutputContent();  
-    $output = e107::getParser()->parseTemplate($output, true);
-    e107::getRender()->tablerender($caption, $output, $current);
+			//$tpl->xprintToScreen( );
 			dbclose( );
-            require_once(FOOTERF);  
-			exit( );
+			$text = $tpl->getOutputContent(); 
+			e107::getRender()->tablerender($caption, $text, $current);
+			require_once(FOOTERF); 
+			exit;
 		}
 		if($_POST['parentcatid'] != "-1") 	{
 			$parentquery = dbquery("SELECT leveldown FROM ".TABLEPREFIX."fanfiction_categories WHERE catid = '$_POST[parentcatid]'");

@@ -22,7 +22,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if (!defined('e107_INIT')) { exit; }
+if(!defined("_CHARSET")) exit( );
 
 	if(isset($_GET['do'])) $do = $_GET["do"];
 	else $do = false;
@@ -63,8 +63,7 @@ if (!defined('e107_INIT')) { exit; }
 			}
 			$uid = isset($_REQUEST['uid']) ? $_REQUEST['uid'] : false;
 			if(!isNumber($uid)) $uid = false;
-			$caption = "<div id=\"pagetitle\">".($do == "edit" ? _EDITADMIN : _ADDADMIN)."</div>";
-            $output  = "
+			$output .= "<div id=\"pagetitle\">".($do == "edit" ? _EDITADMIN : _ADDADMIN)."</div>
 				<form method=\"POST\" name=\"form\" enctype=\"multipart/form-data\" action=\"admin.php?action=admins&do=$do\">
 				<div><label for=\"uid\">"._PENNAME.": </label>";
 			if($do == "new") {
@@ -83,7 +82,7 @@ if (!defined('e107_INIT')) { exit; }
 					$output .= "<option value=\"$x\"".(isset($adlevel) && $adlevel == $x ? " selected" : "").">$x</option>";
 				}
 			$output .= "</select><A HREF=\"#adlevel\" class=\"pophelp\">[?]<span>"._HELP_ADLEVEL."</span></A></div>";
-			include(_BASEDIR."includes/categories.php");
+			include("includes/categories.php");
 			$output .= (isset($adcategories) ? "<input type=\"hidden\" name=\"oldcats\" value=\"$adcategories\">" : "")."
 				<div><label for=\"contact\">"._CONTACT.":</label>
 				<INPUT type=\"checkbox\" class=\"checkbox\" name=\"contact\"".(isset($adcontact) && $adcontact == 1 ? " checked" : "").">
@@ -100,7 +99,7 @@ if (!defined('e107_INIT')) { exit; }
 		$pagelink = "admin.php?action=admin&amp;category=".$_GET['category']."&amp;";
 		$countquery = "SELECT count(uid) FROM ".TABLEPREFIX."fanfiction_authorprefs as ap $where";
 		$authorquery = "SELECT count(stories.sid) as stories, "._PENNAMEFIELD." as penname, "._UIDFIELD." as uid FROM ".TABLEPREFIX."fanfiction_authorprefs as ap, "._AUTHORTABLE." LEFT JOIN ".TABLEPREFIX."fanfiction_stories as stories ON ("._UIDFIELD." = stories.uid) AND "._UIDFIELD." > 0 AND stories.validated > 0 $where AND ap.level > 0 ".(isset($letter) ? " AND $letter" : "")." AND ap.uid = "._UIDFIELD." GROUP BY "._UIDFIELD;
-		include(_BASEDIR."includes/members_list.php");
+		include("includes/members_list.php");
 		$output .= "<p><a href=\"admin.php?action=admins&do=new&category=".$_GET['category']."\">"._ADDADMIN."</a></p>";
 	}
 	else {
@@ -112,7 +111,7 @@ if (!defined('e107_INIT')) { exit; }
 		$pagelink = "admin.php?action=admins&amp;";
 		$countquery = "SELECT count(uid) FROM ".TABLEPREFIX."fanfiction_authorprefs WHERE level > 0";
 		$authorquery = "SELECT "._PENNAMEFIELD." as penname, "._UIDFIELD." as uid, count(stories.uid) as stories FROM (".TABLEPREFIX."fanfiction_authorprefs as ap, "._AUTHORTABLE.") LEFT JOIN ".TABLEPREFIX."fanfiction_stories as stories ON ("._UIDFIELD." = stories.uid) AND stories.validated > 0 WHERE ap.level > 0 ".(isset($letter) ? " AND $letter" : "")." AND ap.uid = "._UIDFIELD." GROUP BY "._UIDFIELD;
-		include(_BASEDIR."includes/members_list.php");
+		include("includes/members_list.php");
 		$output .= write_message("<a href=\"admin.php?action=admins&do=new\">"._ADDADMIN."</a>");
 	}
 
