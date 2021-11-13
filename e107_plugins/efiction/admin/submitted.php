@@ -23,28 +23,40 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
+if(!defined("e107_INIT")) exit( );
 
 
 $output .= "<div id=\"pagetitle\">"._SUBMITTED."</div>";
 $view = isset($_GET['view']) ? $_GET['view'] : false;
 $output .= 	"<p style=\"text-align: right; margin: 1em;\"><a href=\"admin.php?action=submitted&amp;view=".($view == "all" ? "cats\">"._VIEWMYCATS : "all\">"._VIEWALL)."</a></p>";
-$result = dbquery("SELECT story.title as storytitle, chapter.uid, chapter.sid, story.catid, chapter.chapid, chapter.inorder, chapter.title, "._PENNAMEFIELD." as penname FROM (".TABLEPREFIX."fanfiction_chapters as chapter, "._AUTHORTABLE.") LEFT JOIN ".TABLEPREFIX."fanfiction_stories as story ON story.sid = chapter.sid WHERE chapter.validated = '0' AND chapter.uid = "._UIDFIELD." ORDER BY story.title");
+ 
+$result = efiction_stories::get_submissions();
 
-if(dbnumrows($result)) {
-	$output .= "<table class=\"tblborder\" cellspacing=\"0\" cellpadding=\"0\" style=\"margin: 0 auto; width: 90%;\"><tr class=\"tblborder\"><th>"._TITLE."</th><th>"._AUTHOR."</th><th>"._CATEGORY."</th><th>"._OPTIONS."</th></tr>";
+if($result) {
+	$output .= " 
+    <table class=\"table table-striped table-bordered border-info \" >
+    
+     <thead><tr><th>"._TITLE."</th><th>"._AUTHOR."</th><th>"._CATEGORY."</th><th>"._OPTIONS."</th></tr> </thead>
+    
+    <tbody>";
 	$array = explode(",", $admincats);
-	while ($story = dbassoc($result)) {
+	foreach($result AS $story) {
 		if(!$admincats || $_GET['view'] == "all" || sizeof(array_intersect(explode(",", $story['catid']), explode(",", $admincats)))) {
-			$output .= "<tr class=\"tblborder\">";
-			$output .= "<td class=\"tblborder\"><a href=\"viewstory.php?sid=$story[sid]\">".stripslashes($story['storytitle'])."</a>";
+			$output .= "<tr>";
+			$output .= "<td><a href=\"viewstory.php?sid=$story[sid]\">".stripslashes($story['storytitle'])."</a>";
 			if(isset($story['title'])) $output .= " <b>:</b> <a href=\"viewstory.php?sid=$story[sid]&amp;chapter=$story[inorder]\">".stripslashes($story['title'])."</a>";
-			$output .= "<td class=\"tblborder\"><a href=\"viewuser.php?uid=$story[uid]\">$story[penname]</a></td>";
-			$output .= "<td class=\"tblborder\">".catlist($story['catid'])."</td>";
-			$output .= "<td class=\"tblborder\"><a href=\"admin.php?action=validate&amp;chapid=$story[chapid]\">"._VALIDATE."</a><br />"._DELETE.": <a href=\"stories.php?action=delete&amp;chapid=$story[chapid]&amp;sid=$story[sid]&amp;admin=1&amp;uid=$story[uid]\">"._CHAPTER."</a> "._OR." <a href=\"stories.php?action=delete&amp;sid=$story[sid]&amp;admin=1\">"._STORY."</a><br /><a href=\"javascript:pop('admin.php?action=yesletter&uid=$story[uid]&chapid=$story[chapid]', 500, 400, 'yes')\">"._YESLETTER."</a> | <a href=\"javascript:pop('admin.php?action=noletter&uid=$story[uid]&chapid=$story[chapid]', 500, 400, 'yes')\">"._NOLETTER."</a></td></tr>";
+			$output .= "</td><td><a href=\"viewuser.php?uid=$story[uid]\">$story[penname]</a></td>";
+			$output .= "<td>".catlist($story['catid'])."</td>";
+			$output .= "<td><a class='btn btn-sm btn-success'  href=\"admin.php?action=validate&amp;chapid=$story[chapid]\">"._VALIDATE."</a><br />"._DELETE.": 
+            <a class='btn btn-sm btn-danger' href=\"stories.php?action=delete&amp;chapid=$story[chapid]&amp;sid=$story[sid]&amp;admin=1&amp;uid=$story[uid]\">"._CHAPTER2."</a> "._OR." 
+            <a class='btn btn-sm btn-danger' href=\"stories.php?action=delete&amp;sid=$story[sid]&amp;admin=1\">"._STORY2."</a>
+            <br /><a  class='btn btn-sm btn-info'  href=\"javascript:pop('".SITEURL."admin.php?action=yesletter&uid=$story[uid]&chapid=$story[chapid]', 600, 500, 'yes')\">"._YESLETTER."</a> | 
+            <a class='btn btn-sm btn-secondary' href=\"javascript:pop('admin.php?action=noletter&uid=$story[uid]&chapid=$story[chapid]', 600, 500, 'yes')\">"._NOLETTER."</a>
+       </td></tr>";
 		}
 	}
-	$output .= "</table>";
+	$output .= "</tbody></table> ";
+ 
 }
 else $output .= write_message(_NORESULTS);
 ?>

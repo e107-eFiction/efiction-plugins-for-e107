@@ -58,11 +58,12 @@ $listOpts = ""; $countquery = "";
 		$pagetitle .= _AUTHORS;
 		$authorquery = "SELECT "._PENNAMEFIELD." as penname, "._UIDFIELD." as uid, ap.stories FROM "._AUTHORTABLE." LEFT JOIN ".TABLEPREFIX."fanfiction_authorprefs as ap ON ap.uid = "._UIDFIELD." WHERE ap.stories > 0 ".(isset($letter) ? " AND $letter" : "")." GROUP BY "._UIDFIELD;
 		$countquery = "SELECT count("._UIDFIELD.") FROM "._AUTHORTABLE." LEFT JOIN ".TABLEPREFIX."fanfiction_authorprefs as ap ON "._UIDFIELD." = ap.uid WHERE ap.stories > 0 ".(isset($letter) ? " AND $letter" : "");
-	}
+    }
 	else if($list == "admins") {
 		$pagetitle .= _SITEADMINS;
 		$countquery = _MEMBERCOUNT." WHERE ap.level > 0 AND ap.level < 4".(isset($letter) ? " AND $letter" : "");
 		$authorquery = _MEMBERLIST." WHERE ap.level > 0 AND ap.level < 4".(isset($letter) ? " AND $letter" : "")." GROUP BY "._UIDFIELD;
+  
 	}
 	$codequery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'membersList'");
 	while($code = dbassoc($codequery)) {
@@ -73,7 +74,7 @@ $listOpts = ""; $countquery = "";
 		$countquery = _MEMBERCOUNT.(isset($letter) ? " WHERE $letter" : "");
 		$authorquery = _MEMBERLIST.(isset($letter) ? " WHERE $letter" : "")." GROUP BY "._UIDFIELD;
 	}
-
+ 
 	$output .= $pagetitle.$ptitle;
 	$output .= "<div style=\"text-align: center;\"><form name=\"list\" action=\"\"><select name=\"list\" onchange=\"if(this.selectedIndex.value != 'false') document.location = document.list.list.options[document.list.list.selectedIndex].value\">";
 	$output .= "<option value=\"authors.php?".($let ? "let=$let&amp;" : "")."list=members\"".(empty($list) || $list == "members" ? " selected" : "").">"._ALLMEMBERS."</option>

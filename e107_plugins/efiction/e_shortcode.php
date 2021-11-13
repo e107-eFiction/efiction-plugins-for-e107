@@ -47,7 +47,6 @@ class efiction_shortcodes extends e_shortcode
     /*
      Not needed with e107 menus and tablerender 
      {EFICTION_BLOCK_CONTENT: key=info}
-     {EFICTION_BLOCK_CONTENT: key=news}
      {EFICTION_BLOCK_CONTENT: key=categories}
      {EFICTION_BLOCK_CONTENT: key=recent}
      {EFICTION_BLOCK_CONTENT: key=random}
@@ -111,6 +110,61 @@ class efiction_shortcodes extends e_shortcode
 		}
 		else return "";
 		 
+    }
+    
+    
+    /* {EFICTION_AUTHOR_PROFILE} */
+    /* /viewuser.php?uid=1 */ 
+    public function sc_efiction_author_profile($parm = '')  {
+    
+            e107::lan('efiction'); 
+            $template_key = varset($parm['template'], 'profile');
+            
+            $displayprofile =  efiction_settings::get_single_setting('displayprofile');
+            
+            $sc_profile  = e107::getScBatch('profile', 'efiction');
+                        
+             $sc_profile->wrapper('profile/profile');
+             
+            if($parm['type'] == "author") { 
+                        $adata = $sc_profile->getVars();
+                        $author_uid = $adata['uid'];   
+                        
+            }
+            else {
+                		$sc  = e107::getScBatch('user');
+                        $udata = $sc->getVars();
+                   
+                        $adata = efiction_authors::get_single_author_by_user($udata['user_id']);
+                        
+                        $adata = array_merge($adata, $udata);   
+                     
+                        $author_uid = $adata['uid'];  
+                        
+                        $sc_profile->setVars($adata);
+            }
+
+
+            if($author_uid > 0) {
+            
+                $profile_template = e107::getTemplate('efiction', 'profile', $template_key);  
+                
+                $profile_title = e107::getParser()->parseTemplate($profile_template['title'], true, $sc_profile);
+                 
+                if($displayprofile) {
+                    $profile_content = e107::getParser()->parseTemplate($profile_template['content'], true, $sc_profile);
+                }
+                else {
+                    $profile_content = e107::getParser()->parseTemplate($profile_template['admin'], true, $sc_profile);
+                }  
+                $tmp = $profile_template['tablerender'];
+                $profile_tablerender = varset($tmp, 'profile');
+                
+                
+                $block_user_profile = e107::getRender()->tablerender($profile_title, $profile_content, $profile_tablerender, true); 
+            }
+            
+            return $block_user_profile;
     }
     
 }

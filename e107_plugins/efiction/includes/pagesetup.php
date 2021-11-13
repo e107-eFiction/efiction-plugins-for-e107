@@ -26,17 +26,12 @@ This file does some of the setup of the common elements of the pages within your
 It also checks the common $_GET variables and cleans them up to prevent hacking and attacks.
 */
 
-if(!defined("_CHARSET")) exit( );
+if(!defined("e107_INIT")) exit( );
  
 
 $favtypes = array("SE" => "series", "ST" => "stories", "AU" =>"authors");
 $revtypes = array("SE" => "series", "ST" => "stories");
-
-$catlist = array( );
-$catresults = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_categories ORDER BY leveldown, displayorder");
-while($cat = dbassoc($catresults)) {
-	$catlist[$cat['catid']] = array("name" => stripslashes($cat['category']), "pid" => $cat['parentcatid'], "order" => $cat['displayorder'], "locked" => $cat['locked'], "leveldown" => $cat['leveldown']);
-}
+ 
 $charlist = array( );
 $result = dbquery("SELECT charname, catid, charid FROM ".TABLEPREFIX."fanfiction_characters ORDER BY charname");
 while($char = dbassoc($result)) {
@@ -70,8 +65,8 @@ $tpl->prepare( );
 if(file_exists("$skindir/variables.php")) include("$skindir/variables.php");
 
 // If they weren't set in variables.php, set the defaults for these 
-if(!isset($up)) $up = "<img src=\"images/arrowup.gif\" border=\"0\" width=\"13\" height=\"18\" align=\"left\" alt=\""._UP."\">";
-if(!isset($down)) $down = "<img src=\"images/arrowdown.gif\" border=\"0\" width=\"13\" height=\"18\" align=\"right\" alt=\""._DOWN."\">";
+if(!isset($up)) $up = "<img src=\""._BASEDIR."images/arrowup.gif\" border=\"0\" width=\"13\" height=\"18\" align=\"left\" alt=\""._UP."\">";
+if(!isset($down)) $down = "<img src=\""._BASEDIR."images/arrowdown.gif\" border=\"0\" width=\"13\" height=\"18\" align=\"right\" alt=\""._DOWN."\">";
 
 $linkquery = dbquery("SELECT * from ".TABLEPREFIX."fanfiction_pagelinks ORDER BY link_access ASC");
 if(!isset($current)) $current = "";
@@ -90,9 +85,14 @@ $tpl->assignGlobal("sitename", $sitename);
 $tpl->assignGlobal("slogan", $slogan);
 $tpl->assignGlobal("page_id", $current);
 $tpl->assignGlobal("basedir", _BASEDIR);
-$tpl->assignGlobal("skindir", $skindir);	
-$tpl->assignGlobal("rss", "<a href='"._BASEDIR.$pagelinks['rss']['url']."'><img src='"._BASEDIR."images/xml.gif' alt='RSS' title = 'RSS' border='0'></a>");
-if(isset($pagelinks['rss'])) $tpl->assignGlobal("columns", $displaycolumns);
+$tpl->assignGlobal("skindir", $skindir);
+$rss_link = efiction_pagelinks::get_single_link('rss');	
+if(e107::isInstalled('rss_menu'))  {
+    $tpl->assignGlobal("rss", "<a href='".$rss_link."'><img src='".e_PLUGIN."efiction/images/xml.gif' alt='RSS' title = 'RSS' border='0'></a>");
+}
+
+if(isset($rss_link)) $tpl->assignGlobal("columns", $displaycolumns);
+
 if($action != "printable") {
 	$tpl->newBlock("footer");
 	$copy = dbquery("SELECT message_text FROM ".TABLEPREFIX."fanfiction_messages WHERE message_name = 'copyright' LIMIT 1");

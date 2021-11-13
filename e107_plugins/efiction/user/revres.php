@@ -22,7 +22,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
+if(!defined("e107_INIT")) exit( );
 
 	$output .= "<div id=\"pagetitle\">"._MANAGEREVIEWS."</div>";
 	if(isset($_POST['submit'])) {
@@ -35,8 +35,8 @@ if(!defined("_CHARSET")) exit( );
 			$prefsquery = dbquery("SELECT "._UIDFIELD." as uid, "._EMAILFIELD." as email, "._PENNAMEFIELD." as penname, newrespond FROM ".TABLEPREFIX."fanfiction_authorprefs as ap LEFT JOIN "._AUTHORTABLE." ON ap.uid = "._UIDFIELD." WHERE ap.uid = "._UIDFIELD." AND "._UIDFIELD." = '$uid' LIMIT 1");
 			$prefs = dbassoc($prefsquery);
 			if(isset($prefs['newrespond']) && $prefs['newrespond'] == 1) {
-				include("includes/emailer.php");
-				sendemail($prefs['penname'], $prefs['email'], $sitename, $siteemail, _RESPONSESUBJECT, preg_replace(array("@\{penname\}@", "@\{review\}@"), array(USERPENNAME, $reviewid), _RESPONSETEXT), "html");
+			 
+				$result = efiction_core::sendemail($prefs['penname'], $prefs['email'], $sitename, $siteemail, _RESPONSESUBJECT, preg_replace(array("@\{penname\}@", "@\{review\}@"), array(USERPENNAME, $reviewid), _RESPONSETEXT), "html");
 			}
 		}
 		$back = sprintf(_BACK2REVIEWS, "item=$item&amp;type=$type".(isset($chapid) ? "&amp;chapid=$chapid" : ""));
@@ -46,7 +46,7 @@ if(!defined("_CHARSET")) exit( );
 	else {
 		$reviewid = isset($_GET['reviewid']) && isNumber($_GET['reviewid']) ? $_GET['reviewid'] : false;
 		if(!$reviewid) accessDenied( );
-		$result = dbquery("SELECT review.*, UNIX_TIMESTAMP(review.date) as date FROM ".TABLEPREFIX."fanfiction_reviews as review LEFT JOIN ".TABLEPREFIX."fanfiction_authors as member ON member.uid = review.uid WHERE review.reviewid = '$reviewid' LIMIT 1");
+		$result = dbquery("SELECT review.*,  review.date  as date FROM ".TABLEPREFIX."fanfiction_reviews as review LEFT JOIN ".TABLEPREFIX."fanfiction_authors as member ON member.uid = review.uid WHERE review.reviewid = '$reviewid' LIMIT 1");
 		$reviews = dbassoc($result);
 		if(!empty($reviews['respond'])) {
 			$tpl->assign("output", write_message(_ALREADYRESPONDED));

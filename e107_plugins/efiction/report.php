@@ -63,7 +63,7 @@ include(_BASEDIR."includes/pagesetup.php");
 	}
 	else
 	{
-		$output .= "<form method='POST' enctype='multipart/form-data' action='contact.php'>
+		$output .= "<form method='POST' enctype='multipart/form-data' action='report.php'>
 		<table class='acp'><tr><td><label for='email'>"._YOUREMAIL.":</label></td><td><INPUT type='text' class='textbox' name='email'></td></tr>";
 		if(!$action) $output .= "<tr><td><label for='subject'>"._SUBJECT.":</label></td><td><INPUT  type='text' class='textbox' name='subject'></td></tr>";
 		else if($action == "report") $output .= "<tr><td><label for='subject'>"._REPORT.":</label></td><td><select class='textbox' name='subject'>

@@ -74,7 +74,7 @@
 		$output .= "<div class='sectionheader'>"._MEMLOCK."</div>";
 		$pagelink = "<a href=\"admin.php?action=lock&let=";
 		$countquery = "SELECT count("._UIDFIELD.") FROM "._AUTHORTABLE." LEFT JOIN ".TABLEPREFIX."fanfiction_authorprefs as ap ON ap.uid = "._UIDFIELD." WHERE ap.level = -1";
-		$authorquery = "SELECT "._PENNAMEFIELD." as penname, "._UIDFIELD." as uid, count(stories.uid) as stories FROM "._AUTHORTABLE." LEFT JOIN ".TABLEPREFIX."fanfiction_stories as stories ON ("._UIDFIELD." = stories.uid) AND "._UIDFIELD." > 0 AND stories.validated > 0 LEFT JOIN ".TABLEPREFIX."fanfiction_authorprefs as ap ON ap.uid = "._UIDFIELD." WHERE ap.level = -1 GROUP BY "._UIDFIELD;
+		$authorquery = "SELECT "._PENNAMEFIELD." as penname, "._UIDFIELD." as uid, count(stories.uid) as stories FROM "._AUTHORTABLE." LEFT JOIN ".TABLEPREFIX."fanfiction_stories as stories ON ("._UIDFIELD." = stories.uid) AND "._UIDFIELD." > 0 AND stories.validated > 0 LEFT JOIN ".TABLEPREFIX."fanfiction_authorprefs as ap ON ap.uid = "._UIDFIELD." WHERE ai.user_plugin_efiction_level = -1 GROUP BY "._UIDFIELD;
 		include("includes/members_list.php");
 
 	

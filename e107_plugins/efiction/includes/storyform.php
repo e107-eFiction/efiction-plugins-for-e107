@@ -23,18 +23,22 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
+if(!defined("e107_INIT")) exit( );
 
 
 
 //function to build story data section of the form.
 function storyform($stories, $preview = 0){
 
-	global $admin, $allowed_tags, $multiplecats,  $roundrobins, $catlist, $coauthallowed, $tinyMCE, $action, $sid;
-
+	global $admin, $allowed_tags,    $roundrobins, $coauthallowed, $tinyMCE, $action, $sid;
+ 
+    $catlist = efiction_categories::get_catlist();
+    $multiplecats = efiction_settings::get_single_setting('multiplecats');
+ 
 	$classes = explode(",", $stories['classes']);
 	$charid = explode(",", $stories['charid']);
 	$catid = explode(",", $stories['catid']);
+    
 	$title = $stories['title'];
 	$summary = $stories['summary'];
 	$storynotes = $stories['storynotes'];
@@ -56,6 +60,7 @@ function storyform($stories, $preview = 0){
 		}
 		$output .= "<br /><label for=\"uid\">"._AUTHOR.":</label> <select name=\"uid\" id=\"uid\">$authors</select><br /><br />";
 	}
+ 
 	if($coauthallowed) {
 	$output .= "<script language=\"javascript\" type=\"text/javascript\" src=\""._BASEDIR."includes/userselect.js\"></script>
 		<script language=\"javascript\" type=\"text/javascript\" src=\""._BASEDIR."includes/xmlhttp.js\"></script><div style=\"text-align: center;\">"._COAUTHORSEARCH."</div>";
@@ -76,44 +81,61 @@ function storyform($stories, $preview = 0){
 	$output .= "</select></label>
 		<input type='hidden' name='coauthors' id='coauthors' value='$couids'></div>";
 	}
-	$output .= "<p><label for=\"summary\">"._SUMMARY.":</label> ".(!$summary ? "<span style=\"font-weight: bold; color: red\">*</span>" : "")."<br><textarea class=\"textbox\" rows=\"6\" name=\"summary\" id=\"summary\" cols=\"58\">$summary</textarea>";
-	if($tinyMCE) 
-		$output .= "<div class='tinytoggle'><input type='checkbox' name='toggle' onclick=\"toogleEditorMode('summary');\" checked><label for='toggle'>"._TINYMCETOGGLE."</label></div>";
-	$output .= "</p>
-		<p><label for=\"storynotes\">"._STORYNOTES.":</label> <br /><textarea class=\"textbox\" rows=\"6\" name=\"storynotes\" id=\"storynotes\" cols=\"58\">$storynotes</textarea></p>";
-	if($tinyMCE) 
+    
+	$output .= "<p><label for=\"summary\">"._SUMMARY.":</label> ".(!$summary ? "<span style=\"font-weight: bold; color: red\">*</span>" : "")."<br>";	
+    $output .= e107::getForm()->textarea('summary',$summary); 
+    $output .= "</p>"; 
+    
+    $output .= "<p><label class='efiction-label' for=\"storynotes\">"._STORYNOTES.":</label> <br />";
+
+    $output .=  e107::getForm()->bbarea('storynotes',$storynotes,'public','efiction','small', array('wysiwyg' => $wysiwyg));
+    $output .= "</p>";
+    
+    if($tinyMCE) 
 		$output .= "<div class='tinytoggle'><input type='checkbox' name='toggle' onclick=\"toogleEditorMode('storynotes');\" checked><label for='toggle'>"._TINYMCETOGGLE."</label></div>";
+ 
 	if(!$multiplecats) $output .= "<input type=\"hidden\" name=\"catid\" id=\"catid\" value=\"1\">";
 	else {
-		include("includes/categories.php");
+ 
+		require_once(_BASEDIR."includes/categories.php");
 		$output .= "<input type=\"hidden\" name=\"formname\" value=\"stories\">";
 	}
-	$output .= "<div style='float: left; width: 100%;'>";
-	$count = 0;
-	$result4 = dbquery("SELECT charname, catid, charid FROM ".TABLEPREFIX."fanfiction_characters ORDER BY charname");
-	if(dbnumrows($result4)) {
-		$output .= "<div style=\"float: left; width: 49%;\"><label for=\"charid\">"._CHARACTERS.":</label><br><select size=\"5\"  style=\"width: 99%;\" id=\"charid\" name=\"charid[]\" multiple><option value=\"\">"._NONE."</option>";
-		while ($charresults = dbassoc($result4)) {
-			if((is_array($catid) && in_array($charresults['catid'], $catid)) || $charresults['catid'] == -1) {
-				$output .= "<option value=\"".$charresults['charid']."\"".($charid != "" && in_array(stripslashes($charresults['charid']), $charid) ? " selected" : "").">".stripslashes($charresults['charname'])."</option>";
-			}
-		}
-		$output .= "</select></div>";
-		$count++;
-	}
-	unset($result4);
-	$result = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_classtypes ORDER BY classtype_name");
-	while($type = dbassoc($result)) {
-		$result2 = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_classes WHERE class_type = '$type[classtype_id]' ORDER BY class_name");
-		$select = "";
-		while ($class = dbassoc($result2)) {
-				$select .= "<option value=\"$class[class_id]\"".(is_array($classes) && in_array($class['class_id'], $classes) ? " selected" : "").">$class[class_name]</option>";
-		}
-		$output .= "<div style=\"float: ".($count % 2 ? "right" : "left")."; width: 49%; margin-bottom: 1em;\"><label for=\"class_".$type['classtype_id']."\">$type[classtype_title]:</label><br />
-				 <select name=\"class_".$type['classtype_id']."[]\" id=\"class_".$type['classtype_id']."\"  style=\"width: 99%;\" multiple size=\"5\">$select</select></div>";
-		if($count % 2) $output .= "<div style=\"clear: both; height: 1px;\">&nbsp;</div>";
-		$count++;
-	}
+ 
+    $query = 'SELECT charname, catid, charid FROM #fanfiction_characters ORDER BY charname';
+    $result4 = e107::getDb()->retrieve($query, true);
+      foreach ($result4 as $charresults) {
+          if ((is_array($catid) && in_array($charresults['catid'], $catid)) || $charresults['catid'] == -1) {
+              $characters[$charresults['charid']] = stripslashes($charresults['charname']);
+          }
+      }
+      $options = array('title' => _CHARACTERS, 'inline' => true,  'useKeyValues' => 1);
+      $text = e107::getForm()->checkboxes('charid', $characters, $charid, $options);
+    
+    $output .= "<div class='row form-check-inline mt-2'><label for=\"charid\">"._CHARACTERS.":</label><br>".$text. "</div>";
+        
+    
+    $classrows = e107::getDb()->retrieve('SELECT * FROM #fanfiction_classtypes ORDER BY classtype_name', true);
+        $ret .= '<style> .form-check {min-width: 300px;}
+		#characters-container .checkbox-inline  {margin-left: 20px!important; } 
+		#catid-container .checkbox-inline  {margin-left: 20px!important; }  
+		#classes-container .checkbox-inline  {margin-left: 20px!important; } 
+		</style>';
+        foreach ($classrows as $type) {   
+            $ret .= "<div class='row form-check-inline mt-2'><label for=\"class_".$type['classtype_id']."\"><b>$type[classtype_title]:</b></label><br>";
+            $result2 = e107::getDb()->retrieve("SELECT * FROM #fanfiction_classes WHERE class_type = '$type[classtype_id]' ORDER BY class_name", true);
+            $values = array();
+            foreach ($result2 as $row) {
+                $values[$row['class_id']] = $row['class_name'] ;
+            }
+            $options['useKeyValues'] = true;
+            $options['inline'] = true;
+            $ret .= e107::getForm()->checkboxes('classes', $values, $classes, $options);
+            $ret .= '</div>';
+        }
+    
+    $output .= $ret; 
+      
+ 
 	$output .= "<div style=\"clear: both; height: 1px;\">&nbsp;</div></div>";
 	$result5 = dbquery("SELECT rid, rating FROM ".TABLEPREFIX."fanfiction_ratings");
 	$output .= "<label for=\"rid\">"._RATING.":</label>".(!$rid ? " <span style=\"font-weight: bold; color: red\">*</span>" : "")." <select size=\"1\" id=\"rid\" name=\"rid\">";
@@ -147,8 +169,10 @@ function chapterform($inorder, $notes, $endnotes, $storytext, $chaptertitle, $ui
 	$inorder++;
 	$default = _CHAPTER." ". $inorder;
 	if($chaptertitle != "") $default = $chaptertitle;
-	if($tinyMCE && strpos($storytext, "<br>") === false && strpos($storytext, "<p>") === false && strpos($storytext, "<br />") === false) $storytext = nl2br($storytext);
-	$output = "";
+	
+    //if($tinyMCE && strpos($storytext, "<br>") === false && strpos($storytext, "<p>") === false && strpos($storytext, "<br />") === false) $storytext = nl2br($storytext);
+	
+    $output = "";
 	if($admin && ($action == "newchapter" || $action == "editchapter")) {
 		$authorquery = dbquery("SELECT "._PENNAMEFIELD." as penname, "._UIDFIELD." as uid FROM "._AUTHORTABLE." ORDER BY penname");
 		$output .= "<label for=\"uid\">"._AUTHOR.":</label> <select name=\"uid\" id=\"uid\">";
@@ -159,12 +183,18 @@ function chapterform($inorder, $notes, $endnotes, $storytext, $chaptertitle, $ui
 	}
 	$output .= "<p><label for=\"chaptertitle\">"._CHAPTERTITLE.":</label> <input type=\"text\" class=\"textbox\" id=\"chaptertitle\" maxlength=\"200\" name=\"chaptertitle\" size=\"50\" value=\"".htmlentities($default)."\"> </p>
 		<p>"._ALLOWEDTAGS."</p>
-		<div><label for=\"notes\">"._CHAPTERNOTES.":</label><br /><textarea class=\"textbox\" rows=\"5\" id=\"notes\" name=\"notes\" cols=\"58\">$notes</textarea></div>";
-	if($tinyMCE) 
-		$output .= "<div class='tinytoggle'><input type='checkbox' name='toggle' onclick=\"toogleEditorMode('notes');\" checked><label for='toggle'>"._TINYMCETOGGLE."</label></div>";
-	$output .= "<div><label for=\"storytext\">"._STORYTEXTTEXT.":</label>".(!$storytext ? "<span style=\"font-weight: bold; color: red\">*</span>" : "")."<br><textarea class=\"textbox\" rows=\"15\" id=\"storytext\" name=\"storytext\" cols=\"58\">".$storytext."</textarea></div>";
-	if($tinyMCE) 
-		$output .= "<div class='tinytoggle'><input type='checkbox' name='toggle' onclick=\"toogleEditorMode('storytext');\" checked><label for='toggle'>"._TINYMCETOGGLE."</label></div>";
+		<p><label for=\"notes\">"._CHAPTERNOTES.":</label><br />".e107::getForm()->textarea('notes',$notes)."</p";
+    
+    
+    $editor = efiction_settings::get_single_setting('tinyMCE'); 
+ 
+    $wysiwyg = is_null($editor) ? 'default' : $editor;  
+ 
+    $output .= "<br><div><label for=\"storytext\">"._STORYTEXTTEXT.":</label>".(!$storytext ? "<span style=\"font-weight: bold; color: red\">*</span>" : "")."";
+      
+    $output .=  e107::getForm()->bbarea('storytext',$storytext,'public','efiction','large', array('wysiwyg' => $wysiwyg));
+    $output .= "</div>";
+        
 	$output .= "<p><strong>"._OR."</strong> </p>
 		<p><label for=\"storyfile\">"._STORYTEXTFILE.":</label> <INPUT type=\"file\" id=\"storyfile\" class=\"textbox\" name=\"storyfile\" onClick=\"this.form.storytext.disabled=true\"> </p>
 		<div><label for=\"notes\">"._ENDNOTES.":</label><br><textarea class=\"textbox\" rows=\"5\" id=\"endnotes\" name=\"endnotes\" cols=\"58\">$endnotes</textarea></div>";

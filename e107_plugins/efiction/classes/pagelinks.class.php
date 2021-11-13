@@ -84,12 +84,30 @@ if (!class_exists('efiction_pagelinks')) {
 			$pagelinks = array();
 			foreach($links AS $link) 
 			{
-				$pagelinks[$link['link_name']] = array(
+				            
+                /* rss fix */
+                if($link['link_name'] == "rss")  {
+                  if(!e107::isInstalled('rss_menu'))  continue;
+                  $link['link_url'] = e107::url('rss_menu', 'rss', array('rss_type' => NULL, 'rss_url' => "efiction", 'rss_topicid' => ""));
+                  
+                  $pagelinks[$link['link_name']] = array(
+						"id" => $link['link_id'], 
+						"text" => $link['link_text'], 
+						"url" => $link['link_url'], 
+                         "link" => "<a class='efiction_links efiction_".$link['link_name']."' href=\"".$link['link_url']."\" title=\"".$link['link_text']."\"".($link['link_target'] ? " target=\"_blank\"" : "").
+                        (!empty($link['link_key']) ? " accesskey='".$link['link_key']."'" : "").($current == $link['link_name'] ? " id=\"current\"" : "").">
+                        <img src='".e_PLUGIN."efiction/images/xml.gif' alt='RSS' border='0'></a>");
+
+ 
+                }
+                else { 
+                $pagelinks[$link['link_name']] = array(
 						"id" => $link['link_id'], 
 						"text" => $link['link_text'], 
 						"url" => $link['link_url'], 
 						"link" => "<a class='efiction_links efiction_".$link['link_name']."' href=\"".$link['link_url']."\" title=\"".$link['link_text']."\"".($link['link_target'] ? " target=\"_blank\"" : "").(!empty($link['link_key']) ? " accesskey='".$link['link_key']."'" : "").($current == $link['link_name'] ? " id=\"current\"" : "").">".$link['link_text']."</a>");
-			}
+		        }
+            }
 				
 			return $pagelinks;
 		}
@@ -103,7 +121,8 @@ if (!class_exists('efiction_pagelinks')) {
             }
     
             $links = self::get_pagelinks();    
-            $ret = isset($links[$key]['link']) ? $links[$key]['link'] : null;
+            $ret = isset($links[$key]['link']) ? $links[$key]['link'] : "";
+
             return $ret;
         } 
        

@@ -23,7 +23,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
+if(!defined("e107_INIT")) exit( );
 
 function random_char($string)
 {
@@ -45,8 +45,8 @@ $confirm = isset($_GET['confirm']) ? $_GET['confirm'] : false;
 	if(isset($_GET['lock']) && isNumber($_GET['lock'])) {
 		$output .= "<div class='sectionheader'>"._LOCKMEM."</div>";
 		if($confirm == "yes") {
-			if(check_prefs($_GET['lock'])) dbquery("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET level = '-1' WHERE uid = '".$_GET['lock']."'");
-			else dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_authorprefs(`uid`, `level`) VALUES('".$_GET['lock']."', '-1')");
+			if(check_prefs($_GET['lock'])) e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET level = '-1' WHERE uid = '".$_GET['lock']."'");
+			else e107::getDb()->gen("INSERT INTO ".TABLEPREFIX."fanfiction_authorprefs(`uid`, `level`) VALUES('".$_GET['lock']."', '-1')");
 			$output .= write_message(_ACTIONSUCCESSFUL);
 		}
 		else if ($confirm == "no") {
@@ -61,7 +61,7 @@ $confirm = isset($_GET['confirm']) ? $_GET['confirm'] : false;
 		$output .= "<div class='sectionheader'>"._UNLOCK."</div>";
 		if($confirm == "yes")
 		{
-			dbquery("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET level = '0' WHERE uid = '".$_GET['unlock']."'");
+			e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET level = '0' WHERE uid = '".$_GET['unlock']."'");
 			$output .= write_message(_ACTIONSUCCESSFUL);
 		}
 		else if ($confirm == "no")
@@ -77,25 +77,23 @@ $confirm = isset($_GET['confirm']) ? $_GET['confirm'] : false;
 	}
 	else if(isset($_GET["release"]) && isNumber($_GET['release'])) {
 		$output .= "<div class='sectionheader'>"._RELEASED."</div>";
-		if(_AUTHORTABLE != TABLEPREFIX."fanfiction_authors as author") $output .= write_message("<br />"._FOREIGNAUTHORTABLE);
 		if($confirm == "yes")
 		{
-			include("includes/emailer.php");
-			dbquery("UPDATE "._AUTHORTABLE." SET admincreated = '0' WHERE "._UIDFIELD." = '".$_GET['release']."'");
-			$emailquery = dbquery("SELECT "._EMAILFIELD." as email, "._PENNAMEFIELD." as penname FROM "._AUTHORTABLE." WHERE uid = '".$_GET['release']."'");
-			$email = dbassoc($emailquery);
+			e107::getDb()->gen("UPDATE "._AUTHORTABLE." SET admincreated = '0' WHERE "._UIDFIELD." = '".$_GET['release']."'");
+			$email = e107::getDb()->retrieve("SELECT "._EMAILFIELD." as email, "._PENNAMEFIELD." as penname FROM "._AUTHORTABLE." WHERE uid = '".$_GET['release']."'");
+ 
 			mt_srand((double)microtime() * 1000000);
 			$charset = '23456789' . 'abcdefghijkmnpqrstuvwxyz' . 'ABCDEFGHJKLMNPQRSTUVWXYZ';
 			$pass = random_string($charset, 10);
 			$encryppass = md5($pass);
 			//$headers = "From: $sitename\n";
-			dbquery("UPDATE "._AUTHORTABLE." SET "._PASSWORDFIELD." = '$encryppass' WHERE uid = '".$_GET['release']."'");
+			e107::getDb()->gen("UPDATE "._AUTHORTABLE." SET "._PASSWORDFIELD." = '$encryppass' WHERE uid = '".$_GET['release']."'");
 			
 			$subject = _SIGNUPSUBJECT;
 			
 			$letter = sprintf(_RELEASEMESSAGE, $email['penname'], $pass);
 
-			$mailresult = sendemail($email['penname'], $email['email'], $sitename, $siteemail, $subject, $letter);
+			$mailresult = efiction_core::sendemail($email['penname'], $email['email'], $sitename, $siteemail, $subject, $letter);
 			if($mailresult) $output .= write_message(_AUTHORRELEASED);
 			else $output .= write_error(_EMAILFAILED);
 		}
@@ -112,7 +110,7 @@ $confirm = isset($_GET['confirm']) ? $_GET['confirm'] : false;
 		$output .= "<div class='sectionheader'>"._REVOKEVAL."</div>";
 		if($confirm == "yes")
 		{
-			dbquery("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET validated = '0' WHERE uid = '$_GET[revoke]'");
+			e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET validated = '0' WHERE uid = '$_GET[revoke]'");
 			$output .= write_message(_ACTIONSUCCESSFUL);
 		}
 		else if ($confirm == "no")
@@ -126,9 +124,7 @@ $confirm = isset($_GET['confirm']) ? $_GET['confirm'] : false;
 		}
 	}
 	else if(isset($_GET["delete"]) && isNumber($_GET["delete"])) {
-		$output .= "<div class='sectionheader'>"._DELETEUSER."</div>";
-		if(_AUTHORTABLE != TABLEPREFIX."fanfiction_authors as author") $output .= write_message("<br />"._FOREIGNAUTHORTABLE);
-		else if($confirm == "yes") {
+		 if($confirm == "yes") {
 			include("includes/deletefunctions.php");
 			$output .= deleteUser($_GET['delete']);
 		}
@@ -143,8 +139,8 @@ $confirm = isset($_GET['confirm']) ? $_GET['confirm'] : false;
 	else if(isset($_GET["validate"]) && isNumber($_GET["validate"])) {
 		$output .= "<div class='sectionheader'>"._NONVALMEMBERS."</div>";
 		if($confirm == "yes") {
-			if(check_prefs($_GET['validate'])) dbquery("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET validated = '1' WHERE uid = '".$_GET['validate']."'");
-			else dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_authorprefs(`uid`, `validated`) VALUES('".$_GET['validate']."', '1')");
+			if(check_prefs($_GET['validate'])) e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET validated = '1' WHERE uid = '".$_GET['validate']."'");
+			else e107::getDb()->gen("INSERT INTO ".TABLEPREFIX."fanfiction_authorprefs(`uid`, `validated`) VALUES('".$_GET['validate']."', '1')");
 			$output .= write_message(_ACTIONSUCCESSFUL);
 		}
 		else if ($confirm == "no") {
@@ -164,16 +160,22 @@ $confirm = isset($_GET['confirm']) ? $_GET['confirm'] : false;
 			<tr><td><label for=\"email\">"._EMAIL.":</label></td><td><INPUT  type=\"text\" class=\"textbox=\" name=\"email\"></td></tr>
 			<tr><td colspan=\"2\"><INPUT type=\"submit\" class=\"button\" value=\""._SUBMIT."\" name=\"submit\"></form></td></tr></table>";
 		}
-		else if (isset($_POST['submit'])) {
+	else if (isset($_POST['submit'])) {
 			if(preg_match("!^[a-z0-9_ ]{3,30}$!i", $_POST['penname'])) {
-				dbquery("INSERT INTO ".substr(_AUTHORTABLE, 0, strpos(_AUTHORTABLE, "as author"))."(penname, realname, email, admincreated, date) VALUES ('".escapestring(descript($_POST['penname']))."', '".escapestring(descript($_POST['realname']))."', '".escapestring(descript($_POST['email']))."', '1', now())");
-				$newuid = dbinsertid( );
-				if($logging) dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_log (`log_action`, `log_uid`, `log_ip`, `log_type`) VALUES('".escapestring(sprintf(_LOG_ADMIN_REG, descript($_POST['penname']), $newuid, USERPENNAME, USERUID, $_SERVER['REMOTE_ADDR']))."', '".USERUID."', INET_ATON('".$_SERVER['REMOTE_ADDR']."'), 'RG')");
-				if(!$skin) {
-					$skinquery = dbquery("SELECT skin FROM ".$settingsprefix."fanfiction_settings WHERE sitekey ='".SITEKEY."'");
-					list($skin) = dbrow($skinquery);
-				}
-				dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_authorprefs(uid, userskin, storyindex, sortby) VALUES('$newuid', '$skin', '$displayindex', '$defaultsort')");
+ 
+                $insert = array( 
+                  'penname' => e107::getParser()->toDb($_POST["penname"]),
+                  'realname' => e107::getParser()->toDb($_POST["realname"]),
+                  'email' => e107::getParser()->toDb($_POST["email"]),
+                  'admincreated' => 1,
+                  'date' => time(),
+                '_DUPLICATE_KEY_UPDATE' => 1
+							);
+                $newuid = e107::getDB()->insert("fanfiction_authors", $insert);              
+   
+				if($logging) e107::getDb()->gen("INSERT INTO ".TABLEPREFIX."fanfiction_log (`log_action`, `log_uid`, `log_ip`, `log_type`) VALUES('".escapestring(sprintf(_LOG_ADMIN_REG, descript($_POST['penname']), $newuid, USERPENNAME, USERUID, $_SERVER['REMOTE_ADDR']))."', '".USERUID."', INET_ATON('".$_SERVER['REMOTE_ADDR']."'), 'RG')");
+	 
+				e107::getDb()->gen("INSERT INTO ".TABLEPREFIX."fanfiction_authorprefs(uid, storyindex, sortby) VALUES('$newuid', '$displayindex', '$defaultsort')");
 				
 				$output .= write_message(_ACTIONSUCCESSFUL);
 			}
@@ -186,26 +188,12 @@ $confirm = isset($_GET['confirm']) ? $_GET['confirm'] : false;
 		$where = "";
 
 		if($list  == "admincreated") {
-			if(_AUTHORTABLE != TABLEPREFIX."fanfiction_authors as author") {
-				$fieldtest = dbquery("SHOW COLUMNS FROM ".substr(_AUTHORTABLE, 0, strlen(_AUTHORTABLE) - 9)." LIKE 'admincreated'");
-			}
-			if(isset($fieldtest) && !dbnumrows($fieldtest)) {
-				$where = "";
-				$output .= write_message(_FUNCTIONDISABLED);
-				$tpl->assign("output", $output);
-				//$tpl->xprintToScreen( );
-				dbclose( );
-				$text = $tpl->getOutputContent(); 
-				e107::getRender()->tablerender($caption, $text, $current);
-				require_once(FOOTERF); 
-				exit;
-			}
-			else {
-				$where = " WHERE author.admincreated = '1'";
-				$do = "release";
-				$output .= _INPUTBYADMIN;
-				$message = write_message(_RELEASEAUTHORS);
-			}
+
+    		$where = " WHERE author.admincreated = '1'";
+    		$do = "release";
+    		$output .= _INPUTBYADMIN;
+    		$message = write_message(_RELEASEAUTHORS);
+			
 		}
 		else if($list == "admins") {
 			$where = " WHERE ap.level > 0";
@@ -259,17 +247,14 @@ $confirm = isset($_GET['confirm']) ? $_GET['confirm'] : false;
 		if(!isset($authorlink)) $authorlink = "<a href=\"admin.php?action=members&amp;do=list&amp;$do=";
 		if(!isset($countquery)) $countquery = _MEMBERCOUNT." $where";
 		if(!isset($authorquery)) $authorquery = _MEMBERLIST." $where GROUP BY "._UIDFIELD;
+ 
 		$output .= "<p align=\"center\">
 			<a href=\"admin.php?action=members\">"._ALLMEMBERS."</a> | <a href=\"admin.php?action=members&amp;do=list&amp;list=admins\">"._ADMINS."</a> |  <a href=\"admin.php?action=members&amp;do=list&amp;list=authors\">"._AUTHORS."</a> | <a href=\"admin.php?action=members&amp;do=list&amp;list=admincreated\">"._INPUTBYADMIN."</a> <br />
 			<a href=\"admin.php?action=members&amp;do=list&amp;list=noval\">"._NONVALMEMBERS."</a> | <a href=\"admin.php?action=members&amp;do=list&amp;list=validated\">"._VALMEMBERS."</a> | <a href=\"admin.php?action=members&amp;do=list&amp;list=locked\">"._LOCKMEMLIST."</a> | <a href=\"admin.php?action=members&amp;do=list&amp;list=unlocked\">"._UNLOCKMEMBERS."</a></p>";
 		$pagelink = "admin.php?action=members&amp;do=list&amp;list=$list&amp;".($let ? "let=$let&amp;" :"");
 
 		include("includes/members_list.php");
-		if(_AUTHORTABLE != TABLEPREFIX."fanfiction_authors as author") {
-			$fieldtest = dbquery("SHOW COLUMNS FROM ".substr(_AUTHORTABLE, 0, strlen(_AUTHORTABLE) - 9)." LIKE 'admincreated'");
-			if(dbnumrows($fieldtest)) $output .= write_message("<a href=\"admin.php?action=members&do=add\">"._ADDAUTHOR."</a>");
-		}
-		else $output .= write_message("<a href=\"admin.php?action=members&do=add\">"._ADDAUTHOR."</a>");
+		$output .= write_message("<a href=\"admin.php?action=members&do=add\">"._ADDAUTHOR."</a>");
 		if(isset($message)) $output .= $message;
 	}
 ?>

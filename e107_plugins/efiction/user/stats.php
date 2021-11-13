@@ -22,7 +22,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
+if(!defined("e107_INIT")) exit( );
 
 $stat = isset($_GET['stat']) ? $_GET['stat'] : false;
 if(!empty($_GET['favstor'])) $stat = "favstor";

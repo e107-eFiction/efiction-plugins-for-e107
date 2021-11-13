@@ -23,6 +23,4 @@ $blocks["login"]["status"] = 2;
 $blocks["random"]["status"] = 2;
 $blocks["recent"]["status"] = 2;
 $blocks['recent']['tpl'] = 0;
-$blocks["skinchange"]["status"] = '1';
-$blocks["news"]["status"] = 2;
 ?>

@@ -53,5 +53,18 @@ if (!class_exists('efiction_blocks')) {
 			}
 			return $blocks;
 		}
+        
+        
+        public static function get_single_block($block_name)
+        {
+            $blocks = self::get_blocks();
+
+            if ($block_name) {
+                return $blocks[$block_name];
+            }
+
+            return null;
+        }
+        
   	}
 }

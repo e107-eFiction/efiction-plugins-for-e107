@@ -22,10 +22,13 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
-
+if (!defined('e107_INIT')) { exit; }
+ 
 function build_cat_row($thiscat, $thiscatinfo) {
-	global $catlist, $oddeven, $onpic, $down, $up;
+	global  $oddeven, $onpic, $down, $up;
+    
+    $catlist = efiction_categories::get_catlist();
+        
 	$space = "";
 	if($thiscatinfo['leveldown'] % 2) $class = "odd";
 	else $class = "even";
@@ -40,7 +43,7 @@ function build_cat_row($thiscat, $thiscatinfo) {
 		if($catinfo['pid'] == $thiscatinfo['pid'] && $thiscatinfo['order'] < $catinfo['order']) $downlink = "<a href=\"admin.php?action=categories&go=down&displayorder=".$thiscatinfo['order']."&parentcatid=".$thiscatinfo['pid']."\">$down</a>";
 		if($catinfo['pid'] == $thiscat) $subs .= build_cat_row($cat, $catinfo);
 	}
-	if($subs) $output .= "<img onclick=\"javascript:displayCatRows('$thiscat')\" name='c_$thiscat' alt='on' src='".($onpic ? $onpic : "images/row_on.gif")."'> ";
+	if($subs) $output .= "<img onclick=\"javascript:displayCatRows('$thiscat')\" name='c_$thiscat' alt='on' src='".($onpic ? $onpic : _BASEDIR."images/row_on.gif")."'> ";
 	$output .= $thiscatinfo['name']."</td>\n
 	<td class='tblborder'>$downlink</td>\n
 	<td class='tblborder' width=\"13\">$uplink</td>\n
@@ -167,10 +170,7 @@ function relevelcategory($cat, $leveldown) {
 			dbquery("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = '$displayorder' WHERE displayorder = '$oneabove' AND parentcatid = '".$_GET['parentcatid']."'");
 			dbquery("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = '$oneabove' WHERE displayorder = '-1' AND parentcatid = '".$_GET['parentcatid']."'");
 			$catlist = array( );
-			$catresults = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_categories ORDER BY leveldown, displayorder");
-			while($cat = dbassoc($catresults)) {
-				$catlist[$cat['catid']] = array("name" => stripslashes($cat['category']), "pid" => $cat['parentcatid'], "order" => $cat['displayorder'], "locked" => $cat['locked'], "leveldown" => $cat['leveldown']);
-			}
+            $catlist = efiction_categories::get_catlist();	
 		}
 
 		if(isset($_GET["cat"])) {
@@ -222,10 +222,8 @@ function relevelcategory($cat, $leveldown) {
 	if($showlist) {
 		// Rebuild the category list to reflect any changes we just did.
 			$catlist = array( );
-			$catresults = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_categories ORDER BY leveldown, displayorder");
-			while($cat = dbassoc($catresults)) {
-				$catlist[$cat['catid']] = array("name" => stripslashes($cat['category']), "pid" => $cat['parentcatid'], "order" => $cat['displayorder'], "locked" => $cat['locked'], "leveldown" => $cat['leveldown']);
-			}
+            $catlist = efiction_categories::get_catlist();
+			
 		$output .= "
 <table class=\"tblborder\" align=\"center\" cellspacing=\"0\" cellpadding=\"3\" style='margin: 0 auto;' width=\"90%\">
 		<tr><th class=\"tblborder\"><b>"._CATEGORY."</b></th><th class=\"tblborder\" colspan=\"2\"><b>"._MOVE."</b></th><th class=\"tblborder\"><b>"._OPTIONS."</b></th></tr>";

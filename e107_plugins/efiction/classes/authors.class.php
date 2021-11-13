@@ -44,32 +44,42 @@ if (!class_exists('efiction_authors')) {
         {
         }
 
+        /* indenpendent on e107 users */
         public static function get_single_author($uid = null)
         {
             $uid = intval($uid);
             if (empty($uid)) {
                 return false;
             }
-            $authorquery = "SELECT ap.*, 
-			author.uid as author_uid, 
-			author.penname as penname, 
-			author.email as email, 
-			author.password as password,
-			user_id AS e107_user_id 
-			FROM #fanfiction_authors as author 
-			LEFT JOIN #fanfiction_authorprefs as ap ON ap.uid = author.uid WHERE author.uid = '".$uid."'"  ;
+            
+            /* double check if fanfiction_authorprefs exists - otherwise there is uid = null */
+            if(!e107::getDb()->retrieve("SELECT * FROM ".TABLEPREFIX."fanfiction_authorprefs WHERE uid = '".$uid."' LIMIT 1")) {
+                $insert = array(
+    			'uid'    =>  $uid,
+    			'_DUPLICATE_KEY_UPDATE' => 1
+          		);
+          		e107::getDB()->insert("fanfiction_authorprefs", $insert);
+            }
+        
+            $authorquery = "SELECT author.*, ap.*,  u.*, 
+			author.user_id AS user_id, 
+            author.uid  AS uid
+			FROM ".MPREFIX."fanfiction_authors as author  
+			LEFT JOIN ".MPREFIX."fanfiction_authorprefs as ap ON ap.uid = author.uid  
+            LEFT JOIN ".MPREFIX."user as u ON u.user_id = author.user_id WHERE author.uid =  ".$uid;
 
             $authordata = e107::getDb()->retrieve($authorquery);
-
+ 
             $var = array();
 
             if ($authordata) {
                 $var = $authordata;
             }
-
+ 
             return $var;
         }
-           
+        
+        /* get author information on e107 profile page */
         public static function get_single_author_by_user($user_id = null)
         {
             $user_id = intval($user_id);
@@ -77,16 +87,19 @@ if (!class_exists('efiction_authors')) {
             if (empty($user_id)) {
                 return false;
             }
+            
+            $authorquery = "SELECT author.*, ap.*,  
+			user_id AS e107_user_id 
+			FROM ".MPREFIX."fanfiction_authors as author  
+			LEFT JOIN ".MPREFIX."fanfiction_authorprefs as ap ON ap.uid = author.uid WHERE author.user_id =  ".$user_id ;
+            
+            $authordata = e107::getDb()->retrieve($authorquery);
 
-            $userData = e107::user($user_id);
-
-            $author_uid = $userData['user_plugin_efiction_author'];
-
-            return efiction_authors::get_single_author($author_uid);
+            return $authordata;
         }
-        
-        
-         public static function get_user_id_by_author_uid($uid = null)
+ 
+        /*
+        public static function get_user_id_by_author_uid($uid = null)
         {
             $uid = intval($uid);
 
@@ -96,12 +109,12 @@ if (!class_exists('efiction_authors')) {
 
             $where = ' user_plugin_efiction_author_uid = '.$uid;
 
-            $user_id = e107::getDb()->retrieve('user_extended', '	user_extended_id', $where);
+            $user_id = e107::getDb()->retrieve('user_extended', 'user_extended_id', $where);
  
             return $user_id;
         }
         
-
+*/
         
     }
 

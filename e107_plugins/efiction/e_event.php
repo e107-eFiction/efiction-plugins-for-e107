@@ -17,7 +17,6 @@ class efiction_event // plugin-folder + '_event'
 
 	/**
 	 * Configure functions/methods to run when specific e107 events are triggered.
-	 * For a list of events, please visit: http://e107.org/developer-manual/classes-and-methods#events
 	 * Developers can trigger their own events using: e107::getEvent()->trigger('plugin_event',$array);
 	 * Where 'plugin' is the folder of their plugin and 'event' is a unique name of the event.
 	 * $array is data which is sent to the triggered function. eg. myfunction($array) in the example below.
@@ -30,12 +29,12 @@ class efiction_event // plugin-folder + '_event'
 		$event = array();
 
 		$event[] = array(
-			'name'	=> "login", // when this is triggered... (see http://e107.org/developer-manual/classes-and-methods#events)
+			'name'	=> "login", 
 			'function'	=> "create_author_account", // ..run this function (see below).
 		);
         
 		$event[] = array(
-			'name'	=> "user_profile_edit", // when this is triggered... (see http://e107.org/developer-manual/classes-and-methods#events)
+			'name'	=> "user_profile_edit",  
 			'function'	=> "create_author_account", // ..run this function (see below).
 		);        
  
@@ -44,7 +43,7 @@ class efiction_event // plugin-folder + '_event'
         
 /*
 		$event[] = array(
-			'name'	=> "user_comment_deleted", // when this is triggered... (see http://e107.org/developer-manual/classes-and-methods#events)
+			'name'	=> "user_comment_deleted",  
 			'function'	=> "commentCountDown", // ..run this function (see below).
 		);
 */
@@ -56,21 +55,20 @@ class efiction_event // plugin-folder + '_event'
 	{
             $userData = e107::user(USERID);
             $author_uid = $userData['user_plugin_efiction_author_uid']; 
-            $author_level = $userData['user_plugin_efiction_level'];
+            
  
     }
     
 	function create_author_account($data) // the method to run.
 	{
-
+ 
         $efiction_prefs = e107::pref('efiction');
         // $efiction_prefs['pref_author_after_login']
         if(true) {
         
             $userData = e107::user(USERID);
             $author_uid = $userData['user_plugin_efiction_author_uid']; 
-            $author_level = $userData['user_plugin_efiction_level'];
-            
+ 
             if($author_uid)  {
                   /* if already exists author with that penname, unattached to user, it is solved by _DUPLICATE_KEY_UPDATE */
                   /* cheks prefs */
@@ -94,7 +92,7 @@ class efiction_event // plugin-folder + '_event'
                        }
                     }
             }
-            else {
+            else {  
                  /* check penname */
                 $authorquery = "SELECT  
       			author.uid as author_uid, 
@@ -105,16 +103,19 @@ class efiction_event // plugin-folder + '_event'
                 WHERE author.penname = '".$userData['user_name']."' OR author.email = '".$userData['user_email']."' "  ; 
  
                 $authordata = e107::getDb()->retrieve($authorquery);
-                
+             
                 if($authordata = e107::getDb()->retrieve($authorquery))  {
                     /* if the name and email are the same */
+                   
                     if($authordata['email'] ==  $userData['user_email'] && $authordata['penname'] ==  $userData['user_name'])
                     {
  
                         /* not generate author */
                         $ue = new e107_user_extended;
-      	                $ue->user_extended_setvalue(USERID, 'user_plugin_efiction_author_uid', USERID);
-                        $ue->user_extended_setvalue(USERID, 'user_plugin_efiction_level', 1);
+      	                $ue->user_extended_setvalue(USERID, 'user_plugin_efiction_author_uid', $authordata['author_uid']);
+                        $message = "Succcesfully added author with penname ".$authordata['penname'];
+                         echo  e107::getMessage()->addSuccess($message)->render();
+                          
                     }  
                     else 
                     {
@@ -133,7 +134,7 @@ class efiction_event // plugin-folder + '_event'
   					'email' => $userData['user_email'],  
   					'password' => '', //delete 
   					'date' => $userData['user_join'], 
-                      'user_id' => USERID,  
+                     'user_id' => USERID,  
   					'_DUPLICATE_KEY_UPDATE' => 1
     				);
     				$dbinsertid = e107::getDB()->insert("fanfiction_authors", $insert);
@@ -142,14 +143,14 @@ class efiction_event // plugin-folder + '_event'
    
   					$insert2 = array(
   						'uid'    =>  $dbinsertid,
+                        'level'  => 1,
   						'_DUPLICATE_KEY_UPDATE' => 1
   					);
   					e107::getDB()->insert("fanfiction_authorprefs", $insert2);
   				
                      $ue = new e107_user_extended;
   	                 $ue->user_extended_setvalue(USERID, 'user_plugin_efiction_author_uid', $dbinsertid);
-                     $ue->user_extended_setvalue(USERID, 'user_plugin_efiction_level', 1);
-                          
+  
                      e107::getDb()->gen($qry);
                           
                      e107::setRegistry('core/e107/user/'.USERID);

@@ -81,9 +81,9 @@ function validate( ) {
 		$storyquery = dbquery("SELECT story.validated, story.catid, story.sid, story.title, story.summary, story.uid, author.penname, chapter.inorder FROM ".$tableprefix."fanfiction_stories as story, ".$tableprefix."fanfiction_chapters  as chapter, ".$tableprefix."fanfiction_authors as author WHERE author.uid = story.uid AND chapter.sid = story.sid AND chapter.chapid ='".$_GET['chapid']."' LIMIT 1");
 		list($validated, $catid, $sid, $title, $summary, $authoruid, $author, $inorder) = dbassoc($storyquery);
 		if($admincats == "0" || sizeof(array_intersect(explode(",", $catid), explode(",", $admincats)))) {
-			include("includes/emailer.php");
+		 
 			if($validated != "1") {
-				dbquery("UPDATE ".$tableprefix."fanfiction_stories SET validated = '1', updated = NOW() WHERE sid = '".$_GET['sid']."'");
+				dbquery("UPDATE ".$tableprefix."fanfiction_stories SET validated = '1', updated = ".time()." WHERE sid = '".$_GET['sid']."'");
 				$categories = explode(",", $catid);
 				include("functions.php");
 				foreach($categories as $cat) {
@@ -94,7 +94,7 @@ function validate( ) {
 					$mailtext = sprintf(_AUTHORALERTNOTE, $title, $author, $summary, $sid);
 					$favorites = dbquery("SELECT author.uid, email, penname FROM ".$tableprefix."fanfiction_favauth as fav, ".$tableprefix."fanfiction_authors as author WHERE fav.favuid = $authoruid AND fav.uid = author.uid");
 					while($favuser = dbassoc($favorites)) { 
-						sendemail($favuser['penname'], $favuser['email'], $sitename, $siteemail, $subject, $mailtext, "html");
+						$result = efiction_core::sendemail($favuser['penname'], $favuser['email'], $sitename, $siteemail, $subject, $mailtext, "html");
 					}				
 				}
 			}
@@ -103,11 +103,11 @@ function validate( ) {
 				$mailtext = sprintf(_STORYALERTNOTE, $title, $author, $sid, $inorder);
 				$favorites = dbquery("SELECT author.uid, penname, email FROM ".$tableprefix."fanfiction_favstor as fav, ".$tableprefix."fanfiction_authors as author WHERE sid = '$sid' AND fav.uid = author.uid");
 				while($favuser = dbassoc($favorites)) { 
-					sendemail($favuser['penname'], $favuser['email'], $sitename, $siteemail, $subject, $mailtext, "html");
+					$result = efiction_core::sendemail($favuser['penname'], $favuser['email'], $sitename, $siteemail, $subject, $mailtext, "html");
 				}
 			}
 			dbquery("UPDATE ".$tableprefix."fanfiction_chapters SET validated = '1' WHERE chapid = '".$_GET['chapid']."'");
-			dbquery("UPDATE ".$tableprefix."fanfiction_stories SET updated = NOW( ) WHERE sid = '$sid'");
+			dbquery("UPDATE ".$tableprefix."fanfiction_stories SET updated = ".time()." WHERE sid = '$sid'");
 			$output .= "<center><b>"._STORYVALIDATED."</b></center>";
 		}
 		else
@@ -175,9 +175,8 @@ function yesletter( ) {
 			$ademail = $siteemail;
 		$subject = stripinput($_POST['subject']);
 		$letter = nl2br(stripinput($_POST['letter']));
-			
-		include("includes/emailer.php");
-		$result = sendemail($_POST['email'], $_POST['email'], $adminname, $ademail, $subject, $letter, "html");
+ 
+		$result = efiction_core::sendemail($_POST['email'], $_POST['email'], $adminname, $ademail, $subject, $letter, "html");
 
 		if($result) echo "<div style='text-align: center;'>"._EMAILSENT."</div>";
 		else echo "<div style='text-align: center;'>"._ERROR."</div>";
@@ -211,9 +210,8 @@ function noletter( ) {
 			$ademail = $siteemail;
 		$subject = stripinput($_POST['subject']);
 		$letter = nl2br(stripinput($_POST['letter']));
-			
-		include("includes/emailer.php");
-		$result = sendemail($_POST['email'], $_POST['email'], $adminname, $ademail, $subject, $letter, "html");
+ 
+		$result = efiction_core::sendemail($_POST['email'], $_POST['email'], $adminname, $ademail, $subject, $letter, "html");
 
 		if($result) echo "<div style='text-align: center;'>"._EMAILSENT."</div>";
 		else echo "<div style='text-align: center;'>"._ERROR."</div>";

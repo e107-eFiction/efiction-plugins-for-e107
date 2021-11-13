@@ -40,7 +40,7 @@ if(!defined("_CHARSET")) exit( );
 		if(is_array($words)) $wordlist = implode(", ", $words);
 		else $wordlist = "";
 		$output .= "<div style=\"text-align: center; margin: 1em; \">"._CENSORDIRS."</div>";
-		$output .= "<form method=\"POST\" enctype=\"multipart/form-data\" action=\"admin.php?action=censor\" style=\"width: 500px; margin: 0 auto;\">
+		$output .= "<form method=\"POST\" class='acc' enctype=\"multipart/form-data\" action=\"admin.php?action=censor\" style=\"min-width: 500px; margin: 0 auto;\">
 			<textarea name=\"words\" rows=\"7\" cols=\"60\">$wordlist</textarea><br /><INPUT type=\"submit\" class=\"button\" name=\"submit\" value=\""._SUBMIT."\"></form>";
 	}
 

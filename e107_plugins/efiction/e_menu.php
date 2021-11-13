@@ -15,6 +15,8 @@ if (!defined('e107_INIT')) {
 
 e107::lan('efiction', true);
 
+e107::getSingleton('efiction_blocks', e_PLUGIN.'efiction/classes/blocks.class.php');
+
 class efiction_menu
 {
     public function __construct()
@@ -33,8 +35,12 @@ class efiction_menu
     	foreach($blocks AS $key => $block) {
 			$availableblocks[$key] = $block['title'];
 		}
-
+ 
         switch ($menu) {
+            case 'efiction_recent':
+            
+            break;
+            
 			case 'blocks':
 				
 				$fields['block_name'] = array('title' => LAN_EFICTION_BLOCKS,  'type' => 'dropdown', 'writeParms' => array('optArray' => $availableblocks), 'help' => '');

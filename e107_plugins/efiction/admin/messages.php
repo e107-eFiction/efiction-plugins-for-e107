@@ -22,24 +22,42 @@
 
 if(!defined("_CHARSET")) exit( );
 
-	$output .= "<div id=\"pagetitle\">"._MESSAGESETTINGS."</div>";
+$caption  = _MESSAGESETTINGS;  //Submission rejected
 
 if(isset($_POST['submit'])) {
-	$result = dbquery("UPDATE ".TABLEPREFIX."fanfiction_messages SET message_text = '".escapestring(descript($_POST['text']))."' WHERE message_name = '".$_GET['message']."' LIMIT 1");
-	if($result) $output .= write_message(_ACTIONSUCCESSFUL);
-	else $output .= write_error(_ERROR);
+    $title = e107::getParser()->toDb($_POST['title']);
+    $body =  e107::getParser()->toDb($_POST['text']);
+    
+	$result = e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_messages 
+          SET  message_title = '".$title."', message_text = '".$body."' WHERE message_name = '".$_GET['message']."' LIMIT 1");
+     
+    if ($result === false) { $output .= write_error(_ERROR); } else { $output .= write_message(_ACTIONSUCCESSFUL); }
+ 
 }
 else {
 	$pagequery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_messages WHERE message_name = '".$_GET['message']."' LIMIT 1");
 	$message =  dbassoc($pagequery);
 	$text = $message['message_text'];
-	if(!$message) dbquery("INSERT INTO `".TABLEPREFIX."fanfiction_messages` (`message_name` , `message_title` , `message_text` ) VALUES ('".$_GET['message']."', '', '')");
-	$output .= "<div class='sectionheader'>".preg_replace("@\{sitename\}@", $sitename, $message['message_title'])."</div>
-		<div style='width: 100%;'><div  id=\"settingsform\"><form method=\"POST\" enctype=\"multipart/form-data\" action=\"admin.php?action=messages&message=".$_GET['message']."\">
-		<textarea rows=\"10\" cols=\"60\" style=\"width: 100%;\" ".($_GET['message'] == "tinyMCE" ? "class='mceNoEditor'" :"")." name=\"text\">$text</textarea>";
-	if($tinyMCE && $_GET['message'] != "tinyMCE") 
-		$output .= "<div class='tinytoggle'><input type='checkbox' name='toggle' onclick=\"toogleEditorMode('text');\" checked><label for='toggle'>"._TINYMCETOGGLE."</label></div>";
-	$output .= "<div style='clear: both;'>&nbsp;</div><INPUT type='submit' class='button' id='submit' value='"._SUBMIT."' name='submit'>
-				</form></div><div style='clear: both;'>&nbsp;</div></div>";
+    $title = $message['message_title'];
+    
+	if(!$message) e107::getDb()->gen("INSERT INTO `".TABLEPREFIX."fanfiction_messages` (`message_name` , `message_title` , `message_text` ) VALUES ('".$_GET['message']."', '', '')");
+    
+	/* $search = array("@\{sitename\}@", "@\{adminname\}@",  "@\{author\}@", "@\{storytitle\}@",  "@\{chaptertitle\}@", "@\{rules\}@");
+	$replace = array( $sitename, $adminname, $story['penname'], $story['title'], $story['chapter'], "<a href=\"$url/viewpage.php?id=rules\">"._RULES."</a>");
+	$letter = preg_replace($search, $replace, $letter);
+	$subject = preg_replace($search, $replace, $subject);
+    */        
+    
+	$caption .= " - ". preg_replace("@\{sitename\}@", $sitename, $message['message_title']);
+    
+	$output .= "<form method=\"POST\" enctype=\"multipart/form-data\" action=\"admin.php?action=messages&message=".$_GET['message']."\">";
+        
+    $output .= "<label for=\"message_title\">".LAN_SUBJECT.":</label>";    
+    $output .= e107::getForm()->text('title', $title); 
+    $output .= "<label for=\"text\">".LAN_MESSAGE.":</label>";
+    $output .= e107::getForm()->bbarea('text', $text, '', '', 'small');
+	$output .= "<div style='clear: both;'>&nbsp;</div><INPUT type='submit' class='button btn btn-sm btn-success' id='submit' value='"._SUBMIT."' name='submit'>
+				</form>  ";
 }
-?>
+
+ 

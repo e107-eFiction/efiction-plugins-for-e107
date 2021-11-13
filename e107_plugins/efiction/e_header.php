@@ -1,6 +1,6 @@
 <?php
 
-global $skindir, $skinfolder;
+global $skindir, $skinfolder, $displayform;
  
 
 if(deftrue('USER_AREA') && (e_PAGE != "menus.php") )    // prevents inclusion of JS/CSS/meta in the admin area.
@@ -30,22 +30,7 @@ if(deftrue('USER_AREA') && (e_PAGE != "menus.php") )    // prevents inclusion of
 		.column { float: left; width: ".($colwidth - 1)."%; }
 		html>body .column { width: $colwidth%; }
 		.cleaner { clear: both; height: 1px; font-size: 1px; margin: 0; padding: 0; background: transparent; }
-		#settingsform { margin: auto; padding: 0; border: none;  }
-		#settingsform form { width: 100%; margin: 0 10%; }
-		#settingsform label { float: left; display: block; width: 30%; text-align: right; padding-right: 10px; clear: left; }
-		#settingsform div { clear: both;}
-		#settingsform .fieldset SPAN { float: left; display: block; width: 30%; text-align: right; padding-right: 10px; clear: left;}
-		#settingsform .fieldset LABEL { float: none; width: auto; display: inline; text-align: left; clear: none; }
  
-		#settingsform .tinytoggle { text-align: center; }
-		#settingsform .tinytoggle LABEL { float: none; display: inline; width: auto; text-align: center; padding: 0; clear: none; }
-		#settingsform #submitdiv { text-align: center; width: 100%;clear: both; height: 3em; }
-		#settingsform #submitdiv #submit { position: absolute; z-index: 10001; margin: 1em; }
-		a.pophelp{
-			position: relative;  
-			vertical-align: super;
-		}
-		
 		a.pophelp:hover{z-index:100; border: none; text-decoration: none;}
 		
 		a.pophelp span{display: none; position: absolute; top: -25em; left: 20em; }
@@ -96,9 +81,12 @@ if(deftrue('USER_AREA') && (e_PAGE != "menus.php") )    // prevents inclusion of
 
 	if(!isset($_GET['action']) || $_GET['action'] != "printable") 
 	{
-		e107::js("url", _BASEDIR."includes/javascript.js", "jquery" ); 
+		if(e_CURRENT_PLUGIN === "efiction") {
+            e107::js("url", _BASEDIR."includes/javascript.js", "jquery" );
+        } 
 	}
 
+ 
 	if(isset($displayform) && $displayform == 1) 
 	{
 		e107::js('url',  _BASEDIR."includes/userselect.js" , 'jquery' );
@@ -120,15 +108,30 @@ if(deftrue('USER_AREA') && (e_PAGE != "menus.php") )    // prevents inclusion of
 		\n";		
 		e107::js('inline', $inlinecode); 
 	}
-
+ 
 	if(!empty($_GET['action']) && $_GET['action'] == "printable") { 
 		if(file_exists("$skindir/printable.css")) e107::css("efiction", "$skinfolder/printable.css");
 		else e107::css("efiction", "default_tpls/printable.css");
+        
+        define("e_IFRAME", true);
+        
+        $inline_code = "if (window.print) {
+                      window.print() ;  
+                  } else {
+                      var WebBrowser = '<OBJECT ID=\"WebBrowser1\" WIDTH=0 HEIGHT=0 CLASSID=\"CLSID:8856F961-340A-11D0-A96B-00C04FD705A2\"></OBJECT>';
+                  document.body.insertAdjacentHTML('beforeEnd', WebBrowser);
+                      WebBrowser1.ExecWB(6, 2);//Use a 1 vs. a 2 for a prompting dialog box    WebBrowser1.outerHTML = \"\";  
+                  }";
+        e107::js("inline", $inline_code) ;          
 	}
 	else {
 		
 		e107::css("inline", $inline_css) ;
 	}	
+    if(!empty($_GET['action']) && $_GET['action'] == "yesletter") { 
+       define("e_IFRAME", true);
+    }
+ 
  	
 }
  

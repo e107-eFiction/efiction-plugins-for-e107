@@ -30,7 +30,7 @@ function getUsers() {
 	if(timedElement != null) {
 		str = document.getElementById(timedElement + "Select").value;
 		if(str != "" && str != lastQuery) {
-			var serverPage = "includes/userlist.php";
+			var serverPage = basedir + "includes/userlist.php";
 			myRequest = new ajaxObject(serverPage, setUsers);
 			val = "element=" + timedElement + "&";
 			val = val + "str="+str;
@@ -56,7 +56,7 @@ function setUsers(responseText, responseStatus) {
 			div.removeChild(div.firstChild);
 		}
 		if(userList.length == 0) return;
-		posObj = findPos(input);
+		posObj = findPos(input);  
 		var list = document.createElement('div');
 		list.className = "ajaxOptList";
 		list.setAttribute("id", element+"Names");
@@ -73,15 +73,15 @@ function setUsers(responseText, responseStatus) {
 		}
 		div.appendChild(list);
 		var shim = document.getElementById(element+"shim");
-		shim.style.height = list.offsetHeight + "px";
-		shim.style.width = list.offsetWidth + "px";
+    	shim.style.height = list.offsetHeight + "px";
+		shim.style.width = list.offsetWidth + "px";   
 		listPos = findPos(document.getElementById(element + "Names"));
-		shim.style.left = posObj[0] + "px";
-		shim.style.top = posObj[1] + "px";
+	 	shim.style.left = posObj[0] + "px";
+	//	shim.style.top = posObj[1] + "px";
 		shim.style.zIndex = 100;
 		shim.style.display = "block";
-		list.style.top = (posObj[1] + 23) + "px";
-		list.style.left = posObj[0] + "px";
+	//	list.style.top = (posObj[1] + 23) + "px";
+	 	list.style.left = posObj[0] + "px";
 		div.style.visibility = "visible";
 		secs = 10;
 		removeList();

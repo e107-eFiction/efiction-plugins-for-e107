@@ -21,7 +21,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
+if(!defined("e107_INIT")) exit( );
 	if(!isset($count)) $count = 0;
 	$tpl->assign("sid", $stories['sid']);
 	unset($challengelinks, $challengeadmin, $serieslinks, $categorylinks, $adminlinks, $authlink);
@@ -71,7 +71,7 @@ if(!defined("_CHARSET")) exit( );
 	if(count($storycodeblocks)) foreach($storycodeblocks as $c) { eval($c); } 
 	$tpl->assign("classifications", $allclasslist);
 	$seriesquery = "SELECT series.* FROM ".TABLEPREFIX."fanfiction_inseries as list, ".TABLEPREFIX."fanfiction_series as series WHERE list.sid = '".$stories['sid']."' AND series.seriesid = list.seriesid";
-	var_dump(dbquery($seriesquery));
+ 
     $seriesresult = dbquery($seriesquery);
     /*  or die(_FATALERROR."<br>Query: $seriesquery<br>Error: (".e107::getDb()->getLastErrorNumber().") ".e107::getDb()->getLastErrorText()); */
 	$serieslinks = array( );
@@ -84,7 +84,7 @@ if(!defined("_CHARSET")) exit( );
 	
 	$tpl->assign("category",  $stories['catid'] == '-1' || !$stories['catid'] ? _ORPHAN : catlist($stories['catid']));
 	$tpl->assign("completed"   , ($stories['completed'] ? _YES : _NO) );
-	$tpl->assign("roundrobin"   , ($stories['rr'] ?  (!empty($roundrobin) ? $roundrobin : "<img src=\"images/roundrobin.gif\" alt=\""._ROUNDROBIN."\">") : "") );
+	$tpl->assign("roundrobin"   , ($stories['rr'] ?  (!empty($roundrobin) ? $roundrobin : "<img src=\""._BASEDIR."images/roundrobin.gif\" alt=\""._ROUNDROBIN."\">") : "") );
 	$tpl->assign("ratingpics"   , ratingpics($stories['rating']) );
 	$tpl->assign("reviews"   , ($reviewsallowed ? "<a href=\""._BASEDIR."reviews.php?type=ST&amp;item=".$stories['sid']."\">"._REVIEWS."</a>" : "") );
 	if(isMEMBER && !empty($favorites)) 
@@ -93,9 +93,9 @@ if(!defined("_CHARSET")) exit( );
 	$numchapsquery = dbquery("SELECT count(sid) FROM ".TABLEPREFIX."fanfiction_chapters WHERE sid = '".$stories['sid']."' AND validated > 0");
 	list($chapters) = dbrow($numchapsquery);
 	$tpl->assign("numchapters", $chapters );
-
-	$tpl->assign("updated"   , date("$dateformat", $stories['updated']) );
-	$tpl->assign("published"   , date("$dateformat", $stories['date']) );
+ 
+	$tpl->assign("updated"   , e107::getDate()->convert_date($stories['updated'], 'short') );
+	$tpl->assign("published"   , e107::getDate()->convert_date($stories['date'], 'short') );
 	if(!empty($recentdays)) {
 		$recent = time( ) - ($recentdays * 24 * 60 *60);
 		if($stories['updated'] > $recent) $tpl->assign("new", isset($new) ? file_exists(_BASEDIR.$new) ? "<img src='$new' alt='"._NEW."'>" : $new : _NEW);
@@ -118,7 +118,7 @@ if(!defined("_CHARSET")) exit( );
 	else if(isADMIN && uLEVEL < 4) $adminlinks .= " [<a href=\""._BASEDIR."admin.php?action=featured&amp;feature=".$stories['sid']."\">"._FEATURED."</a>]";
 	$tpl->assign("toc", "<a href=\""._BASEDIR."viewstory.php?sid=".$stories['sid']."&amp;index=1\">"._TOC."</a>");
 	$tpl->assign("oddeven", ($count % 2 ? "odd" : "even"));
-	$tpl->assign("reportthis", "[<a href=\""._BASEDIR."contact.php?action=report&amp;url=viewstory.php?sid=".$stories['sid']."\">"._REPORTTHIS."</a>]");
+	$tpl->assign("reportthis", "[<a href=\""._BASEDIR."report.php?action=report&amp;url=viewstory.php?sid=".$stories['sid']."\">"._REPORTTHIS."</a>]");
 	if(isADMIN && uLEVEL < 4) $tpl->assign("adminlinks", "<div class=\"adminoptions\"><span class='label'>"._ADMINOPTIONS.":</span> ".$adminlinks."</div>");
 	else if(isMEMBER && (USERUID == $stories['uid'] || array_key_exists(USERUID, $stories['coauthors']))) $tpl->assign("adminlinks", "<div class=\"adminoptions\"><span class='label'>"._OPTIONS.":</span> ".$adminlinks."</div>");
 	$count++;

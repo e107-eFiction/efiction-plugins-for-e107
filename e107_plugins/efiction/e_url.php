@@ -60,14 +60,7 @@ class efiction_url // plugin-folder + '_url'
 			'sef'			=> '{alias}', 
 			'redirect'		=> '{e_PLUGIN}efiction/authors.php$1', 	  
 		);
-
-		$config['rss'] = array(
-            'alias'         => 'rss.php',
-			'regex'			=> '^{alias}\/?([\?].*)?\/?$', 
-			'sef'			=> '{alias}', 
-			'redirect'		=> '{e_PLUGIN}efiction/rss.php$1', 	 		 
-		);
-
+ 
 		$config['searching'] = array(
             'alias'         => 'searching.php',
 			'regex'			=> '^{alias}\/?([\?].*)?\/?$', 
@@ -137,6 +130,13 @@ class efiction_url // plugin-folder + '_url'
 			'sef'			=> '{alias}', 
 			'redirect'		=> '{e_PLUGIN}efiction/admin.php$1', 	 		 
 		);  
+        
+       $config['efiction'] = array(
+            'alias'         => 'efiction.php',
+			'regex'			=> '^{alias}\/?([\?].*)?\/?$', 					 
+			'sef'			=> '{alias}', 							 
+			'redirect'		=> '{e_PLUGIN}efiction/efiction.php$1', 		 
+		);
  
 		$config['index'] = array(
             'alias'         => 'efiction',

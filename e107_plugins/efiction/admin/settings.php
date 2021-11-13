@@ -25,39 +25,41 @@
 if(!defined("e107_INIT")) exit( );
 
 function updatePanelOrder( ) {
-	
-	$ptypes = dbquery("SELECT panel_type FROM ".MPREFIX."fanfiction_panels GROUP BY panel_type");
-	while($ptype = dbassoc($ptypes)) {
-		if($ptype['panel_type'] == "A") {
+ 
+    $paneltypes = efiction_panels::get_panel_types();  
+	foreach($paneltypes AS $ptype) {
+		if($ptype['panel_type'] == "A") {  
 			for($x = 1; $x < 5; $x++) {
 				$count = 1;
-				$plist = dbquery("SELECT panel_name, panel_id FROM ".MPREFIX."fanfiction_panels WHERE panel_hidden = '0' AND panel_type = '".$ptype['panel_type']."' AND panel_level = '$x' ORDER BY panel_level, panel_order");
-				while($p = dbassoc($plist)) {
-					dbquery("UPDATE ".MPREFIX."fanfiction_panels SET panel_order = '$count' WHERE panel_id = '".$p['panel_id']."' LIMIT 1");
+				$plist = e107::getDb()->retrieve("SELECT panel_name, panel_id FROM ".MPREFIX."fanfiction_panels WHERE panel_hidden = '0' AND panel_type = '".$ptype['panel_type']."' AND panel_level = '$x' ORDER BY panel_level, panel_order", true);
+				foreach($plist AS $p) {
+					e107::getDb()->gen("UPDATE ".MPREFIX."fanfiction_panels SET panel_order = '$count' WHERE panel_id = '".$p['panel_id']."' LIMIT 1");
 					$count++;
 				}
 			}
 		}
-		else {
+		else {  
 			$count = 1;
-			$plist = dbquery("SELECT panel_name, panel_id FROM ".MPREFIX."fanfiction_panels WHERE panel_hidden = '0' AND panel_type = '".$ptype['panel_type']."' ORDER BY ".($ptype['panel_type'] == "A" ? "panel_level," : "")."panel_order");
-			while($p = dbassoc($plist)) {
-				dbquery("UPDATE ".MPREFIX."fanfiction_panels SET panel_order = '$count' WHERE panel_id = '".$p['panel_id']."' LIMIT 1");
+			$plist = e107::getDb()->retrieve("SELECT panel_name, panel_id FROM ".MPREFIX."fanfiction_panels WHERE panel_hidden = '0' AND panel_type = '".$ptype['panel_type']."' ORDER BY ".($ptype['panel_type'] == "A" ? "panel_level," : "")."panel_order");
+			foreach($plist AS $p) {
+				e107::getDb()->gen("UPDATE ".MPREFIX."fanfiction_panels SET panel_order = '$count' WHERE panel_id = '".$p['panel_id']."' LIMIT 1");
 				$count++;
 			}
 		}
 	}
+
 }
 
 if(isset($action) && $action == "settings") {
-$output .= "<h1>"._SETTINGS."</h1><div style='text-align: center;'>
+
+$caption =  _SETTINGS ;
+$output .= "<div style='text-align: center;'>
 	<a href='admin.php?action=settings&amp;sect=main'>"._MAINSETTINGS."</a> |
 	<a href='admin.php?action=settings&amp;sect=submissions'>"._SUBMISSIONSETTINGS."</a> |
 	<a href='admin.php?action=settings&amp;sect=sitesettings'>"._SITESETTINGS."</a> |
 	<a href='admin.php?action=settings&amp;sect=display'>"._DISPLAYSETTINGS."</a> |
 	<a href='admin.php?action=settings&amp;sect=reviews'>"._REVIEWSETTINGS."</a> |
 	<a href='admin.php?action=settings&amp;sect=useropts'>"._USERSETTINGS."</a> |
-	<a href='admin.php?action=settings&amp;sect=email'>"._EMAILSETTINGS."</a> |
 	<a href='admin.php?action=censor'>"._CENSOR."</a> <br />
 	<a href='admin.php?action=messages&message=copyright'>"._COPYRIGHT."</a> | 
 	<a href='admin.php?action=messages&message=printercopyright'>"._PRINTERCOPYRIGHT."</a> | 
@@ -70,17 +72,27 @@ $output .= "<h1>"._SETTINGS."</h1><div style='text-align: center;'>
 	}
 	if(isset($othersettings)) $output .= implode(" | ", $othersettings);
 $output .= "</div> ";
+    
+    e107::getRender()->tablerender($caption, $output, $current);
+    $output ='';
+    $caption = '';
 }	
 
-$sects = array("main", "submissions", "sitesettings", "display", "reviews", "useropts", "email");
+$sects = array("main", "submissions", "sitesettings", "display", "reviews", "useropts" );
 //if(!isset($_GET['sect'])) $sect = "main";
 //else $sect = $_GET['sect'];
 $sect = isset($_GET['sect']) ? $_GET['sect'] : "main";
+
+if(!in_array($sect, $sects  )) {
+  e107::redirect();
+}
+
+
 if(isset($_POST['submit'])) {
 	if($sect == "main") {
 		if(!preg_match("!^[a-z0-9_]{3,30}$!i", $_POST['newsitekey'])) $output .= write_error(_BADSITEKEY);
 		else {
-			$oldsitekey = $sitekey;
+			$oldsitekey = $sitekey;  
 			$sitekey = descript($_POST['newsitekey']);
 			$sitename = escapestring(descript(strip_tags($_POST['newsitename'])));
 			$slogan = escapestring(descript(strip_tags($_POST['newslogan'])));
@@ -96,7 +108,9 @@ if(isset($_POST['submit'])) {
 			if(empty($sitekey)) $output .= write_message(_SITEKEYREQUIRED);
 			else {
 				if($sitekey != $oldsitekey) $output .= write_message(_SITEKEYCHANGED);
-				$result = dbquery("UPDATE ".MPREFIX."fanfiction_settings SET sitekey = '$sitekey', sitename = '$sitename', slogan = '$slogan', url = '$url', MPREFIX = '$MPREFIX', siteemail = '$siteemail', skin = '$skin', language = '$language' WHERE sitekey = '$oldsitekey'");
+                echo "UPDATE ".MPREFIX."fanfiction_settings SET sitekey = '$sitekey', sitename = '$sitename', slogan = '$slogan', url = '$url', tableprefix = '$MPREFIX', siteemail = '$siteemail', skin = '$skin', language = '$language' WHERE sitekey = '$oldsitekey'"; 
+                
+				$result = dbquery("UPDATE ".MPREFIX."fanfiction_settings SET sitekey = '$sitekey', sitename = '$sitename', slogan = '$slogan', url = '$url', tableprefix = '$MPREFIX', siteemail = '$siteemail', skin = '$skin', language = '$language' WHERE sitekey = '$oldsitekey'");
 			}
 		}
 	}
@@ -122,17 +136,19 @@ if(isset($_POST['submit'])) {
 
 	}
 	else if($sect == "sitesettings") {
-		$tinyMCE = $_POST['newtinyMCE'] == 1 ? 1 : 0;
+		$tinyMCE = e107::getParser()->toDb($_POST['newtinyMCE']);
 		$allowed_tags = $_POST['newallowed_tags'];
 		$favorites = $_POST['newfavorites'] == 1 ? 1 : 0;
 		$multiplecats = $_POST['newmultiplecats'] == 1 ? 1 : 0;
-		$newscomments = $_POST['newnewscomments'] == 1 ? 1 : 0;
+ 
 		$logging = $_POST['newlogging'] == 1 ? 1 : 0;
 		$maintenance = $_POST['newmaint'] == 1 ? 1 : 0;
 		$debug = $_POST['newdebug'] == 1 ? 1 : 0;
 		$captcha = $_POST['newcaptcha'] == 1 ? 1 : 0;
-		$result = dbquery("UPDATE ".MPREFIX."fanfiction_settings SET tinyMCE = '$tinyMCE', favorites = '$favorites', multiplecats = '$multiplecats', allowed_tags = '$allowed_tags', newscomments = '$newscomments', logging = '$logging', maintenance = '$maintenance', debug = '$debug', captcha = '$captcha' WHERE sitekey ='".SITEKEY."'");
-	}
+   
+		$result = e107::getDb()->gen("UPDATE ".MPREFIX."fanfiction_settings SET tinyMCE = '$tinyMCE', favorites = '$favorites', multiplecats = '$multiplecats', allowed_tags = '$allowed_tags',   logging = '$logging', maintenance = '$maintenance', debug = '$debug', captcha = '$captcha' WHERE sitekey ='".SITEKEY."'");
+	     
+    }
 	else if($sect == "display") {
 		$dateformat = $_POST['newdateformat'] ? descript(strip_tags($_POST['newdateformat'])) : descript(strip_tags($_POST['customdateformat']));
 		$timeformat = $_POST['newtimeformat'] ? descript(strip_tags($_POST['newtimeformat'])) : descript(strip_tags($_POST['customtimeformat']));
@@ -153,8 +169,10 @@ if(isset($_POST['submit'])) {
 		$rateonly = $_POST['newrateonly'] == 1 ? 1 : 0;
 		$ratings = isset($_POST['newratings']) && isNumber($_POST['newratings']) ? $_POST['newratings'] : 0;
 		$revdelete = isset($_POST['newrevdelete']) && isNumber($_POST['newrevdelete']) ? $_POST['newrevdelete'] : 0;
-		$result = dbquery("UPDATE ".MPREFIX."fanfiction_settings SET reviewsallowed = '$reviewsallowed', anonreviews = '$anonreviews', rateonly = '$rateonly', ratings = '$ratings', revdelete = '$revdelete' WHERE sitekey ='".SITEKEY."'");
-	}
+ 
+		$result = e107::getDb()->gen("UPDATE ".MPREFIX."fanfiction_settings SET reviewsallowed = '$reviewsallowed', anonreviews = '$anonreviews', rateonly = '$rateonly', ratings = '$ratings', revdelete = '$revdelete' WHERE sitekey ='".SITEKEY."'");
+ 
+    }
 	else if($sect == "useropts") {
 		$alertson = $_POST['newalertson'] == 1 ? 1 : 0;
 		$disablepopups = $_POST['newdisablepops'] == 1 ? 1 : 0;
@@ -162,72 +180,49 @@ if(isset($_POST['submit'])) {
 		$pwdsetting = $_POST['newpwdsetting'] == 1 ? 1 : 0;
 		$result = dbquery("UPDATE ".MPREFIX."fanfiction_settings SET alertson = '$alertson', disablepopups = '$disablepopups', agestatement = '$agestatement', pwdsetting = '$pwdsetting' WHERE sitekey ='".SITEKEY."'");
 	}
-	else if($sect == "email") {
-		$smtp_host = $_POST['newsmtp_host'];
-		$smtp_username = $_POST['newsmtp_username'];
-		$smtp_password = $_POST['newsmtp_password'];
-		$result = dbquery("UPDATE ".MPREFIX."fanfiction_settings SET smtp_host = '$smtp_host', smtp_username = '$smtp_username', smtp_password = '$smtp_password' WHERE sitekey ='".SITEKEY."'");
-	}
-	if($result) {
+ 
+    // 0 is correct value, nothing was changed
+	if($result >= 0 ) {
 		$output .= write_message(_ACTIONSUCCESSFUL);
 		$sect = $sects[(array_search($sect, $sects) + 1)];
 		if(!$sect) $sect = $sects[0];
 	}
-	else $output .= write_error(_ERROR);
+	else $output .= write_error("(4)"._ERROR);
 }
-	$settingsresults = dbquery("SELECT * FROM ".MPREFIX."fanfiction_settings WHERE sitekey ='".SITEKEY."'");
-	$settings = dbassoc($settingsresults);
+ 
+	$settings = efiction_settings::get_settings();
 	foreach($settings as $var => $val) {
 		$$var = stripslashes($val);
 	}
 
 	$output .= "<form method='POST' class='tblborder' style='' enctype='multipart/form-data' action='".(isset($action) &&  $action == "settings" ? "admin.php?action=settings" : $_SERVER['PHP_SELF']."?step=".$_GET['step'])."&amp;sect=$sect'>";
-	if($sect == "main") {
-		$output .= "<h2>"._SITEINFO."</h2>
-		<table class='acp'>
+	$output .= "<div class='table-responsive'>";
+    if($sect == "main") {
+		$caption = _SITEINFO;
+		$output .= "<table class='acp'>
 			<tr>
-				<td><label for='newsitekey'>"._SITEKEY.":</label></td><td><input type='text' class='textbox' name='newsitekey' value='".SITEKEY."'> <a href='#' class='pophelp'>[?]<span>"._HELP_SITEKEY."</span></a></td>
+				<td><label for='newsitekey'>"._SITEKEY.":</label></td><td>".$sitekey."</td>
 			</tr>
 			<tr>
-				<td><label for='newsitename'>"._SITENAME.":</label></td><td><input type='text' class='textbox' name='newsitename' value='".htmlspecialchars($sitename, ENT_QUOTES)."'> <a href='#' class='pophelp'>[?]<span>"._HELP_SITENAME."</span></a></td>
+				<td><label for='newsitename'>"._SITENAME.":</label></td><td>".$sitename."</td>
 			</tr>
 			<tr>
-				<td><label for='newslogan'>"._SITESLOGAN.":</label></td><td><input type='text' class='textbox' name='newslogan' value='".htmlspecialchars($slogan, ENT_QUOTES)."'> <a href='#' class='pophelp'>[?]<span>"._HELP_SLOGAN."</span></a></td>
+				<td><label for='newslogan'>"._SITESLOGAN.":</label></td><td>".$slogan."</td>
 			</tr>
 			<tr>
-				<td><label for='newurl'>"._SITEURL.":</label></td><td><input type='text' class='textbox' name='newsiteurl' value='$url'> <a href='#' class='pophelp'>[?]<span>"._HELP_URL."</span></a></td>
+				<td><label for='newurl'>"._SITEURL.":</label></td><td>".$url."</td>
 			</tr>
 			<tr>				
-				<td><label for='newMPREFIX'>"._TABLEPREFIX.":</label></td><td><input type='text' class='textbox' name='newMPREFIX' value='".MPREFIX."'> <a href='#' class='pophelp'>[?]<span>"._HELP_MPREFIX."</span></a></td>
+				<td><label for='newMPREFIX'>"._TABLEPREFIX.":</label></td><td>".$tableprefix."</td>
 			</tr>
 			<tr>				
-				<td><label for='newsiteemail'>"._ADMINEMAIL.":</label></td><td><input type='text' class='textbox' name='newsiteemail' value='$siteemail'> <a href='#' class='pophelp'>[?]<span>"._HELP_SITEEMAIL."</span></a></td>
+				<td><label for='newsiteemail'>"._ADMINEMAIL.":</label></td><td>".$siteemail."</td>
 			</tr>
-			<tr>				
-				<td><label for='newsiteskin'>"._DEFAULTSKIN.":</label></td><td><select name='newskin'>";
-		$directory = opendir(_BASEDIR."skins");
-		while($filename = readdir($directory)) {
-			if($filename=="." || $filename==".." || !is_dir(_BASEDIR."skins/".$filename)) continue;
-			$output .= "<option value='$filename'".($skin == $filename ? " selected" : "").">$filename</option>";
-		}
-		closedir($directory);
-		$output .= "</select> <a href='#' class='pophelp'>[?]<span>"._HELP_SITESKIN."</span></a></td>
-			</tr>
-			<tr>
-				<td><label for='newlanguage'>"._LANGUAGE.":</label></td><td><select name='newlanguage'>";
-		$directory = opendir(_BASEDIR."languages");
-			while($filename = readdir($directory)) {
-				if($filename=="." || $filename==".." || substr($filename, 2) == "_admin.php") continue;
-				$output .= "<option value='".substr($filename, 0, 2)."'".
-					($language == substr($filename, 0, strpos($filename, ".php")) ? " selected" : "").">
-				".substr($filename, 0, strpos($filename, ".php"))."</option>";
-			}
-		closedir($directory);
-		$output .= "</select> <a href='#' class='pophelp'>[?]<span>"._HELP_LANGUAGE."</span></a></td></tr>";
+        ";
 	}
 	else if($sect == "submissions") {
-		$output .= "<h2>"._SUBMISSIONSETTINGS."</h2>
-		<table class='acp'>
+		$caption .= _SUBMISSIONSETTINGS;
+		$output .= "<table class='acp'>
 			<tr>
 				<td><label for='newsubmissionsoff'>"._NOSUBS.":</label></td><td><select name='newsubmissionsoff'>
 				<option value='1'".($submissionsoff == "1" ? " selected" : "").">"._YES."</option>
@@ -285,13 +280,17 @@ if(isset($_POST['submit'])) {
 				<label for='newmaxwords'>"._MAX.":</label> <input  type='text' class='textbox=' name='newmaxwords' value='$maxwords' size='7'></fieldset></td></tr>";
 	}
 	else if($sect == "sitesettings") {
-		$output .= "<h2>"._SITESETTINGS."</h2>
+   
+        /* form control is breaking help */
+        $tinymce_field = e107::getForm()->renderElement('newtinyMCE', $tinyMCE, 
+        array( 'type' => 'dropdown', 'data' => 'str',  'writeParms' => array('optArray' =>  efiction_settings::get_available_editors(), 'class'=>'tbox ', 'defaultValue' => 'default', 'style'=>'width: 90%;')) );
+ 
+		$caption  = _SITESETTINGS;
+        $output .= "
 		<table class='acp'>
 			<tr>
-				<td><label for='newtinyMCE'>"._USETINYMCE.": </label></td><td><select name='newtinyMCE'>
-				<option value='1'".($tinyMCE ? " selected" : "").">"._YES."</option>
-				<option value='0'".(!$tinyMCE ? " selected" : "").">"._NO."</option>
-				</select> <a href='#' class='pophelp'>[?]<span>"._HELP_TINYMCE." "._TINYMCENOTE."</span></a></td>
+				<td><label for='newtinyMCE'>"._USETINYMCE.": </label></td><td>".$tinymce_field."<a href='#' class='pophelp'>[?]<span>".EFICTION_EDITOR_221."</span></a>
+                </td>
 			</tr>
 			<tr>
 				<td><label for='newallowed_tags'>"._TAGS.": </label></td><td><input type='text' class='textbox'  name='newallowed_tags' value='".($allowed_tags ? $allowed_tags : "<strong><em><br /><br><blockquote><strike><font><b><i><u><center><img><a><hr><p><ul><li><ol>")."' size='40'> <a href='#' class='pophelp'>[?]<span>"._HELP_ALLOWEDTAGS." "._TINYMCENOTE."</span></a></td>
@@ -308,12 +307,7 @@ if(isset($_POST['submit'])) {
 				<option value='0'".($multiplecats == "0" ? "selected" : "").">"._ONLYONE."</option>
 				</select> <a href='#' class='pophelp'>[?]<span>"._HELP_NUMCATS."</span></a></td>
 			</tr>
-			<tr>
-				<td><label for='newnewscomments'>"._NEWSCOMMENTS.": </label></td><td><select name='newnewscomments'>
-				<option value='1'".($newscomments == "1" ? " selected" : "").">"._YES."</option>
-				<option value='0'".($newscomments == "0" ? " selected" : "").">"._NO."</option>
-				</select> <a href='#' class='pophelp'>[?]<span>"._HELP_NEWSCOMMENTS."</span></a></td>
-			</tr>
+ 
 			<tr>
 				<td><label for='newlogging'>"._LOGGING.": </label></td><td><select name='newlogging'>
 				<option value='1'".($logging == "1" ? " selected" : "").">"._YES."</option>
@@ -339,13 +333,17 @@ if(isset($_POST['submit'])) {
 				</select><a href='#' class='pophelp'>[?]<span>"._HELP_CAPTCHA."</span></a></td></tr>";
 	}
 	else if($sect == "display") {
+    
 		$settings = dbquery("SELECT defaultsort, displayindex FROM ".MPREFIX."fanfiction_settings WHERE sitekey ='".SITEKEY."'");
-		list($sitedefaultsort, $sitedisplayindex) = dbrow($settings);
-		$defaultdates = array("m/d/y", "m/d/Y", "m/d/Y", "d/m/Y", "d/m/y", "d M Y", 
+		
+        list($sitedefaultsort, $sitedisplayindex) = dbrow($settings);
+		
+        $defaultdates = array("m/d/y", "m/d/Y", "m/d/Y", "d/m/Y", "d/m/y", "d M Y", 
 				"d.m.y", "Y.m.d", "m.d.Y", "d-m-y", "m-d-y", "M d Y", "M d, Y", "F d Y", "F d, Y");
 		$defaulttimes = array("h:i a", "h:i A", "H:i", "g:i a", "g:i A", "G:i", "h:i:s a", "H:i:s", "g:i:s a", "g:i:s A", "G:i:s");
-		$output .= "<h2>"._DISPLAYSETTINGS."</h2>
-		<table class='acp'>
+		
+        $caption = _DISPLAYSETTINGS;
+		$output .= "<table class='acp'>
 			<tr>
 				<td><label for='newdateformat'>"._DATEFORMAT.":</label></td><td><select name='newdateformat'><option value=''>"._SELECTONE."</option>";
 		foreach($defaultdates as $date) {
@@ -405,8 +403,8 @@ if(isset($_POST['submit'])) {
 			<td><label for='newlinkrange'>"._LINKRANGE.":</label></td><td><input  type='text' class='textbox=' name='newlinkrange' size='3' value='$linkrange'> <a href='#' class='pophelp'>[?]<span>"._HELP_LINKRANGE."</span></a></td></tr>";
 	}
 	else if($sect == "reviews") {
-		$output .= "<h2>"._REVIEWSETTINGS."</h2>
-		<table class='acp'>
+		$caption =_REVIEWSETTINGS;
+		$output .= "<table class='acp'>
 			<tr>
 				<td><label for='newreviewsallowed'>"._ONREVIEWS.":</label></td><td><select name='newreviewsallowed'>
 				<option value='1'".($reviewsallowed == "1" ? " selected" : "").">"._YES."</option>
@@ -440,8 +438,8 @@ if(isset($_POST['submit'])) {
 				</select> <a href='#' class='pophelp'>[?]<span>"._HELP_RATEONLY."</span></a></td></tr>";
 	}
 	else if($sect == "useropts") {
-		$output .= "<h2>"._USERSETTINGS."</h2>
-		<table class='acp'>
+		$caption = _USERSETTINGS;
+		$output .= "<table class='acp'>
 			<tr>
 				<td><label for='newalertson'>"._ALERTSON.":</label></td><td><select name='newalertson'>
 				<option value='1'".($alertson == "1" ? " selected" : "").">"._YES."</option>
@@ -466,18 +464,6 @@ if(isset($_POST['submit'])) {
 				<option value='0'".(!$pwdsetting ? " selected" : "").">"._RANDOM."</option>
 			</select> <a href='#' class='pophelp'>[?]<span>"._HELP_PWD."</span></a></td></tr>";
 	}
-	else if($sect == "email") {
-		$output .= "<h2>"._EMAILSETTINGS."</h2>
-		<table class='acp'>
-			<tr>
-				<td><label for='newsmtp_host'>"._SMTPHOST.":</label></td><td><input name='newsmtp_host' type='text' value='$smtp_host'> <a href='#' class='pophelp'>[?]<span>"._HELP_SMTPHOST."</span></a></td>
-		</tr>
-		<tr>
-				<td><label for='newsmtp_username'>"._SMTPUSER.":</label></td><td><input name='newsmtp_username' type='text' value='$smtp_username'> <a href='#' class='pophelp'>[?]<span>"._HELP_SMTPUSER."</span></a></td>
-		</tr>
-		<tr>
-				<td><label for='newsmtp_password'>"._SMTPPASS.":</label></td><td><input name='newsmtp_password' type='password' value='$smtp_password'> <a href='#' class='pophelp'>[?]<span>"._HELP_SMTPPWD."</span></a></td></tr>";		
-		$output .= 	write_message(_SMTPOFF);
-	}
-	$output .= "<tr><td colspan='2'><div align='center'><input type='submit' id='submit' class='button' name='submit' value='"._SUBMIT."'></div></form></td></tr></table>";
+ 
+	$output .= "<tr><td colspan='2'><div align='center'><input type='submit' id='submit' class='button btn btn-default' name='submit' value='"._SUBMIT."'></div></form></td></tr></table></div>";
 ?>

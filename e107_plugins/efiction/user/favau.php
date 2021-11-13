@@ -22,7 +22,8 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
+if (!defined('e107_INIT')) { exit; }
+
 if(empty($favorites)) accessDenied( );
 
 	if(empty($uid)) {
@@ -30,7 +31,7 @@ if(empty($favorites)) accessDenied( );
 		$output .= "<div id='pagetitle'>"._YOURSTATS."</div>";
 	}
 	$output .= "<div class='sectionheader'>"._FAVORITEAUTHORS."</div>";
-	
+ 
 	$add = !empty($_GET['add']) ? $_GET['add'] : "";
 	$delete = isset($_GET['delete']) && isNumber($_GET['delete']) ? $_GET['delete'] : false;
 	$edit = isset($_GET['edit']) && isNumber($_GET['edit']) ? $_GET['edit'] : false;
@@ -93,10 +94,26 @@ if(empty($favorites)) accessDenied( );
 				}
 			}
 			$author = implode(",", $author);
-			$output .= "<form method=\"POST\" enctype=\"multipart/form-data\" action=\"member.php?action=favau&amp;".( $add ? "add=$author" : "edit=$edit")."\">\n
-				<div style=\"width: 350px; margin: 0 auto; text-align: left;\"><label for=\"comments\">"._COMMENTS.":</label><br />
-				<textarea class=\"textbox\" name=\"comments\" id=\"comments\" cols=\"40\" rows=\"5\">".(isset($info['comments']) ? $info['comments'] : "")."</textarea><br />
-				<INPUT type=\"submit\" class=\"button\" name=\"submit\" value=\""._SUBMIT."\"></div></form>";
+            
+            $query =  
+    		array(
+    			'action' => 'favau',
+    			'add' => ( $add ? $author : $edit),
+    		); 
+            $query = http_build_query($query , null, '&');   
+            $url = "member.php?".$query; 
+       
+            $output .= e107::getForm()->open("favau", "POST", $url, "class=form-horizontal col-md-6 offset-md-3"); 
+            
+            $field_key = "comments";
+            $output .= '<div class="row mb-3">';
+                $output .= "<label class=\"col-sm-12 col-form-label\" for=\'".$field_key."\'>"._COMMENTS.": </label>";
+                $output .= '<div class="col-sm-12">'; 
+    		              $output .= e107::getForm()->renderElement($field_key, $info['comments'], array( 'type' => 'textarea', 'data' => 'str' ));
+    		    $output .= '</div>';
+            $output .= '</div>';
+            $output .= e107::getForm()->button("submit", _SUBMIT);
+		    $output .= e107::getForm()->close();
 		}
 	}
 	if(!$add && !$edit) {
@@ -109,7 +126,7 @@ if(empty($favorites)) accessDenied( );
 				while($author = dbassoc($list)) { 
 					$output .= "<span class='label'>$x.</span> <a href=\"viewuser.php?uid=".$author['uid']."\">".$author['penname']."</a><br />";
 					if(file_exists("$skindir/favcomment.tpl")) $cmt = new TemplatePower( "$skindir/favcomment.tpl" );
-					else $cmt = new TemplatePower( BASEDIR."default_tpls/favcomment.tpl" );
+					else $cmt = new TemplatePower(_BASEDIR."default_tpls/favcomment.tpl" );
 					$cmt->prepare( );
 					$cmt->newBlock("comment");
 					$cmt->assign("comment", format_story($author['comments']));

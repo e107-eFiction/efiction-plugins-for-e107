@@ -33,16 +33,24 @@ if (USERID) {  //fully managed by e107, user is logged in
     $author_uid = $userData['user_plugin_efiction_author_uid'];
     $author_level = $userData['user_plugin_efiction_level'];
 
-	if ($author_level != -1) {   //it can be admin without author, uLevel is too important to relay on author ID
-		define('uLEVEL', $author_level);
-		define('isADMIN', uLEVEL > 0 ? true : false);
+	// if ($author_level != -1) {   //it can be admin without author, uLevel is too important to relay on author ID
+    if (getperms('P'))  //full plugin admin
+    {
+		define('uLEVEL', "1");
+		define('isADMIN', true);
 	}
 
     if ($author_uid > 0) { //user is author
-        $authordata = efiction_authors::get_single_author($author_uid);
+        $authordata = efiction_authors::get_single_author($author_uid);   
+
 		define('USERUID', $authordata['uid']);
 		define('USERPENNAME', $authordata['penname']);
 		define('isMEMBER', true);
+        
+        if (!defined('uLEVEL')) {
+          define('uLEVEL', $authordata['level']);
+        }
+    
 		if (e107::getSession()->is(SITEKEY.'_ageconsent')) {
 			$ageconsent = e107::getSession()->get(SITEKEY.'_ageconsent');
 		} else {
@@ -86,4 +94,5 @@ if (!defined('isADMIN')) {
 if (empty($siteskin)) {
     $siteskin = $defaultskin;
 }
+ 
  

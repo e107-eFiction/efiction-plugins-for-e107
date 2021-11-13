@@ -88,7 +88,7 @@ if(empty($favorites)) accessDenied( );
 		while($stories = dbassoc($list)) { 
 			include("includes/seriesblock.php"); 
 			if(file_exists("$skindir/favcomment.tpl")) $cmt = new TemplatePower( "$skindir/favcomment.tpl" );
-			else $cmt = new TemplatePower( BASEDIR."default_tpls/favcomment.tpl" );
+			else $cmt = new TemplatePower(_BASEDIR."default_tpls/favcomment.tpl" );
 			$cmt->prepare( );
 			$cmt->newBlock("comment");
 			$cmt->assign("comment", $stories['comments'] ? "<div class='comments'><span class='label'>"._COMMENTS.": </span>".strip_tags($stories['comments'])."</div>" : "");

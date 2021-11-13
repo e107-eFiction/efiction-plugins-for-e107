@@ -26,9 +26,7 @@ if(!defined("_CHARSET")) exit( );
 
 $maint = isset($_GET['maint']) ? $_GET['maint'] : false;
 $output .= "<div id='pagetitle'>"._ARCHIVEMAINT."</div>";
-if($maint == "update") {
-	if(file_exists("admin/update.php")) include_once("admin/update.php");
-}
+ 
 if($maint == "reviews") {
 	dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET rating = '0', reviews = '0'"); // Set them all to 0 before we re-insert.
 	$stories = dbquery("SELECT AVG(rating) as average, item FROM ".TABLEPREFIX."fanfiction_reviews WHERE type = 'ST' AND rating != '-1' GROUP BY item");
@@ -82,22 +80,22 @@ else if($maint == "stories") {
 	$output .= write_message(_ACTIONSUCCESSFUL);
 }
 else if($maint == "categories") {
-	dbquery("UPDATE ".TABLEPREFIX."fanfiction_categories SET numitems = '0'");
-	$cats = dbquery("SELECT catid FROM ".TABLEPREFIX."fanfiction_categories ORDER BY leveldown DESC");
-	while($cat = dbrow($cats)) {
+	e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_categories SET numitems = '0'");
+	$cats = e107::getDb()->retrieve("SELECT catid FROM ".TABLEPREFIX."fanfiction_categories ORDER BY leveldown DESC", true);
+    foreach($cats AS $cat) {
 		unset($subcats);
-		$subs = dbquery("SELECT catid FROM ".TABLEPREFIX."fanfiction_categories WHERE parentcatid = $cat[0]");
+		$subs = e107::getDb()->retrieve("SELECT catid FROM ".TABLEPREFIX."fanfiction_categories WHERE parentcatid = $cat[0]", true);
 		$subcats = array( );
-		while($sub = dbrow($subs)) {
+        foreach($subs AS $sub) {
 			$subcats[] = $sub[0];
 			if($categories[$sub[0]]) $subcats = array_merge($subcats, $categories[$sub[0]]);
 		}
 		$categories[$cat[0]] = $subcats;
-		$countquery = dbquery("SELECT count(sid) FROM ".TABLEPREFIX."fanfiction_stories WHERE FIND_IN_SET('$cat[0]', catid) ".(count($subcats) > 0 ? " OR FIND_IN_SET(". implode(", catid) OR FIND_IN_SET(",$subcats).", catid)" : "")." AND validated > 0");
-		list($count) = dbrow($countquery);
-		dbquery("UPDATE ".TABLEPREFIX."fanfiction_categories SET numitems = $count WHERE catid = $cat[0]");
+		$count = e107::getDb()->retrieve("SELECT count(sid) FROM ".TABLEPREFIX."fanfiction_stories WHERE FIND_IN_SET('$cat[0]', catid) ".(count($subcats) > 0 ? " OR FIND_IN_SET(". implode(", catid) OR FIND_IN_SET(",$subcats).", catid)" : "")." AND validated > 0");
+		 
+		e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_categories SET numitems = $count WHERE catid = $cat[0]");
 	}
-	if($logging) dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_log (`log_action`, `log_uid`, `log_ip`, `log_type`) VALUES('".escapestring(sprintf(_LOG_CATCOUNTS, USERPENNAME, USERUID))."', '".USERUID."', INET_ATON('".$_SERVER['REMOTE_ADDR']."'), 'AM')");
+ 
 	$output .= write_message(_CATCOUNTSUPDATED);
 }
 else if($maint == "categories2") {
@@ -184,19 +182,7 @@ else if($maint == "panels") {
 	}
 	$output .= write_message(_ACTIONSUCCESSFUL);
 }
-else if($maint == "optimize") {
-	$alltables = dbquery("SHOW TABLES");
-
-	while ($table = dbassoc($alltables)) {
-		foreach ($table as $db => $tablename) {
-			dbquery("OPTIMIZE TABLE `".$tablename."`");
-		}
-	}
- 	if($logging) dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_log (`log_action`, `log_uid`, `log_ip`, `log_type`) VALUES('".escapestring(sprintf(_LOG_OPTIMIZE, USERPENNAME, USERUID))."', '".USERUID."', INET_ATON('".$_SERVER['REMOTE_ADDR']."'), 'AM')");
-	$output .= write_message(_ACTIONSUCCESSFUL);
-}
-else if($maint == "backup") {
-}
+ 
 else {
 	$output .= "
 <ul>
@@ -206,10 +192,6 @@ else {
 	<li><a href='admin.php?action=maintenance&amp;maint=categories2'>"._CATORDER."</a> <A HREF=\"#\" class=\"pophelp\">[?]<span>"._HELP_CATORDER."</span></A></li>
 	<li><a href='admin.php?action=maintenance&amp;maint=stats'>"._STATS."</a> <A HREF=\"#\" class=\"pophelp\">[?]<span>"._HELP_STATS."</span></A></li>
 	<li><a href='admin.php?action=maintenance&amp;maint=panels'>"._PANELORDER."</a> <A HREF=\"#\" class=\"pophelp\">[?]<span>"._HELP_PANELORDER."</span></A></li>
-	<li><a href='admin.php?action=maintenance&amp;maint=optimize'>"._OPTIMIZE."</a> <A HREF=\"#\" class=\"pophelp\">[?]<span>"._HELP_OPTIMIZE."</span></A></li>
-	<li><a href='admin/backup.php' target='_new'>"._BACKUP."</a> <A HREF=\"#\" class=\"pophelp\">[?]<span>"._HELP_BACKUP."</span></A></li>
-	<li><a href='admin/backup_utf8.php' target='_new'>"._BACKUP."</a> (UTF-8) <A HREF=\"#\" class=\"pophelp\">[?]<span>"._HELP_BACKUP."</span></A></li>
-	<li><a href='admin.php?action=maintenance&amp;maint=update'>"._UPDATE."</a>  <A HREF=\"#\" class=\"pophelp\">[?]<span>"._HELP_UPDATE."</span></A></li>
 </ul>";
 }
 ?>

@@ -1,5 +1,6 @@
 <?php
-if(!defined("_CHARSET")) exit( );
+
+if(!defined('e107_INIT')) exit( );
 	$count = 0;
 	$content = "";
 	$use_tpl = isset($blocks['recent']['tpl']) && $blocks['recent']['tpl'] ? true : false;

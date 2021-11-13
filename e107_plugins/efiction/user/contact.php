@@ -32,9 +32,9 @@ if(!defined("_CHARSET")) exit( );
 		if(isset($_POST['submit'])) {
 			if($captcha && !isMEMBER && !captcha_confirm()) $output .= write_error(_CAPTCHAFAIL);
 			else {
-				include_once(_BASEDIR."includes/emailer.php");
+				 
 				if(!$email) $output .= write_error(_ERROR);
-				else $result = sendemail($penname, $email, $_POST['email'], $_POST['email'], descript(strip_tags($_POST['subject'])), descript($_POST['comments'])."<br /><br />".(isMEMBER ? sprintf(_SITESIG2, "<a href='".$url."/viewuser.php?uid=".USERUID."'>".USERPENNAME."</a>") : _SITESIG), "html");
+				else $result = $result = efiction_core::sendemail(penname, $email, $_POST['email'], $_POST['email'], descript(strip_tags($_POST['subject'])), descript($_POST['comments'])."<br /><br />".(isMEMBER ? sprintf(_SITESIG2, "<a href='".$url."/viewuser.php?uid=".USERUID."'>".USERPENNAME."</a>") : _SITESIG), "html");
 				if($result)  $output .= write_message(_ACTIONSUCCESSFUL);
 				else $output .= write_error(_ERROR);
 			}

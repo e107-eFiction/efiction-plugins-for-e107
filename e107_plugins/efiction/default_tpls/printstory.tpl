@@ -12,10 +12,10 @@
 <div class='notes'><div class='title'><span class='label'>Story Notes:</span></div><div class='noteinfo'>{storynotes}</div></div>
 <!-- END BLOCK : storynotes -->
 <!-- START BLOCK : storyindexblock -->
-      <p><b>{chapternumber}.</b> {title} by {author}</p>
+      <p><b>{chapternumber}.</b> {title} od {author}</p>
 <!-- END BLOCK : storyindexblock -->
 <!-- START BLOCK : chapterblock -->
-<div class='chaptertitle'>{chaptertitle} by {chapterauthor}</div>
+<div class='chaptertitle'>{chaptertitle} od {chapterauthor}</div>
 <!-- START BLOCK : notes -->
 <div class='notes'><div class='title'><span class='label'>Author's Notes:</div><div class='noteinfo'>{notes}</div></div>
 <!-- END BLOCK : notes -->

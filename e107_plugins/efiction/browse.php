@@ -315,7 +315,7 @@ if($type) {
 	}
 }
 else  {
-	$output = "<div id='pagetitle'>"._BROWSE."</div>";
+	$caption =  _BROWSE ;
 	$panelquery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_panels WHERE panel_hidden != '1' AND panel_level ".(isMEMBER ? " < 2" : "= '0'")." AND panel_type = 'B' ORDER BY panel_type DESC, panel_order ASC, panel_title ASC");
 	while($panel = dbassoc($panelquery)) {
 		$browsetypes[$panel['panel_title']] =  "<a href=\"browse.php?type=".$panel['panel_name']."\">".$panel['panel_title']."</a><br />\n";
@@ -330,8 +330,9 @@ else  {
 	$column = 1;
 	$list = floor($total / $displaycolumns);
 	if($total % $displaycolumns != 0) $list++;
-	$output .= "<div id=\"columncontainer\"><div id=\"browseblock\">".($displaycolumns ? "<div class=\"column\">" : "");
-	foreach($browsetypes as $link) {
+    
+	$output  = "<div id=\"columncontainer\"><div id=\"browseblock\">".($displaycolumns ? "<div class=\"column\">" : "");  
+ 	foreach($browsetypes as $link) {
 		$count++;
 		$output .= $link;
 		if( $count >= $list && $column != $displaycolumns) {
@@ -340,13 +341,16 @@ else  {
 			$column++;
 			$count = 0;
 		}
-	}
+	} 
 	$output .= "</div>".($displaycolumns ? "</div>" : "")."<div class='cleaner'>&nbsp;</div></div>";
 }
+
+
 $tpl->assign("output", $output);
 
-//$tpl->xprintToScreen( );
-$text = $tpl->getOutputContent(); 
+//$tpl->xprintToScreen( );  
+ 
+ $text = $tpl->getOutputContent(); 
 e107::getRender()->tablerender($caption, $text, $current);
 require_once(FOOTERF); 
 exit;

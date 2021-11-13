@@ -1,5 +1,5 @@
 <?php
-
+// ALTER TABLE `e107_fanfiction_authorprefs` ADD `level` TINYINT(1) NOT NULL DEFAULT '0' AFTER `validated`;
 // ----------------------------------------------------------------------
 // Copyright (c) 2007 by Tammy Keefer
 // Based on eFiction 1.1
@@ -69,11 +69,7 @@ if (!class_exists('efiction_setup')) {
 			$query = "UPDATE `".MPREFIX."user_extended_struct` SET `user_extended_struct_write` = '250' WHERE `e107_user_extended_struct`.`user_extended_struct_name` = 'plugin_efiction_author_uid'";
 
 			e107::getDB()->gen($query); 
-
-			$query = "UPDATE `".MPREFIX."user_extended_struct` SET `user_extended_struct_write` = '250' WHERE `e107_user_extended_struct`.`user_extended_struct_name` = 'plugin_efiction_level'";
-			
-			e107::getDB()->gen($query); 
-
+ 
 		}
 
 
@@ -87,7 +83,6 @@ if (!class_exists('efiction_setup')) {
                 if(e107::getDb()->count($table) == 0)
      			{
 					if($table == 'fanfiction_settings')  {
-						include(e_PLUGIN."efiction/version.php");
 						$insert = array(
 							'sitekey'     => SITEKEY,
 							'sitename' => $pref['sitename'] ,    //fix this
@@ -114,7 +109,6 @@ if (!class_exists('efiction_setup')) {
 							'allowed_tags' => '<b><i><u><center><hr><p><br /><br><blockquote><ol><ul><li><img><strong><em>',
 							'favorites' => 0,
 							'multiplecats' =>0,
-							'newscomments' =>0 ,
 							'logging' =>0 ,
 							'maintenance' =>0 ,
 							'debug' =>0 ,
@@ -140,9 +134,6 @@ if (!class_exists('efiction_setup')) {
 							'disablepopups' => '0',
 							'agestatement' => '0',
 							'words' => '',
-							'version' => $version,
-
-
 							'_DUPLICATE_KEY_UPDATE' => 1
 							);
 						e107::getDB()->insert("fanfiction_settings", $insert);
@@ -216,9 +207,7 @@ if (!class_exists('efiction_setup')) {
 							array("favse","Favorite Series","","0","0","1","U"),
 							array("favau","Favorite Authors","","0","0","1","U"),
 							array("favlist","{author}\'s Favorites","viewuser.php?action=manfavs","0","5","0","F"),
-							array("skins", "Skins", "", "3", "6", "0", "A"),
 							array("maintenance", "Archive Maintenance", "", "1", "10", "0", "A"),
-							array("manual", "Admin Manual", "", "3", "6", "0", "A"),
 							array('modules', 'Modules', '', 1, "11", 0, 'A')
 						);
 
@@ -330,7 +319,7 @@ if (!class_exists('efiction_setup')) {
 						     
                             $ue = new e107_user_extended;
         	                $ue->user_extended_setvalue(USERID, 'user_plugin_efiction_author_uid', $dbinsertid);
-                            $ue->user_extended_setvalue(USERID, 'user_plugin_efiction_level', 1); 
+              
                         }	
                     
 					}	
@@ -369,7 +358,7 @@ if (!class_exists('efiction_setup')) {
             
                         if (!empty($ret['failed'])) {
                             e107::getMessage()->addError(LAN_EFICTION_ADMIN_002);
-                            e107::getMessage()->addDebug(print_a($ret['failed'], true));
+                            e107::getMessage()->addDebug(print_xa($ret['failed'], true));
                         }
                     }
                     */
@@ -403,7 +392,7 @@ if (!class_exists('efiction_setup')) {
 
         public function uninstall_post($var)
         {
-            // print_a($var);
+            // print_xa($var);
         }
 
         public function upgrade_post($var)

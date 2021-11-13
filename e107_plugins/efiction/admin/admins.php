@@ -67,7 +67,8 @@ if(!defined("_CHARSET")) exit( );
 				<form method=\"POST\" name=\"form\" enctype=\"multipart/form-data\" action=\"admin.php?action=admins&do=$do\">
 				<div><label for=\"uid\">"._PENNAME.": </label>";
 			if($do == "new") {
-				$query = dbquery("SELECT "._PENNAMEFIELD." AS penname, "._UIDFIELD." AS uid, ap.level FROM "._AUTHORTABLE." LEFT  JOIN ".TABLEPREFIX."fanfiction_authorprefs AS ap ON "._UIDFIELD." = ap.uid ORDER  BY "._PENNAMEFIELD);
+               
+				$query = dbquery(_MEMBERLIST);
 				$output .= "<select name=\"uid\">";
 				while($users = dbassoc($query)) {
 					if(!$users['level']) $output .= "<option value=\"".$users['uid']."\"".($uid == $users['uid'] ? " selected" : "").">".$users['penname']."</option>";

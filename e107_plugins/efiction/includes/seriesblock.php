@@ -21,7 +21,7 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
+if(!defined("e107_INIT")) exit( );
 	if(!isset($count)) $count = 0;
 	$adminlinks = "";
 	$tpl->newBlock("seriesblock");
@@ -83,6 +83,6 @@ if(!defined("_CHARSET")) exit( );
 		$tpl->assign("adminoptions", "<div class=\"adminoptions\"><span class='label'>"._ADMINOPTIONS.":</span> [<a href=\""._BASEDIR."series.php?action=add&amp;add=stories&amp;seriesid=".$stories['seriesid']."\">"._ADD2SERIES."</a>] [<a href=\""._BASEDIR."series.php?action=edit&amp;seriesid=".$stories['seriesid']."\">"._EDIT."</a>] [<a href=\""._BASEDIR."series.php?action=delete&amp;seriesid=".$stories['seriesid']."\">"._DELETE."</a>]".(!empty($adminlinks) ? " ".$adminlinks : "")."</div>");
 	}
 	else if($stories['isopen'] == 2 && USERUID) $tpl->assign("adminoptions", "[<a href=\""._BASEDIR."series.php?action=add&amp;add=stories&amp;seriesid=".$stories['seriesid']."\">"._ADD2SERIES."</a>] ".(!empty($adminlinks) ? " ".$adminlinks : ""));
-	$tpl->assign("reportthis", "[<a href=\""._BASEDIR."contact.php?action=report&amp;url=series.php?seriesid=".$stories['seriesid']."\">"._REPORTTHIS."</a>]");
+	$tpl->assign("reportthis", "[<a href=\""._BASEDIR."report.php?action=report&amp;url=series.php?seriesid=".$stories['seriesid']."\">"._REPORTTHIS."</a>]");
 	$count++;
 ?>

@@ -31,19 +31,25 @@ if(isset($_GET['type_id']) && isNumber($_GET['type_id'])) $type_id = $_GET['type
 if(isset($_GET['listtype']) && isNumber($_GET['listtype'])) $listtype = $_GET['listtype'];
 
 if(isset($_GET['delete'])) {
-	if($_GET['delete'] == "class" && isNumber($_GET["class"])) $thislist = dbquery("SELECT class_id FROM ".TABLEPREFIX."fanfiction_classes WHERE class_id = '".$_GET["class"]."'");
-	else {
+	if($_GET['delete'] == "class" && isNumber($_GET["class"])) 
+    {   
+        $thislist = e107::getDb()->retrieve("SELECT class_id FROM ".TABLEPREFIX."fanfiction_classes WHERE class_id = '".$_GET["class"]."'", true);
+	}
+    else {
+ 
 		list($classname) = dbrow(dbquery("SELECT classtype_name FROM ".TABLEPREFIX."fanfiction_classtypes WHERE classtype_id = '$type_id'"));
 		dbquery("DELETE FROM ".TABLEPREFIX."fanfiction_pagelinks WHERE link_name = '".$classname."_link' LIMIT 1");
-		$thislist = dbquery("SELECT class_id FROM ".TABLEPREFIX."fanfiction_classes WHERE class_type = '$type_id'");
+		//$thislist = dbquery("SELECT class_id FROM ".TABLEPREFIX."fanfiction_classes WHERE class_type = '$type_id'");
+        $thislist = e107::getDb()->retrieve("SELECT class_id FROM ".TABLEPREFIX."fanfiction_classes WHERE class_type = '".$_GET["class"]."'", true);
 		dbquery("DELETE FROM ".TABLEPREFIX."fanfiction_classtypes WHERE classtype_id = '$type_id'");
 	}
-	while($thisclass = dbassoc($thislist)) {
+   
+    foreach($thislist AS $thisclass)   {     
 		$class = $thisclass['class_id'];
 		$stories = dbquery("SELECT sid, classes FROM ".TABLEPREFIX."fanfiction_stories WHERE FIND_IN_SET('$class', classes) > 0");
 		while($s = dbassoc($stories)) {
 			dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET classes = '".implode(",", array_diff(explode(",", $s['classes']), array($class)))."' WHERE sid = '$s[sid]' LIMIT 1");
-		}
+		}  
 		$series = dbquery("SELECT seriesid, classes FROM ".TABLEPREFIX."fanfiction_series WHERE FIND_IN_SET('$class', classes) > 0");
 		while($s = dbassoc($series)) {
 			dbquery("UPDATE ".TABLEPREFIX."fanfiction_series SET classes = '".implode(",", array_diff(explode(",", $s['classes']), array($class)))."' WHERE seriesid = '$s[seriesid]' LIMIT 1");
@@ -52,7 +58,8 @@ if(isset($_GET['delete'])) {
 		while($c = dbassoc($code)) {
 			eval($c['code_text']);
 		}
-		dbquery("DELETE FROM ".TABLEPREFIX."fanfiction_classes WHERE class_id = '$class' LIMIT 1");
+		dbquery("DELETE FROM ".TABLEPREFIX."fanfiction_classes WHERE class_id = '$class' LIMIT 1");  
+         
 	}
 }
 if(isset($_GET['newitems']) && isNumber($_GET['newitems'])) {

@@ -50,7 +50,9 @@ function categoryitems($catid, $value)
 
 // Function to recurse through categories to build a list of the category and all it's sub-categories.
 function recurseCategories($catid) {
-	global $catlist;
+ 
+    $catlist = efiction_categories::get_catlist();
+        
 	$$catid = $catlist;
 	$categorylist[] = $catid;
 	foreach($$catid as $cat => $info) {
@@ -215,12 +217,15 @@ function nl2br2($string) {
 
 // Formats the text of the story when displayed on screen.
 function format_story($text) {
+      $text = e107::getParser()->toHTML($text, true, "DESCRIPTION"); 
+      /*
       $text = trim($text);
       if(strpos($text, "<br>") === false && strpos($text, "<p>") === false && strpos($text, "<br />") === false) $text = nl2br2($text);
       if(_CHARSET != "ISO-8859-1" && _CHARSET != "US-ASCII") return stripslashes($text);
       $badwordchars = array(chr(212), chr(213), chr(210), chr(211), chr(209), chr(208), chr(201), chr(145), chr(146), chr(147), chr(148), chr(151), chr(150), chr(133));
       $fixedwordchars = array('&#8216;', '&#8217;', '&#8220;', '&#8221;', '&#8212;', '&#8211;', '&#8230;', '&#8216;', '&#8217;', '&#8220;', '&#8221;', '&#8212;', '&#8211;',  '&#8230;' );
       $text = str_replace($badwordchars,$fixedwordchars,stripslashes($text));
+      */
       return $text;
 }
 
@@ -423,8 +428,8 @@ function check_prefs($uid) {
 
 // Function builds the alphabet links on various pages.
 function build_alphalinks($url, $let) {
-	global $alphabet;
-
+ 
+    $alphabet = efiction_settings::get_alphabet();
 	$alpha = "<div id=\"alphabet\">";
 	foreach( $alphabet as $link ) {
 		// Build a link that calls a function with ($link and 1 (page number) )
@@ -492,8 +497,10 @@ function ratingpics($rating) {
 
 // This function builds the list of category links (including the breadcrumb depending on settings)
 function catlist($catid) {
-	global $extendcats, $catlist, $action;
+	global $extendcats,  $action;
 
+    $catlist = efiction_categories::get_catlist();
+    
 	if(!is_array($catid)) $catid = explode(",", $catid);
 	$categorylinks = array();
 	foreach($catid as $cat) {
@@ -549,9 +556,9 @@ function search($storyquery, $countquery, $pagelink = "searching.php?", $pagetit
 		$tpl->gotoBlock("listings");
 		$tpl->assign("stories",  "<div class=\"sectionheader\">"._STORIES."</div>");
 		$storyquery .= " LIMIT $offset, $itemsperpage";
-		$result3 = dbquery($storyquery);     
+		$result3 = e107::getDb()->retrieve($storyquery, true);     
 		$count = 0;                     
-		while($stories = dbassoc($result3)) {       
+        foreach($result3 AS $stories) {     
 			$tpl->newBlock("storyblock");
 			include(_BASEDIR."includes/storyblock.php"); 
 		}

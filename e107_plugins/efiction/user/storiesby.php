@@ -22,20 +22,22 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
+if(!defined("e107_INIT")) exit( );
 $sort = "<form name=\"sort\" action=\"\"><label for=\"sort\">"._SORT.":</label> <select name=\"sort\" class=\"textbox\" onchange=\"if(this.selectedIndex.value != 'false') document.location = document.sort.sort.options[document.sort.sort.selectedIndex].value\"><option value=\"false\">"._OPTIONS."</option>";
 $sort .= "<option value=\"viewuser.php?".($action ? "action=".$action : "")."uid=$uid&amp;sort=alpha\">"._ALPHA."</option>";
 $sort.= "<option value=\"viewuser.php?".($action ? "action=".$action : "")."uid=$uid&amp;sort=update\">"._MOSTRECENT."</option></select></form>";
 $tpl->assign("sort", $sort);
 
-$countquery = dbquery("SELECT count(stories.sid) FROM ".TABLEPREFIX."fanfiction_stories as stories LEFT JOIN ".TABLEPREFIX."fanfiction_coauthors as coauth ON stories.sid = coauth.sid WHERE validated > 0 AND (stories.uid = '$uid' OR coauth.uid = '$uid')");
-list($numstories) = dbrow($countquery);
+$countquery =  "SELECT count(stories.sid) FROM ".TABLEPREFIX."fanfiction_stories as stories LEFT JOIN ".TABLEPREFIX."fanfiction_coauthors as coauth ON stories.sid = coauth.sid WHERE validated > 0 AND (stories.uid = '$uid' OR coauth.uid = '$uid')" ;
+$numstories = e107::getDb()->retrieve($countquery);
+ 
 if($numstories) {
 	$count = 0;
 	$tpl->newBlock("listings");
 	$tpl->assign("stories", "<div class='sectionheader'>"._STORIESBY." $penname</div>");
-	$storyquery = dbquery("SELECT stories.*, "._PENNAMEFIELD." as penname, UNIX_TIMESTAMP(stories.date) as date, UNIX_TIMESTAMP(stories.updated) as updated FROM ("._AUTHORTABLE.", ".TABLEPREFIX."fanfiction_stories as stories) LEFT JOIN ".TABLEPREFIX."fanfiction_coauthors as coauth ON coauth.sid = stories.sid WHERE "._UIDFIELD." = stories.uid AND stories.validated > 0 AND (stories.uid = '$uid' OR coauth.uid = '$uid') GROUP BY stories.sid "._ORDERBY." LIMIT $offset, $itemsperpage");
-	while($stories = dbassoc($storyquery)) {
+	$storyquery =  "SELECT stories.*, "._PENNAMEFIELD." as penname,  stories.date as date,  stories.updated  as updated FROM ("._AUTHORTABLE.", ".TABLEPREFIX."fanfiction_stories as stories) LEFT JOIN ".TABLEPREFIX."fanfiction_coauthors as coauth ON coauth.sid = stories.sid WHERE "._UIDFIELD." = stories.uid AND stories.validated > 0 AND (stories.uid = '$uid' OR coauth.uid = '$uid') GROUP BY stories.sid "._ORDERBY." LIMIT $offset, $itemsperpage";
+	$result = e107::getDb()->retrieve($storyquery, true);
+    foreach($result AS $stories) {
 		$tpl->newBlock("storyblock");
 		include(_BASEDIR."includes/storyblock.php");
 	}

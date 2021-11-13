@@ -42,6 +42,12 @@ if (!class_exists('efiction_settings')) {
         public function __construct()
         {
         }
+        
+        
+        public static function get_alphabet() {
+            include_once(e_PLUGIN."efiction/languages/".e_LANGUAGE."_alphabet.php");
+            return $alphabet; 
+        }
 
         public static function get_settings()
         {
@@ -61,22 +67,51 @@ if (!class_exists('efiction_settings')) {
             $settings['tableprefix'] = e107::getDB()->mySQLPrefix;
             $settings['siteemail'] = ADMINEMAIL;
             $settings['language'] = e_LANGUAGE;
+            
+            /* defalt values */
+            $settings['recentdays'] = varset($settings['recentdays'], 7);
+            if(defined("USERUID") AND USERID) {
+            	
+                $user_prefs = e107::getDb()->retrieve("SELECT sortby, storyindex, tinyMCE FROM ".MPREFIX."fanfiction_authorprefs WHERE uid = '".USERUID."'");
+               
+            	if(dbnumrows($prefs)) list($defaultsort, $displayindex, $tinyMCE) = dbrow($prefs);
+            }
+
+      
 
             unset($settings['smtp_host'], $settings['smtp_username'], $settings['smtp_password']);
-
+ 
             return $settings;
         }
 
         public static function get_single_setting($setting_name)
         {
             $settings = self::get_settings();
-
+ 
             if ($setting_name) {
                 return $settings[$setting_name];
             }
 
             return null;
         }
+        
+        /*instead tinymce yes/no */
+        public static function get_available_editors()
+        {
+                $editor['default'] = EFICTION_EDITOR_217; 
+        		$editor['bbcode'] = 'BBCode';
+        
+        		$editors = e107::getPlug()->getInstalledWysiwygEditors();
+        		if (!empty($editors))
+        		{
+        			$editor = array_merge($editor, $editors);
+        		}
+                
+                return $editor;
+        }       
+        
+        
+        
     }
 
     new efiction_settings();

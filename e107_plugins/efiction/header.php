@@ -27,23 +27,30 @@ if (!defined('e107_INIT'))
 	require_once(__DIR__.'/../../class2.php');
 }
 
+
  //e_ROUTE is available
+ /*
 if(e_CURRENT_PLUGIN == "efiction") {
  define("THEME_LAYOUT", "efiction");
 }
- 
-require_once(HEADERF); 
+ */
+// Defines the character set for your language/location
+define("_CHARSET", CHARSET); 
+e107::lan("efiction");
+
+
+
 //THEME_LAYOUT is available
+include_once(_BASEDIR."includes/queries.php");
+require_once(_BASEDIR."includes/get_session_vars.php");
 
 $settings = efiction_settings::get_settings();
-//print_a($settings);
+//print_xa($settings);
 foreach($settings as $var => $val) {
   	$$var = stripslashes($val);
 }
  
-include_once(_BASEDIR."includes/queries.php");
 
-require_once(_BASEDIR."includes/get_session_vars.php");
  
 
 @ ini_set('arg_separator.output','&amp;'); 
@@ -63,8 +70,7 @@ if(get_magic_quotes_gpc()){
 	}
 }
 
-// Defines the character set for your language/location
-define("_CHARSET", CHARSET);
+
 
 // Prevent possible XSS attacks via $_GET.
 foreach ($_GET as $v) {
@@ -75,7 +81,7 @@ foreach ($_GET as $v) {
 		preg_match('@<[\/\!]*?[^<>]*?>@si', $v) ||
 		preg_match('@<style[^>]*?>.*?</style>@siU', $v) ||
 		preg_match('@<![\s\S]*?--[ \t\n\r]*>@', $v)) {
-		include("languages/en.php"); // no language set yet, so default to English.	
+ 	
 		die (_POSSIBLEHACK);
 	}
 } 
@@ -102,9 +108,11 @@ else $words = array( );
 if(isset($_GET['action'])) $action = strip_tags($_GET['action']);
 else $action = false;
 
-if(file_exists(_BASEDIR."languages/{$language}.php")) include (_BASEDIR."languages/{$language}.php");
-else include (_BASEDIR."languages/en.php");
+ 
+require_once(HEADERF);
+ 
 
+$alphabet = efiction_settings::get_alphabet(); 
 
 include_once(_BASEDIR."includes/corefunctions.php");
 
@@ -130,27 +138,8 @@ if(isset($PHP_SELF)) $PHP_SELF = htmlspecialchars(descript($PHP_SELF), ENT_QUOTE
 
 // Set these variables to start.
 $agecontsent = false; $viewed = false; 
- /*
-$v = explode(".", $version);
-include("version.php");
-$newV = explode(".", $version);
-//if($v[0] == $newV[0] && ($v[1] < $newV[1] || (isset($newV[2]) && $v[2] < $newV[2]))) {
-foreach($newV AS $k => $l) {
-	if($newV[$k] > $v[$k] || (!empty($newV[$k]) && empty($v[$k]))) {
-		if(isADMIN && basename($_SERVER['PHP_SELF']) != "update.php") {
-			header("Location: update.php");
-			exit( );
-		}
-		else if(!isADMIN && basename($_SERVER['PHP_SELF']) != "maintenance.php" && !(isset($_GET['action']) && $_GET['action'] == "login")) {
-			header("Location: maintenance.php");
-			exit( );
-		}
-	}
-}
-
  
-
-
+/*
 if($maintenance && !isADMIN && basename($_SERVER['PHP_SELF']) != "maintenance.php" && !(isset($_GET['action']) && $_GET['action'] == "login")) {
 	header("Location: maintenance.php");
 	exit( );
@@ -169,14 +158,8 @@ if(e107::getSession()->is(SITEKEY."_viewed")) $viewed = e107::getSession()->get(
 
 if(isset($_GET['ageconsent'])) e107::getSession()->set(SITEKEY."_ageconsent", 1);
 if(isset($_GET['warning'])) e107::getSession()->set(SITEKEY."_warned_{$_GET['warning']}", 1);
+ 
 
-if(file_exists("languages/{$language}.php")) require_once ("languages/{$language}.php");
-else require_once ("languages/en.php");
-
-if(USERUID) {
-	$prefs = dbquery("SELECT sortby, storyindex, tinyMCE FROM ".TABLEPREFIX."fanfiction_authorprefs WHERE uid = '".USERUID."'");
-	if(dbnumrows($prefs)) list($defaultsort, $displayindex, $tinyMCE) = dbrow($prefs);
-}
 if(isset($_REQUEST['sort'])) $defaultsort = $_REQUEST['sort'] == "update" ? 1 : 0;
 define("_ORDERBY", " ORDER BY ".($defaultsort == 1 ? "updated DESC" : "stories.title ASC"));
 if($current == "viewstory"){
@@ -218,7 +201,6 @@ echo "<title>$titleinfo</title>";
 
 if(!isset($_GET['action']) || $_GET['action'] != "printable") {
  
-<link rel=\"alternate\" type=\"application/rss+xml\" title=\"$sitename RSS Feed\" href=\""._BASEDIR."rss.php\">";
 if(!empty($tinyMCE)) {
 	echo "<script language=\"javascript\" type=\"text/javascript\" src=\""._BASEDIR."tinymce/js/tinymce/tinymce.min.js\"></script>
 	<script language=\"javascript\" type=\"text/javascript\"><!--";
