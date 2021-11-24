@@ -23,9 +23,7 @@
 // ----------------------------------------------------------------------
 
 if(!defined("e107_INIT")) exit( );
-
-
-
+ 
 	$output = "<div id='pagetitle'>".($action == "register" ? _SETPREFS : _EDITPREFS)."</div>";
 	if(isset($_POST['submit'])) {
  
@@ -35,6 +33,7 @@ if(!defined("e107_INIT")) exit( );
             'newrespond'    =>  intval(varset($_POST['newrespond'], 0)),
             'ageconsent'    =>  intval(varset($_POST['ageconsent'], 0)),
             'tinyMCE'    => intval(varset($_POST['tinyMCE'], 0)),
+            'contact'    =>  intval(varset($_POST['contact'], 0)),
             'storyindex'    =>  intval(varset($_POST['storyindex'], 0)),        
             'sortby'    =>  intval(varset($_POST['sortby'], 0)),     
             "WHERE"  =>  "uid = ".USERUID 
@@ -66,19 +65,28 @@ if(!defined("e107_INIT")) exit( );
  
         $output .= e107::getForm()->open("editprefs", "POST", "member.php?action=editprefs", "class=form-horizontal col-md-6 offset-md-3"); 
  
+        $field_key = "contact";
+        $output .= '<div class="row mb-3">';
+            $output .= "<label class=\"col-sm-8 col-form-label\" for=\'".$field_key."\'>"._CONTACTME.": ";
+            $output .= "<a href='#' data-bs-toggle=\"tooltip\" data-bs-html=\"true\" data-bs-placement=\"bottom\" title=\""._HELP_CONTACTME."\">[?]</a></label>";
+            $output .= '<div class="col-sm-4">'; 
+		              $output .= e107::getForm()->renderElement($field_key, $user[$field_key], array( 'type' => 'checkbox', 'data' => 'int' ));
+		    $output .= '</div>';
+        $output .= '</div>';
+        
         $field_key = "newreviews";
         $output .= '<div class="row mb-3">';
             $output .= "<label class=\"col-sm-8 col-form-label\" for=\'".$field_key."\'>"._CONTACTREVIEWS.": ";
-            $output .= "<a href=\"#\" class=\"pophelp\">[?]<span>"._HELP_NEWREV."</span></a></label>";
+            $output .= "<a href='#' data-bs-toggle=\"tooltip\" data-bs-html=\"true\" data-bs-placement=\"bottom\" title=\""._HELP_NEWREV."\">[?]</a></label>";
             $output .= '<div class="col-sm-4">'; 
-		              $output .= e107::getForm()->renderElement($field_key, $user[$field_key], array( 'type' => 'checkbox', 'data' => 'int' ));
+		              $output .= e107::getForm()->renderElement($field_key, $user[$field_key], array( 'type' => 'checkbox', 'data' => 'int'  ));
 		    $output .= '</div>';
         $output .= '</div>';
         
         $field_key = "newrespond";
         $output .= '<div class="row mb-3">';
             $output .= "<label class=\"col-sm-8 col-form-label\" for=\'".$field_key."\'>"._CONTACTRESPOND.": ";
-            $output .= "<a href=\"#\" class=\"pophelp\">[?]<span>"._HELP_NEWRESP."</span></a></label>";
+            $output .= "<a href='#' data-bs-toggle=\"tooltip\" data-bs-html=\"true\" data-bs-placement=\"bottom\" title=\""._HELP_NEWRESP."\">[?]</a></label>";
             $output .= '<div class="col-sm-4">'; 
 		              $output .= e107::getForm()->renderElement($field_key, $user[$field_key], array( 'type' => 'checkbox', 'data' => 'int' ));
 		    $output .= '</div>';
@@ -89,7 +97,7 @@ if(!defined("e107_INIT")) exit( );
               $field_key = "alertson";
               $output .= '<div class="row mb-3">';
                   $output .= "<label class=\"col-sm-8 col-form-label\" for=\'".$field_key."\'>"._ALERTSON2.": ";
-                  $output .= "<a href=\"#\" class=\"pophelp\">[?]<span>"._HELP_FAVALERT."</span></a></label>";
+                  $output .= "<a href='#' data-bs-toggle=\"tooltip\" data-bs-html=\"true\" data-bs-placement=\"bottom\" title=\""._HELP_FAVALERT."\">[?]</a></label>";
                   $output .= '<div class="col-sm-4">'; 
       		              $output .= e107::getForm()->renderElement($field_key, $user[$field_key], array( 'type' => 'checkbox', 'data' => 'int' ));
       		    $output .= '</div>';
@@ -99,7 +107,7 @@ if(!defined("e107_INIT")) exit( );
         $field_key = "storyindex";
         $output .= '<div class="row mb-3">';
             $output .= "<label class=\"col-sm-8 col-form-label\" for=\'".$field_key."\'>"._DISPLAYINDEX.": ";
-            $output .= "<a href=\"#\" class=\"pophelp\">[?]<span>"._HELP_TOC."</span></a></label>";
+            $output .= "<a href='#' data-bs-toggle=\"tooltip\" data-bs-html=\"true\" data-bs-placement=\"bottom\" title=\""._HELP_TOC."\">[?]</a></label>";
             $output .= '<div class="col-sm-4">'; 
 		              $output .= e107::getForm()->renderElement($field_key, $user[$field_key], array( 'type' => 'checkbox', 'data' => 'int' ));
 		    $output .= '</div>';
@@ -121,15 +129,14 @@ if(!defined("e107_INIT")) exit( );
 		   $output .= "<div style=\"margin: 1ex 0;\">"._AGECONSENT." <span style='white-space: nowrap;'>";
            $output .= e107::getForm()->renderElement('ageconsent', $user['ageconsent'], 
            array( 'type' => 'boolean', 'data' => 'int', 'writeParms' => array("label"=> "yesno" )));   
-                  
-			$output .= "<a href=\"#\" class=\"pophelp\">[?]<span>"._HELP_AGE."</span></a></div>";
+            $output .= "<a href='#' data-bs-toggle=\"tooltip\" data-bs-html=\"true\" data-bs-placement=\"bottom\" title=\""._HELP_AGE."\">[?]</a></div>";      
             $output .= '</div>';
 		}
         
         $field_key = "sortby";
         $output .= '<div class="row mb-3">';
             $output .= "<label class=\"col-sm-6 col-form-label\" for=\'".$field_key."\'>"._DEFAULTSORT.": ";
-            $output .= "<a href=\"#\" class=\"pophelp\">[?]<span>"._HELP_DEFAULTSORT."</span></a></label>";
+            $output .= "<a href='#' data-bs-toggle=\"tooltip\" data-bs-html=\"true\" data-bs-placement=\"bottom\" title=\""._HELP_DEFAULTSORT."\">[?]</a></label>";
             $output .= '<div class="col-sm-6">'; 
 
     		    $output .= e107::getForm()->renderElement('sortby', $user[$field_key], 

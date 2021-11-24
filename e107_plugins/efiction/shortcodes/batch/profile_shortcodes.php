@@ -75,7 +75,7 @@ class plugin_efiction_profile_shortcodes extends e_shortcode
     /* {PROFILE_AUTHORFIELDS} */
 	public function sc_profile_authorfields($parm = null)
 	{  
-        return '';
+       return '';
         
         /* way how to get just efiction custom fields:
         $dynamicfields = array();
@@ -88,8 +88,8 @@ class plugin_efiction_profile_shortcodes extends e_shortcode
         
         $authorfields = '';
  
-        $user = $this->var['user'];
-      //  if(empty($user)) return '';
+        $user = $this->var ;
+        //  if(empty($user)) return '';
         
         $user_shortcodes = e107::getScBatch('user');
         $user_shortcodes->wrapper('user/view');
@@ -145,6 +145,7 @@ class plugin_efiction_profile_shortcodes extends e_shortcode
 	{
         //$tpl->assign("membersince", date("$dateformat", $userinfo['date']));
         //
+        
         return e107::getDate()->convert_date($this->var['date'], "forum");
  
     }
@@ -174,6 +175,11 @@ class plugin_efiction_profile_shortcodes extends e_shortcode
     /* {PROFILE_USERLEVEL} */
 	public function sc_profile_userlevel($parm = null)
 	{
+ 
+       if($this->var['admincreated']) 
+       {   
+         return _INPUTBYADMIN;
+       }
        $level = isset($this->var['level']) && $this->var['level'] > 0 && $this->var['level'] < 4 ? _ADMINISTRATOR.(isADMIN ? " - ".$this->var['level'] : "") : _MEMBER;
        return $level;
     }
@@ -199,8 +205,11 @@ class plugin_efiction_profile_shortcodes extends e_shortcode
         	if(dbnumrows($fav) == 0) $nameinfo .= " [<a href=\"member.php?action=favau&amp;uid=".USERUID."&amp;add=".$userinfo['uid']."\">"._ADDAUTHOR2FAVES."</a>]";
         }
         */
+ 
         $nameinfo = "";
-        if($userinfo['email'])
+        /* contact by form */
+ 
+        if($userinfo['email'] && $userinfo['contact'] && !$userinfo['admincreated'] )
         	$nameinfo .= " [<a href=\"viewuser.php?action=contact&amp;uid=".$userinfo['uid']."\">"._CONTACT."</a>]";
         if(!empty($favorites) && isMEMBER && $userinfo['uid'] != USERUID) {
             $fav = e107::getDb()->retrieve("SELECT * FROM ".TABLEPREFIX."fanfiction_favorites WHERE uid = '".USERUID."' AND type = 'AU' AND item = '".$userinfo['uid']."'");
@@ -208,6 +217,8 @@ class plugin_efiction_profile_shortcodes extends e_shortcode
                 $nameinfo .= " [<a href=\"member.php?action=favau&amp;uid=".USERUID."&amp;add=".$userinfo['uid']."\">"._ADDAUTHOR2FAVES."</a>]";
             }
         }
+        
+        return $nameinfo;
     }    
  
 

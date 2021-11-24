@@ -79,7 +79,22 @@ $confirm = isset($_GET['confirm']) ? $_GET['confirm'] : false;
 		$output .= "<div class='sectionheader'>"._RELEASED."</div>";
 		if($confirm == "yes")
 		{
-			e107::getDb()->gen("UPDATE "._AUTHORTABLE." SET admincreated = '0' WHERE "._UIDFIELD." = '".$_GET['release']."'");
+			$tmp_uid = $_GET['release'];  
+            $tmp_authordata = efiction_authors::get_single_author($tmp_uid);
+            if($tmp_authordata['user_id'] == 0 ) {
+               $error = write_message("Author is not connected to any e107 user");
+            }
+            elseif(!isset($tmp_authordata['user_name'])) { 
+             $error .= write_message("Connected user doesn't exist!");
+            }
+            elseif($tmp_authordata['user_ban'] != 0 ) { 
+                $error .= write_message("Connected user is not active");
+            }            
+            $output = e107::getMessage()->addError($error)->render();
+            
+            
+            /*
+            e107::getDb()->gen("UPDATE "._AUTHORTABLE." SET admincreated = '0' WHERE "._UIDFIELD." = '".$_GET['release']."'");
 			$email = e107::getDb()->retrieve("SELECT "._EMAILFIELD." as email, "._PENNAMEFIELD." as penname FROM "._AUTHORTABLE." WHERE uid = '".$_GET['release']."'");
  
 			mt_srand((double)microtime() * 1000000);
@@ -94,8 +109,13 @@ $confirm = isset($_GET['confirm']) ? $_GET['confirm'] : false;
 			$letter = sprintf(_RELEASEMESSAGE, $email['penname'], $pass);
 
 			$mailresult = efiction_core::sendemail($email['penname'], $email['email'], $sitename, $siteemail, $subject, $letter);
-			if($mailresult) $output .= write_message(_AUTHORRELEASED);
+		
+         
+            if($mailresult) $output .= write_message(_AUTHORRELEASED);
 			else $output .= write_error(_EMAILFAILED);
+            
+            	*/
+                
 		}
 		else if ($confirm == "no")
 		{
@@ -196,6 +216,7 @@ $confirm = isset($_GET['confirm']) ? $_GET['confirm'] : false;
 			
 		}
 		else if($list == "admins") {
+        //SELECT author.penname as penname, author.uid as uid, ap.stories, ap.level FROM e107_fanfiction_authors as author LEFT JOIN e107_fanfiction_authorprefs AS ap ON author.uid = ap.uid WHERE ap.level > 0 GROUP BY author.uid
 			$where = " WHERE ap.level > 0";
 			$do = false;
 			$authorlink = "<a href=\"admin.php?action=admins&amp;do=edit&amp;uid=";
@@ -247,13 +268,13 @@ $confirm = isset($_GET['confirm']) ? $_GET['confirm'] : false;
 		if(!isset($authorlink)) $authorlink = "<a href=\"admin.php?action=members&amp;do=list&amp;$do=";
 		if(!isset($countquery)) $countquery = _MEMBERCOUNT." $where";
 		if(!isset($authorquery)) $authorquery = _MEMBERLIST." $where GROUP BY "._UIDFIELD;
- 
+
 		$output .= "<p align=\"center\">
 			<a href=\"admin.php?action=members\">"._ALLMEMBERS."</a> | <a href=\"admin.php?action=members&amp;do=list&amp;list=admins\">"._ADMINS."</a> |  <a href=\"admin.php?action=members&amp;do=list&amp;list=authors\">"._AUTHORS."</a> | <a href=\"admin.php?action=members&amp;do=list&amp;list=admincreated\">"._INPUTBYADMIN."</a> <br />
 			<a href=\"admin.php?action=members&amp;do=list&amp;list=noval\">"._NONVALMEMBERS."</a> | <a href=\"admin.php?action=members&amp;do=list&amp;list=validated\">"._VALMEMBERS."</a> | <a href=\"admin.php?action=members&amp;do=list&amp;list=locked\">"._LOCKMEMLIST."</a> | <a href=\"admin.php?action=members&amp;do=list&amp;list=unlocked\">"._UNLOCKMEMBERS."</a></p>";
 		$pagelink = "admin.php?action=members&amp;do=list&amp;list=$list&amp;".($let ? "let=$let&amp;" :"");
-
-		include("includes/members_list.php");
+ 
+		require_once(_BASEDIR."includes/members_list.php");
 		$output .= write_message("<a href=\"admin.php?action=members&do=add\">"._ADDAUTHOR."</a>");
 		if(isset($message)) $output .= $message;
 	}

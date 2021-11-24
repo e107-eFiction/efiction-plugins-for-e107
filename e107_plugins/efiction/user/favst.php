@@ -22,19 +22,21 @@
 // To read the license please visit http://www.gnu.org/copyleft/gpl.html
 // ----------------------------------------------------------------------
 
-if(!defined("_CHARSET")) exit( );
+if(!defined("e107_INIT")) exit( );
+
 if(empty($favorites)) accessDenied( );
 
 	if(empty($uid)) {
 		$uid = USERUID;
-		$output .= "<div id='pagetitle'>"._YOURSTATS."</div>";
+		$caption = _YOURSTATS ;
 	}
 	$add = isset($_GET['add']) ? $_GET['add'] : false;
 	$edit = isset($_GET['edit']) ? $_GET['edit'] : false;
 	$delete = isset($_GET['delete']) ? $_GET['delete'] : false;
-	if($add) $output .= "<div class='sectionheader'>"._ADDTOFAVORITES."</div>";
-	else if($edit) $output .= "<div class='sectionheader'>"._EDITFAVORITES."</div>";
-	else $output .= "<div class='sectionheader'>"._FAVORITESTORIES."</div>";
+
+	if($add) $caption .= "<div class='sectionheader'>"._ADDTOFAVORITES."</div>";
+	else if($edit) $caption .= "<div class='sectionheader'>"._EDITFAVORITES."</div>";
+	else $caption .= "<div class='sectionheader'>"._FAVORITESTORIES."</div>";
 	if(($add || $edit || $delete) && !isMEMBER) accessDenied( );
 
 	if($delete && isNumber($delete)) {
@@ -81,28 +83,60 @@ if(empty($favorites)) accessDenied( );
 		}
 	}
 	else if(!isset($_POST['submit'])) {
+
+
 		$storyquery = "SELECT stories.*, "._PENNAMEFIELD." as penname, fav.comments as comments,  stories.date as date,  stories.updated as updated FROM ".TABLEPREFIX."fanfiction_stories as stories, ".TABLEPREFIX."fanfiction_favorites as fav, "._AUTHORTABLE." WHERE fav.uid = '$uid' AND fav.type = 'ST' AND stories.uid = "._UIDFIELD." AND fav.item = stories.sid "._ORDERBY;
-		$countquery = dbquery("SELECT COUNT(item) FROM ".TABLEPREFIX."fanfiction_favorites WHERE uid = '$uid' AND type = 'ST' GROUP BY uid");
-		list($storycount) = dbrow($countquery);
+
+
+		$countquery = "SELECT COUNT(item) FROM ".TABLEPREFIX."fanfiction_favorites WHERE uid = '$uid' AND type = 'ST' GROUP BY uid";
+
+		$storycount = e107::getDb()->retrieve($countquery);
+  
 		if($storycount) {
-			$list = dbquery($storyquery."  LIMIT $offset, $itemsperpage");
-			$tpl->newBlock("listings");
+			$story_list = e107::getDb()->retrieve($storyquery."  LIMIT $offset, $itemsperpage", true) ;
+			
 			$count = 0;
-			while($stories = dbassoc($list)) { 
-				$tpl->newBlock("storyblock");
-				include(_BASEDIR."includes/storyblock.php");
+
+			$template = e107::getTemplate('efiction', 'favcomment', 'favau', true, true);
+
+			$sc = e107::getScParser()->getScObject('story_shortcodes', 'efiction', false);
+
+			foreach($story_list AS $stories)
+			{ 
+ 				
+				$template = e107::getTemplate('efiction', 'listings', 'favst', true, true);
+
+				$vars["oddeven"] = $x % 2 ? "odd" : "even" ;
+ 
 				if(!empty($stories['comments']) || USERUID == $uid || isADMIN) {
-				if(file_exists("$skindir/favcomment.tpl")) $cmt = new TemplatePower( "$skindir/favcomment.tpl" );
-				else $cmt = new TemplatePower(_BASEDIR."default_tpls/favcomment.tpl" );
-				$cmt->prepare( );
-				$cmt->newBlock("comment");
-				$cmt->assign("comment", $stories['comments'] ? "<div class='comments'><span class='label'>"._COMMENTS.": </span>".strip_tags($stories['comments'])."</div>" : "");
-				if(USERUID == $uid) 
+
+					$vars["comment"] =  format_story($stories['comments']);
+				}
+  
+				if(USERUID == $uid) {
+
+					$vars["commentoptions"] = "<div class='adminoptions'><span class='label'>"._OPTIONS.":</span> <a href=\"member.php?action=favst&amp;edit=".$stories['sid']."\">"._EDIT."</a> | 
+					<a href=\"member.php?action=favst&amp;delete=".$stories['sid']."\">"._REMOVEFAV."</a></div>";
+					
+					$vars["commentoptions_alt"] = "<a class=\"btn btn-outline-success btn-sm ms-1\" href=\"member.php?action=favst&amp;edit=".$stories['sid']."\">"._EDIT."</a>";             
+					$vars["commentoptions_alt"] .= "<a class=\"btn btn-outline-danger btn-sm ms-1\" href=\"member.php?action=favst&amp;delete=".$stories['sid']."\">"._REMOVEFAV."</a>";  
+				}
+
+				/*
 				$cmt->assign("commentoptions", "<div class='adminoptions'><span class='label'>"._OPTIONS.":</span> <a href=\"member.php?action=favst&amp;edit=".$stories['sid']."\">"._EDIT."</a> | <a href=\"member.php?action=favst&amp;delete=".$stories['sid']."\">"._REMOVEFAV."</a></div>");
 				$cmt->assign("oddeven", ($count % 2 ? "odd" : "even"));
 				$tpl->assign("comment", $cmt->getOutputContent( ));
 				$tpl->gotoBlock( "listings" );
 				}
+				*/
+ 
+                $sc->setVars($stories);
+        		$output .=  e107::getParser()->parseTemplate($template['item'], true, $sc);    
+
+				$output .= e107::getParser()->simpleParse($template['end'], $vars);
+
+				$x++;
+
 			}	
 			if($storycount > $itemsperpage) {
 				$tpl->gotoBlock("listings");

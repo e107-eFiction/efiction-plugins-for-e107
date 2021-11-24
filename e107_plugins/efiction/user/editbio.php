@@ -62,43 +62,30 @@ else {
  
 	if((!isADMIN || uLEVEL > 2) && $uid != USERUID && $action == "editbio") $output .= write_error(_NOTAUTHORIZED);
     
-	if(isMEMBER) $output .= "<div id=\"pagetitle\">"._EDITPERSONAL."</div>";
+	if(isMEMBER) $caption = "<div id=\"pagetitle\">"._EDITPERSONAL."</div>";
  
 	if(!empty($_POST['submit'])) {
 		$penname = isset($_POST['newpenname']) ? escapestring($_POST['newpenname']) : false;
         
-		$email = escapestring($_POST['email']);  var_dump($email); var_dump(isADMIN);
+		$email = escapestring($_POST['email']);   
 		if(!isset($email) && !isADMIN) $output .= "<div style='text-align: center;'>"._EMAILREQUIRED."</div>";
 		else if($penname && !preg_match("!^[a-z0-9-_ ]{3,30}$!i", $penname)) $output .= "<div style='text-align: center;'>"._BADUSERNAME."</div>";
 		else if(!validEmail($email)) $output .= "<div style='text-align: center;'>"._INVALIDEMAIL." "._TRYAGAIN."</div>"; 
 		else{
  
 			if(isset($_POST['oldpenname']) && $penname != $_POST['oldpenname']) {
-				$checkresult = dbquery("SELECT * FROM "._AUTHORTABLE." WHERE penname = '".escapestring($penname)."'");
-				if(dbnumrows($checkresult)) {
+				$checkresult = e107::getDb()->retrieve("SELECT * FROM "._AUTHORTABLE." WHERE penname = '".escapestring($penname)."' LIMIT 1" );
+				if($checkresult) {
 					$output .= write_message(_PENNAMEINUSE."  "._TRYAGAIN);
 				}
 				else {
-					dbquery("UPDATE "._AUTHORTABLE." SET penname = '".escapestring($penname)."' WHERE uid = '$_POST[uid]'");
-					if($logging) dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_log (`log_action`, `log_uid`, `log_ip`, `log_type`) VALUES('".escapestring(sprintf(_NEWPEN, USERPENNAME, USERUID, $_POST[oldpenname], $uid, $penname))."', '".USERUID."', INET_ATON('".$_SERVER['REMOTE_ADDR']."'), 'EB')");
+                    $query = "UPDATE "._AUTHORTABLE." SET penname = '".escapestring($penname)."' WHERE uid = '$_POST[uid]'";
+					e107::getDb()->gen($query);
 				}
 			}
-/* The section adds fields from the authorfields table to the authorinfo table allowing dynamic additions to the bio/registration page */
-			$fields = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_authorfields WHERE field_on = '1'");
-			while($field = dbassoc($fields)) {
-				$uid = isset($_POST['uid']) && isNumber($_POST['uid']) ? $_POST['uid'] : false;
-				if(!$uid) continue;
-				$oldfield = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_authorinfo WHERE field='".$field['field_id']."' AND uid = '".$uid."'");
-				if(dbnumrows($oldfield) > 0) {
-					$newinfo = isset($_POST["af_".$field['field_name']]) ? escapestring(descript($_POST["af_".$field['field_name']])) : false;
-					if(!empty($newinfo)) dbquery("UPDATE ".TABLEPREFIX."fanfiction_authorinfo SET info='".$newinfo."' WHERE uid = '$uid' AND field = '".descript($field['field_id'])."'");
-					else dbquery("DELETE FROM ".TABLEPREFIX."fanfiction_authorinfo WHERE uid = '$uid' AND field = '".$field['field_id']."'");
-				}
-				else if(!empty($_POST["af_".$field['field_name']])) dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_authorinfo(`uid`, `info`, `field`) VALUES('$uid', '".escapestring($_POST["af_".$field['field_name']])."', '".$field['field_id']."');");
-			}
-/* End dynamic fields */
-			dbquery("UPDATE "._AUTHORTABLE." SET realname='".descript(strip_tags(escapestring($_POST['realname'])), $allowed_tags)."', email='$email', bio='".descript(strip_tags(escapestring($_POST['bio']), $allowed_tags))."', image='".($imageupload && !empty($_POST['image']) ? escapestring($_POST['image']) : "")."' WHERE uid = '$uid'");
-			$output .= write_message(_ACTIONSUCCESSFUL."  ".(isset($_GET['uid']) ? _BACK2ADMIN : _BACK2ACCT));
+             
+			e107::getDb()->gen("UPDATE "._AUTHORTABLE." SET realname='".descript(strip_tags(escapestring($_POST['realname'])), $allowed_tags)."', email='$email', bio='".descript(strip_tags(escapestring($_POST['bio']), $allowed_tags))."', image='".($imageupload && !empty($_POST['image']) ? escapestring($_POST['image']) : "")."' WHERE uid = '$uid'", true);
+			$output .= write_message(_ACTIONSUCCESSFUL."  ".(isset($_GET['uid']) ? _BACK2ADMIN : _BACK2ACCT));        
 		}
 	}
 	else {
@@ -112,7 +99,7 @@ else {
         $url = "member.php?".$query; 
 
  
-        $output .= "<div id='settingsform' class='col-md-6 offset-md-3'>";
+        $output .= "<div id='settingsform' >";
         if(isADMIN) {
           $output .= '<div class="alert alert-info" role="alert"> <h4 class="alert-heading">Only admin info</h4><p>';
            	 $output .= "<div class=\"row mb-3\">";
@@ -123,7 +110,7 @@ else {
          
         }
         
-        $output .= e107::getForm()->open("editbio", "POST",  $url, "class=form-horizontal col-md-6 offset-md-3"); 
+        $output .= e107::getForm()->open("editbio", "POST",  $url, "class=form-horizontal"); 
  
 		$output .= "<div class=\"row mb-3\"><label class=\"col-sm-4 col-form-label\" for='newpenname'>"._PENNAME.":</label>";
               $output .= '<div class="col-sm-8 col-form-label">';
@@ -148,13 +135,13 @@ else {
         $output .= '<div class="row mb-3">';
             $output .= "<label class=\"col-sm-4 col-form-label\" for=\'".$field_key."\'>"._BIO.": </label>";
             $output .= '<div class="col-sm-8">'; 
-		              $output .= e107::getForm()->renderElement($field_key, (isset($user) ? stripslashes($user['bio']) : ""), array( 'type' => 'textarea', 'data' => 'str' ));
+		              $output .= e107::getForm()->renderElement($field_key, (isset($author) ? stripslashes($author['bio']) : ""), array( 'type' => 'textarea', 'data' => 'str' ));
 		    $output .= '</div>';
         $output .= '</div>';              
  	    $output .= '<div class="row mb-3">';    
            $output .= '<div class="col-sm-4"></div>';    
             $output .= '<div class="col-sm-8">'; 
-       	      $output .= e107::getForm()->hidden("uid", _(isset($user) ? $user['uid'] : "") );
+       	      $output .= e107::getForm()->hidden("uid", _(isset($author) ? $author['uid'] : "") );
               $output .= e107::getForm()->button("submit", _SUBMIT);
 		    $output .= '</div>';        
         $output .= '</div>'; 
@@ -173,5 +160,3 @@ else {
 
 
  
-        
-     

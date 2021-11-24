@@ -33,11 +33,11 @@ if(deftrue('USER_AREA') && (e_PAGE != "menus.php") )    // prevents inclusion of
  
 		a.pophelp:hover{z-index:100; border: none; text-decoration: none;}
 		
-		a.pophelp span{display: none; position: absolute; top: -25em; left: 20em; }
+		a.pophelp span {display: none; position: absolute; top: -25em; left: 20em; }
 		
 		a.pophelp:hover span{  
 			display:block;
-			position: absolute;
+			position: relative;
 			top: -3em; left: 8em; width: 225px;
 			border:1px solid #000;
 			background-color:#CCC; color:#000;
@@ -92,7 +92,8 @@ if(deftrue('USER_AREA') && (e_PAGE != "menus.php") )    // prevents inclusion of
 		e107::js('url',  _BASEDIR."includes/userselect.js" , 'jquery' );
 		e107::js('url',  _BASEDIR."includes/xmlhttp.js" , 'jquery' );
 		$inlinecode = "
-			lang = new Array( );
+        
+        lang = new Array( );
 		
 		lang['Back2Cats'] = '"._BACK2CATS."';
 		lang['ChooseCat'] = '"._CHOOSECAT."';

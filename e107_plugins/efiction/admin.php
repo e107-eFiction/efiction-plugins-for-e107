@@ -42,7 +42,7 @@ include(_BASEDIR."includes/pagesetup.php");
 e107::lan('efiction', true);
 
 // end basic page setup
-
+ 
 // check that user has permissions to perform this action before going further.  Otherwise kick 'em
 	if(!isADMIN) accessDenied( );
 	$adminquery = dbquery("SELECT categories FROM ".TABLEPREFIX."fanfiction_authorprefs WHERE uid = '".USERUID."' LIMIT 1");
@@ -53,25 +53,20 @@ e107::lan('efiction', true);
       // not display admin menu, it is opened in new window for now 
     }
     else {
-        $caption = EFICTION_ADMIN_001;
+      $caption = EFICTION_ADMIN_001;
     	$output = "<div style='text-align: center; margin: 1em;'>";
-    	$panelquery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_panels WHERE panel_hidden != '1' AND panel_type = 'A' AND panel_level >= ".uLEVEL." ORDER BY panel_level DESC, panel_order ASC, panel_title ASC");
-    	if(!dbnumrows($panelquery)) $output .= _FATALERROR;
-    	$panellist = array();
-    	while($panel = dbassoc($panelquery)) {
-    		if(!$panel['panel_url']) $panellist[$panel['panel_level']][]= "<a href=\""._BASEDIR."admin.php?action=".$panel['panel_name']."\">".$panel['panel_title']."</a>";
-    		else $panellist[$panel['panel_level']][] = "<a href=\""._BASEDIR.$panel['panel_url']."\">".$panel['panel_title']."</a>";
-    	}
-    	foreach($panellist as $accesslevel => $row) {
+        $panellist = efiction_panels::admin_panels();
+ 
+  	    foreach($panellist as $accesslevel => $row) {
     		$output .= implode(" | ", $row)."<br />";
     	}
     	$output .= "</div>\n";
         
         e107::getRender()->tablerender($caption, $output, $current);
         $output = '';
-        $caption = '';
+        $caption = ''; 
 	}
-    
+ 
     if($action) {
 		$panelquery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_panels WHERE panel_name = '$action' AND panel_type = 'A' LIMIT 1");
 		if(dbnumrows($panelquery)) {
@@ -80,7 +75,7 @@ e107::lan('efiction', true);
 				if($panel['panel_url'] && file_exists(_BASEDIR.$panel['panel_url'])) require_once(_BASEDIR.$panel['panel_url']);
 				else if (file_exists(_BASEDIR."admin/{$action}.php")) require_once("admin/{$action}.php");
 			}
-			else accessDenied( );
+	  	else accessDenied( );
 		}
 	}
 	else {
@@ -97,7 +92,7 @@ e107::lan('efiction', true);
 		$output .= write_message($adminnotices);
  
 	}	
-	 
+ 
  	e107::getRender()->tablerender($caption, $output, $current);
 	require_once(FOOTERF); 
 	exit;

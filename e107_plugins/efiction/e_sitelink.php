@@ -36,7 +36,7 @@ class efiction_sitelink // include plugin-folder in the name.
 			
         $links[1]  = array('function' => "home",          'name'	=> 'Block Menu');	    
 		$links[2]  = array('function' => "recent",        'name'	=> 'Most Recent - no sublinks' );	
-        $links[3]  = array('function' => "login",         'name'	=> 'Login - no sublinks');	    
+        $links[3]  = array('function' => "login",         'name'	=> 'Login');	    
 		$links[4]  = array('function' => "adminarea",     'name'	=> 'Admin - no sublinks' );		
         $links[5]  = array('function' => "logout",        'name'	=> 'Logout - no sublinks' );	    
 		$links[6]  = array('function' => "featured",      'name'	=> 'Featured Stories - no sublinks'  );	
@@ -51,7 +51,7 @@ class efiction_sitelink // include plugin-folder in the name.
 		$links[16] = array('function' => "rules",         'name'	=> 'Rules - no sublinks' );    
 		$links[17] = array('function' => "tos",           'name'	=> 'Terms of Service - no sublinks'  );	
         $links[18] = array('function' => "rss",           'name'	=> 'RSS - no sublinks');	    
-		$links[19] = array('function' => "member",        'name'	=> 'Account Info - no sublinks' );		
+		$links[19] = array('function' => "member",        'name'	=> 'Account Info');		
         $links[20] = array('function' => "titles",        'name'	=> 'Titles - no sublinks');	    
 		$links[21] = array('function' => "register",      'name'	=> 'Register - no sublinks'  );	
         $links[22] = array('function' => "lostpassword",  'name'	=> 'Lost Password - no sublinks');	    
@@ -64,7 +64,7 @@ class efiction_sitelink // include plugin-folder in the name.
 	
  
     function recent()  {  return null;  }	
-    function login()  {  return null;  }	
+	
     function adminarea()  {  return null;  }	
     function logout()  {  return null;  }	
 	function featured()  {  return null;  }	
@@ -79,7 +79,7 @@ class efiction_sitelink // include plugin-folder in the name.
     function rules()  {  return null;  }	
     function tos()  {  return null;  }
     function rss()  {  return null;  }
-    function member()  {  return null;  }
+
     function titles()  {  return null;  }   
     function register()  {  return null;  }
     function lostpassword()  {  return null;  }
@@ -114,6 +114,37 @@ class efiction_sitelink // include plugin-folder in the name.
 		return $sublinks;
 
 	}
+    
+    function login()  
+    {
+      $tp = e107::getParser();
+       /* {adminarea} {login} {logout} {login_content} lostpassword */
+       $pagelinks = efiction_pagelinks::get_pagelinks();
+ 
+       $keys = array('adminarea','login',   'lostpassword', 'register');
+        
+       foreach ($keys AS $key) {  
+       
+           if (isset($pagelinks[$key]['url'])) {
+ 
+    				$sublinks[$key] = array(
+        				'link_name'			=> $pagelinks[$key]['text'],
+        				'link_url'			=> $pagelinks[$key]['url'],
+        				'link_description'	=> '',
+        				'link_button'		=> '',
+        				'link_category'		=> '',
+        				'link_order'		=> '',
+        				'link_parent'		=> '',
+        				'link_open'			=> $pagelinks[$key]['target'],
+                        'link_function'		=> $pagelinks[$key]['name'],
+        				'link_class'		=> '' 
+        			);
+    			}
+       }
+ 
+    
+       return $sublinks;  
+    }
         
 	function browse() 
 	{
@@ -188,6 +219,29 @@ class efiction_sitelink // include plugin-folder in the name.
         return $sublinks;
      }  
      
+     
+       function member()  {   
+             $panels = efiction_panels::member_panel();
+             $tp = e107::getParser();
+    
+    	 	 $sublinks = array();
+     		 foreach($panels AS $panel) {   
+                $sublinks[$panel['panel_name']] = array(
+        				'link_name'			=> $tp->toHTML($panel['panel_title'],'','TITLE'),
+        				'link_url'			=> $panel['panel_url'],
+        				'link_description'	=> '',
+        				'link_button'		=> '',
+        				'link_category'		=> '',
+        				'link_order'		=> '',
+        				'link_parent'		=> '',
+        				'link_open'			=> '',
+                        'link_function'			=> 'efiction',
+        				'link_class'		=> '' 
+        			);
+            } 
+            return $sublinks;           
+       }
+       
      
       function authors()  {  
         $sql = e107::getDb();

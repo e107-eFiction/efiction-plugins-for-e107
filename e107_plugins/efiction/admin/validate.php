@@ -25,7 +25,8 @@
 if(!defined("e107_INIT")) exit( );
 
 function preview_story($stories) {
-	global $extendcats, $skindir, $catlist,  $store, $storiespath, $classlist, $featured, $retired, $rr, $reviewsallowed, $star, $halfstar, $ratingslist, $classtypelist, $dateformat, $recentdays, $current;
+	global $extendcats, $skindir,  $storiespath, $classlist, $featured, $retired, $rr, $reviewsallowed, $star, $halfstar, $ratingslist, $classtypelist, $dateformat, $recentdays, $current;
+    
 		$count = 0;
 
         $catlist = efiction_categories::get_catlist();
@@ -33,49 +34,27 @@ function preview_story($stories) {
 		if(isset($_GET['textsize'])) $textsize = $_GET['textsize'];
 		else $textsize = 0;
 		
-		if(file_exists("$skindir/viewstory.tpl")) $tpl = new TemplatePower("$skindir/viewstory.tpl");
-		else $tpl = new TemplatePower(_BASEDIR."default_tpls/viewstory.tpl");
-		$tpl->prepare( );			
-		include(_BASEDIR."includes/storyblock.php");
-		$adminlinks = "<div class=\"adminoptions\"><span class='label'>"._ADMINOPTIONS.":</span> <a href=\"admin.php?action=validate&amp;sid=$stories[sid]&amp;chapid=$stories[chapid]&amp;validate=yes\">"._VALIDATE."</a> | "._EDIT." - <a href=\"stories.php?action=editstory&amp;sid=$stories[sid]&amp;admin=1\">"._STORY."</a> "._OR." <a href=\"stories.php?action=editchapter&amp;chapid=$stories[chapid]&amp;admin=1\">"._CHAPTER."</a> | "._DELETE." - <a href=\"stories.php?action=delete&amp;sid=$stories[sid]\">"._STORY."</a> "._OR." <a href=\"stories.php?action=delete&amp;chapid=$stories[chapid]&amp;sid=$stories[sid]&amp;admin=1&amp;uid=$stories[uid]\">"._CHAPTER."</a> | <a href=\"javascript:pop('admin.php?action=yesletter&amp;uid=$stories[uid]&amp;chapid=$stories[chapid]', 400, 350, 'yes')\">"._YESLETTER."</a> | <a href=\"javascript:pop('admin.php?action=noletter&amp;uid=$stories[uid]&amp;chapid=$stories[chapid]',400, 350, 'yes')\">"._NOLETTER."</a></div>";
-		$tpl->assign("adminlinks", $adminlinks);
-		if($stories['inorder'] == 1 && !empty($stories['storynotes'])) {
-			$tpl->gotoBlock("_ROOT");
-			$tpl->newBlock("storynotes");
-			$tpl->assign( "storynotes", stripslashes($stories['storynotes']));
-			$tpl->gotoBlock("_ROOT");
-		}
-		if(!empty($stories['notes'])) {
-			$tpl->newBlock("notes");
-			$tpl->assign( "notes", $stories['notes']);
-			$tpl->gotoBlock("_ROOT");
-		}
-		if(!empty($stories['endnotes'])) {
-			$tpl->newBlock("endnotes");
-			$tpl->assign( "endnotes", $stories['endnotes']);
-			$tpl->gotoBlock("_ROOT");
-		}
-		if($store == "files")
-		{
-			$file = STORIESPATH."/$stories[uid]/$stories[chapid].txt";
-			$log_file = fopen($file, "r");
-			$file_contents = fread($log_file, filesize($file));
-			$storytext = $file_contents;
-			fclose($log_file);
-		}
-		else if($store == "mysql")
-		{
-			$storytext = $stories['storytext'];
-		}
-		$storytext = format_story($storytext);
-		$tpl->gotoBlock("_ROOT");
-		$tpl->assign("chaptertitle", $stories['chaptertitle']);
-		$tpl->assign("chapternumber", $stories['inorder']);
-		$tpl->assign( "story", "<span style=\"font-size: ".(100 + ($textsize * 20))."%;\">$storytext</span>" );
-		return $tpl->getOutputContent( );
+        $story_template = e107::getTemplate('efiction', 'viewstory', 'preview_story');
+         
+    	$sc_story = e107::getScBatch('story', 'efiction');
+    	$sc_story->wrapper('story/story');
+ 
+        $stories['numstories'] = $numstories;
+        $stories['adminlinks'] =  "<div class=\"adminoptions\"><span class='label'>"._ADMINOPTIONS.":</span> <a href=\"admin.php?action=validate&amp;sid=$stories[sid]&amp;chapid=$stories[chapid]&amp;validate=yes\">"._VALIDATE."</a> | "._EDIT." - <a href=\"stories.php?action=editstory&amp;sid=$stories[sid]&amp;admin=1\">"._STORY."</a> "._OR." <a href=\"stories.php?action=editchapter&amp;chapid=$stories[chapid]&amp;admin=1\">"._CHAPTER."</a> | "._DELETE." - <a href=\"stories.php?action=delete&amp;sid=$stories[sid]\">"._STORY."</a> "._OR." <a href=\"stories.php?action=delete&amp;chapid=$stories[chapid]&amp;sid=$stories[sid]&amp;admin=1&amp;uid=$stories[uid]\">"._CHAPTER."</a> | <a href=\"javascript:pop('admin.php?action=yesletter&amp;uid=$stories[uid]&amp;chapid=$stories[chapid]', 400, 350, 'yes')\">"._YESLETTER."</a> | <a href=\"javascript:pop('admin.php?action=noletter&amp;uid=$stories[uid]&amp;chapid=$stories[chapid]',400, 350, 'yes')\">"._NOLETTER."</a></div>";
+        $sc_story->setVars($stories);
+        
+        $caption_story  = e107::getParser()->parseTemplate($story_template['caption'], true, $sc_story);
+        
+        $start = e107::getParser()->parseTemplate($story_template['start'], true, $sc_story);
+        $preview_story  = e107::getParser()->parseTemplate($story_template['item'], true, $sc_story);
+        $end = e107::getParser()->parseTemplate($story_template['end'], true, $sc_story);
+        
+        return e107::getRender()->tablerender($caption_story, $start.$preview_story.$end, 'addstory', true);
+  
 }
 
-	$output .= "<div id='pagetitle'>"._VIEWSUBMITTED."</div>";
+	$caption =  _VIEWSUBMITTED ;
+    
 	if(isset($_GET['validate']) && $_GET['validate'] == "yes") {
 		$storyquery = dbquery("SELECT story.validated, story.catid, story.sid, story.title, story.summary, story.uid, "._PENNAMEFIELD." as penname, chapter.inorder, story.coauthors 
         FROM ".TABLEPREFIX."fanfiction_stories as story, ".TABLEPREFIX."fanfiction_chapters  as chapter, "._AUTHORTABLE." 
@@ -110,7 +89,10 @@ function preview_story($stories) {
 					else $cond = "fav.item = $authoruid";
 					$subject = _NEWSTORYAT." $sitename";
 					$mailtext = sprintf(_AUTHORALERTNOTE, $title, $author, $summary, $sid);
-					$favorites = dbquery("SELECT "._UIDFIELD." as uid, "._EMAILFIELD." as email, "._PENNAMEFIELD." as penname, alertson FROM ".TABLEPREFIX."fanfiction_favorites as fav, ".TABLEPREFIX."fanfiction_authorprefs as ap, "._AUTHORTABLE." WHERE $cond AND fav.type = 'AU' AND fav.uid = "._UIDFIELD." AND ap.uid = "._UIDFIELD." AND ap.alertson = '1'");
+
+					$favorites = dbquery("SELECT "._UIDFIELD." as uid, "._EMAILFIELD." as email, "._PENNAMEFIELD." as penname, alertson FROM ".TABLEPREFIX."fanfiction_favorites as fav, 
+					".TABLEPREFIX."fanfiction_authorprefs as ap, 
+					"._AUTHORTABLE." WHERE $cond AND fav.type = 'AU' AND fav.uid = "._UIDFIELD." AND ap.uid = "._UIDFIELD." AND ap.alertson = '1'");
 					while($favuser = dbassoc($favorites)) { 
 						$result = efiction_core::sendemail($favuser['penname'], $favuser['email'], $sitename, $siteemail, $subject, $mailtext, "html");
 					}				
@@ -125,7 +107,10 @@ function preview_story($stories) {
 				while($code = dbassoc($codequery)) {
 					eval($code['code_text']);
 				}
+				/* notification that author added new story */
 				$favorites = dbquery("SELECT "._UIDFIELD." as uid, "._EMAILFIELD." as email, "._PENNAMEFIELD." as penname, alertson FROM ".TABLEPREFIX."fanfiction_favorites as fav, ".TABLEPREFIX."fanfiction_authorprefs as ap, "._AUTHORTABLE." WHERE fav.item = '$sid' AND fav.type = 'ST' AND fav.uid = "._UIDFIELD." AND ap.uid = "._UIDFIELD." AND ap.alertson = '1'");
+
+
 				while($favuser = dbassoc($favorites)) { 
 					$result = efiction_core::sendemail($favuser['penname'], $favuser['email'], $sitename, $siteemail, $subject, $mailtext, "html");
 				}
@@ -149,8 +134,14 @@ function preview_story($stories) {
 	}
 	else {
 		if(isNumber($_GET['chapid'])) {
-			$result = dbquery("SELECT stories.*, stories.title as title, "._PENNAMEFIELD." as penname, stories.updated as updated, stories.date as date, chapter.uid as uid, chapter.inorder, chapter.title as chaptertitle, chapter.storytext, chapter.chapid, chapter.notes, chapter.endnotes FROM "._AUTHORTABLE.", ".TABLEPREFIX."fanfiction_stories as stories, ".TABLEPREFIX."fanfiction_chapters as chapter WHERE chapter.chapid = '$_GET[chapid]' AND chapter.sid = stories.sid AND chapter.uid = "._UIDFIELD);
-			$stories = dbassoc($result);
+            $chapter_id = $_GET['chapid'];
+			$result = dbquery("SELECT stories.*, stories.title as title, "._PENNAMEFIELD." as penname, stories.updated as updated, stories.date as date, chapter.uid as uid, chapter.inorder,
+             chapter.title as chaptertitle, chapter.storytext, chapter.chapid, chapter.notes, chapter.endnotes FROM "._AUTHORTABLE.", 
+             ".TABLEPREFIX."fanfiction_stories as stories, ".TABLEPREFIX."fanfiction_chapters as chapter WHERE chapter.chapid = '$_GET[chapid]' 
+             AND chapter.sid = stories.sid AND chapter.uid = "._UIDFIELD);
+             
+			$stories = efiction_stories::get_story_chapter_data($chapter_id);
+ 
 			$output .= preview_story($stories);
 
 		}

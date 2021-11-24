@@ -27,35 +27,46 @@ if (!defined('e107_INIT')) {
 }
  
  
-if (USERID) {  //fully managed by e107, user is logged in
-    $userData = e107::user(USERID);
- 
-    $author_uid = $userData['user_plugin_efiction_author_uid'];
-    $author_level = $userData['user_plugin_efiction_level'];
+if (USERID) {
 
-	// if ($author_level != -1) {   //it can be admin without author, uLevel is too important to relay on author ID
-    if (getperms('P'))  //full plugin admin
+         /* options:
+         - normal e107 user, single author access, author user_id is used, EUA are not needed
+         - normal e107 user with different author access  =  normal e107 user with author admin rights admin = 1 , EUA are not needed ?  Could it be so simply?
+         - e107 admin with efiction plugin rights  = uLevel = 1 + isAdmin = true
+         */
+ 
+    $authordata = efiction_authors::get_single_author_by_user(USERID);
+    
+    if (getperms('0'))  //e107 superadmin
     {
 		define('uLEVEL', "1");
 		define('isADMIN', true);
 	}
-
-    if ($author_uid > 0) { //user is author
-        $authordata = efiction_authors::get_single_author($author_uid);   
-
-		define('USERUID', $authordata['uid']);
-		define('USERPENNAME', $authordata['penname']);
-		define('isMEMBER', true);
-        
-        if (!defined('uLEVEL')) {
-          define('uLEVEL', $authordata['level']);
-        }
     
-		if (e107::getSession()->is(SITEKEY.'_ageconsent')) {
-			$ageconsent = e107::getSession()->get(SITEKEY.'_ageconsent');
-		} else {
-			$ageconsent = $authordata['ageconsent'];
-		}    
+    if (getperms('P'))  //full plugin admin
+    {
+		define('uLEVEL', "2");
+		define('isADMIN', true);
+	}
+     
+    if ($authordata) {
+        define('USERUID', $authordata['uid']);
+        define('USERPENNAME', $authordata['penname']);
+        define('isMEMBER', true);
+                
+        if (!defined('uLEVEL')) {
+            define('uLEVEL', $authordata['level']);
+        }
+        
+        if (!defined('isADMIN')) { 
+           define("isADMIN", uLEVEL > 0 ? true : false);
+        }
+            
+        if (e107::getSession()->is(SITEKEY.'_ageconsent')) {
+            $ageconsent = e107::getSession()->get(SITEKEY.'_ageconsent');
+        } else {
+            $ageconsent = $authordata['ageconsent'];
+        }
     }
 } else {
     if (!defined('USERUID')) {
@@ -94,5 +105,3 @@ if (!defined('isADMIN')) {
 if (empty($siteskin)) {
     $siteskin = $defaultskin;
 }
- 
- 

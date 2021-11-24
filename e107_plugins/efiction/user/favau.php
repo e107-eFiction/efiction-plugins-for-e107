@@ -24,14 +24,15 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-if(empty($favorites)) accessDenied( );
+if(empty($favorites)) accessDenied( );  
 
 	if(empty($uid)) {
 		$uid = USERUID;
-		$output .= "<div id='pagetitle'>"._YOURSTATS."</div>";
+		$caption = _YOURSTATS.":  ";
 	}
-	$output .= "<div class='sectionheader'>"._FAVORITEAUTHORS."</div>";
+	$caption  .= _FAVORITEAUTHORS;
  
+	
 	$add = !empty($_GET['add']) ? $_GET['add'] : "";
 	$delete = isset($_GET['delete']) && isNumber($_GET['delete']) ? $_GET['delete'] : false;
 	$edit = isset($_GET['edit']) && isNumber($_GET['edit']) ? $_GET['edit'] : false;
@@ -118,28 +119,47 @@ if(empty($favorites)) accessDenied( );
 	}
 	if(!$add && !$edit) {
 		$query = "SELECT "._UIDFIELD." as uid, "._PENNAMEFIELD." as penname, fav.comments as comments FROM ".TABLEPREFIX."fanfiction_favorites as fav, "._AUTHORTABLE." WHERE fav.uid = '$uid' AND fav.type = 'AU' AND fav.item = "._UIDFIELD." ORDER BY "._PENNAMEFIELD;
-		$countquery = dbquery("SELECT COUNT(item) FROM ".TABLEPREFIX."fanfiction_favorites WHERE uid = '$uid' AND type = 'AU' GROUP BY uid");
-		list($count) = dbrow($countquery);
-		$x = 1;
-		if($count) {
-				$list = dbquery($query."  LIMIT $offset, $itemsperpage");
-				while($author = dbassoc($list)) { 
-					$output .= "<span class='label'>$x.</span> <a href=\"viewuser.php?uid=".$author['uid']."\">".$author['penname']."</a><br />";
-					if(file_exists("$skindir/favcomment.tpl")) $cmt = new TemplatePower( "$skindir/favcomment.tpl" );
-					else $cmt = new TemplatePower(_BASEDIR."default_tpls/favcomment.tpl" );
-					$cmt->prepare( );
-					$cmt->newBlock("comment");
-					$cmt->assign("comment", format_story($author['comments']));
-					if(USERUID == $uid) 
-					$cmt->assign("commentoptions", "<div class='adminoptions'><span class='label'>"._OPTIONS.":</span> <a href=\"member.php?action=favau&amp;edit=".$author['uid']."\">"._EDIT."</a> | <a href=\"member.php?action=favau&amp;delete=".$author['uid']."\">"._REMOVEFAV."</a></div>");
-					$cmt->assign("oddeven", ($x % 2 ? "odd" : "even"));
-					$output .= $cmt->getOutputContent( );
+		
+        $countquery =  "SELECT COUNT(item) FROM ".TABLEPREFIX."fanfiction_favorites WHERE uid = '$uid' AND type = 'AU' GROUP BY uid" ;
+		
+        $count = e107::getDb()->retrieve($countquery);
+		
+        $x = 1;
+		
+        if($count) {
+                $author_list = e107::getDb()->retrieve($query."  LIMIT $offset, $itemsperpage", true) ;
+                
+				$template = e107::getTemplate('efiction', 'favcomment', 'favau', true, true);
+
+				foreach($author_list AS $author)
+				{ 
+ 					$avatar = efiction_authors::get_author_avatar($author['uid']);
+                    $vars["x"] = $x;   
+                    $vars["avatar"] = $avatar;
+                    $vars["comment"] = format_story($author['comments']);
+                    $vars["author"] = $author['penname'];
+                    $vars["authorlink"] = "<a href=\"viewuser.php?uid=".$author['uid']."\">".$author['penname']."</a>";
+					 
+                    /* note: temp fix for styling, not time to do full shortcodes */ 
+					if(USERUID == $uid)  {
+                       	 $vars["commentoptions"] = "<div class='adminoptions'><span class='label'>"._OPTIONS.":</span> <a href=\"member.php?action=favau&amp;edit=".$author['uid']."\">"._EDIT."</a> | 
+                            <a href=\"member.php?action=favau&amp;delete=".$author['uid']."\">"._REMOVEFAV."</a></div>";
+                         $vars["commentoptions_alt"] = "<a class=\"btn btn-outline-success btn-sm ms-1\" href=\"member.php?action=favau&amp;edit=".$author['uid']."\">"._EDIT."</a>";             
+                         $vars["commentoptions_alt"] .= "<a class=\"btn btn-outline-danger btn-sm ms-1\" href=\"member.php?action=favau&amp;delete=".$author['uid']."\">"._REMOVEFAV."</a>";      
+                    }
+
+                    $vars["oddeven"] = $x % 2 ? "odd" : "even" ;
+					
+                    $output .= e107::getParser()->simpleParse($template['item'], $vars);
+                    
 					$x++;
 				}
 			if($count > $itemsperpage) $output .= build_pagelinks("viewuser.php?action=favau&amp;uid=$uid&amp;", $count, $offset);
 		}
 		else $output .= write_message(_NORESULTS);
 	}
-	$tpl->assign("output", $output);
-	$tpl->gotoBlock( "_ROOT" );
-?>
+    
+    //member.php is rendering output 
+    //e107::getRender()->tablerender($caption, $output, $current);
+    //$output = '';
+ 

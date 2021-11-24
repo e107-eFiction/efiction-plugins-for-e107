@@ -33,6 +33,8 @@ $tpl->assignInclude( "header", "$skindir/header.tpl" );
 $tpl->assignInclude( "footer", "$skindir/footer.tpl" );
 
 include(_BASEDIR."includes/pagesetup.php");
+$charlist = efiction_characters::charlist(); 
+
  
 if(isset($_GET['type'])) $type = descript($_GET['type']);
 else $type = false;

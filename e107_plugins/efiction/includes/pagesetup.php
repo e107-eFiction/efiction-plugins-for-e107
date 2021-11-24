@@ -32,11 +32,6 @@ if(!defined("e107_INIT")) exit( );
 $favtypes = array("SE" => "series", "ST" => "stories", "AU" =>"authors");
 $revtypes = array("SE" => "series", "ST" => "stories");
  
-$charlist = array( );
-$result = dbquery("SELECT charname, catid, charid FROM ".TABLEPREFIX."fanfiction_characters ORDER BY charname");
-while($char = dbassoc($result)) {
-	$charlist[$char['charid']] = array("name" => stripslashes($char['charname']), "catid" => $char['catid']);
-}
 $classlist = array( );
 $classresults = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_classes ORDER BY class_name");
 while($class = dbassoc($classresults)) {

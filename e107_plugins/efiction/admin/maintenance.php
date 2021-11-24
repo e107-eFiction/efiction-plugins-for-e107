@@ -62,6 +62,7 @@ if($maint == "reviews") {
 }
 else if($maint == "stories") {
 		$authors = dbquery("SELECT uid, count(uid) AS count FROM ".TABLEPREFIX."fanfiction_stories WHERE validated > 0 GROUP BY uid");
+        
 		while($a = dbassoc($authors)) {
 			$alist[$a['uid']] = $a['count'];
 		}
@@ -83,35 +84,42 @@ else if($maint == "categories") {
 	e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_categories SET numitems = '0'");
 	$cats = e107::getDb()->retrieve("SELECT catid FROM ".TABLEPREFIX."fanfiction_categories ORDER BY leveldown DESC", true);
     foreach($cats AS $cat) {
+        $catid = $cat['catid'];
 		unset($subcats);
-		$subs = e107::getDb()->retrieve("SELECT catid FROM ".TABLEPREFIX."fanfiction_categories WHERE parentcatid = $cat[0]", true);
+		$subs = e107::getDb()->retrieve("SELECT catid FROM ".TABLEPREFIX."fanfiction_categories WHERE parentcatid = $catid", true);
+ 
 		$subcats = array( );
         foreach($subs AS $sub) {
-			$subcats[] = $sub[0];
-			if($categories[$sub[0]]) $subcats = array_merge($subcats, $categories[$sub[0]]);
+			$subcats[] = $sub['catid'];
+			if($categories[$sub['catid']]) $subcats = array_merge($subcats, $categories[$sub['catid']]);
 		}
 		$categories[$cat[0]] = $subcats;
-		$count = e107::getDb()->retrieve("SELECT count(sid) FROM ".TABLEPREFIX."fanfiction_stories WHERE FIND_IN_SET('$cat[0]', catid) ".(count($subcats) > 0 ? " OR FIND_IN_SET(". implode(", catid) OR FIND_IN_SET(",$subcats).", catid)" : "")." AND validated > 0");
-		 
-		e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_categories SET numitems = $count WHERE catid = $cat[0]");
+    
+       $query = 
+       "SELECT count(sid) FROM #fanfiction_stories 
+       WHERE FIND_IN_SET('$catid', catid) ".(count($subcats) > 0 ? " OR FIND_IN_SET(". implode(", catid) OR FIND_IN_SET(",$subcats).", catid)" : "")." AND validated > 0 ";     
+ 
+       $count = e107::getDb()->retrieve($query);  
+ 
+	 	e107::getDb()->gen("UPDATE #fanfiction_categories SET numitems = $count WHERE catid = $catid");
 	}
  
 	$output .= write_message(_CATCOUNTSUPDATED);
 }
 else if($maint == "categories2") {
 	$selectA = "SELECT category, catid FROM ".TABLEPREFIX."fanfiction_categories WHERE parentcatid = -1 ORDER BY displayorder";
-	$resultA = dbquery($selectA);
+	$resultA = e107::getDb()->retrieve($selectA, true);
 	$countA = 1;
-	while($cat = dbassoc($resultA)) {
+    foreach($resultA AS $cat) {
 		$count = 1;
 		if($cat['parentcatid'] = -1) {
-			dbquery("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = $countA WHERE catid = $cat[catid]");
+			e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = $countA WHERE catid = $cat[catid]");
 			$countA++;
 		}
 		$selectB = "SELECT category, catid FROM ".TABLEPREFIX."fanfiction_categories WHERE parentcatid = '$cat[catid]' ORDER BY displayorder";
-		$resultB = dbquery($selectB);
-		while($sub = dbassoc($resultB)) {
-			dbquery("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = $count WHERE catid = $sub[catid]");
+		$resultB = e107::getDb()->retrieve($selectB, true);
+        foreach($resultB AS $sub) {
+			e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = $count WHERE catid = $sub[catid]");
 			$count++;
 		}
 	}

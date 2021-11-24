@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<e107Export version="2.3.1 (git)" timestamp="1632117371" >
+	<database>
+	<dbTable name="fanfiction_categories">
+		<item>
+			<field name="catid">1</field>
+			<field name="parentcatid">-1</field>
+			<field name="category">FF Category N.7</field>
+			<field name="description"></field>
+			<field name="image"></field>
+			<field name="locked">0</field>
+			<field name="leveldown">0</field>
+			<field name="displayorder">7</field>
+			<field name="numitems">0</field>
+		</item>
+		<item>
+			<field name="catid">2</field>
+			<field name="parentcatid">-1</field>
+			<field name="category">FF Category N.6</field>
+			<field name="description"></field>
+			<field name="image"></field>
+			<field name="locked">0</field>
+			<field name="leveldown">0</field>
+			<field name="displayorder">6</field>
+			<field name="numitems">0</field>
+		</item>
+		<item>
+			<field name="catid">3</field>
+			<field name="parentcatid">-1</field>
+			<field name="category">FF Category N.5</field>
+			<field name="description"></field>
+			<field name="image"></field>
+			<field name="locked">0</field>
+			<field name="leveldown">0</field>
+			<field name="displayorder">5</field>
+			<field name="numitems">0</field>
+		</item>
+		<item>
+			<field name="catid">4</field>
+			<field name="parentcatid">-1</field>
+			<field name="category">FF Category N.4</field>
+			<field name="description"></field>
+			<field name="image"></field>
+			<field name="locked">0</field>
+			<field name="leveldown">0</field>
+			<field name="displayorder">4</field>
+			<field name="numitems">0</field>
+		</item>
+		<item>
+			<field name="catid">5</field>
+			<field name="parentcatid">-1</field>
+			<field name="category">FF Category N.3</field>
+			<field name="description"></field>
+			<field name="image"></field>
+			<field name="locked">0</field>
+			<field name="leveldown">0</field>
+			<field name="displayorder">3</field>
+			<field name="numitems">0</field>
+		</item>
+		<item>
+			<field name="catid">6</field>
+			<field name="parentcatid">-1</field>
+			<field name="category">FF Category N.2</field>
+			<field name="description"></field>
+			<field name="image"></field>
+			<field name="locked">0</field>
+			<field name="leveldown">0</field>
+			<field name="displayorder">2</field>
+			<field name="numitems">0</field>
+		</item>
+		<item>
+			<field name="catid">7</field>
+			<field name="parentcatid">-1</field>
+			<field name="category">FF Category N.1</field>
+			<field name="description"></field>
+			<field name="image"></field>
+			<field name="locked">0</field>
+			<field name="leveldown">0</field>
+			<field name="displayorder">1</field>
+			<field name="numitems">0</field>
+		</item>
+	</dbTable>
+	</database>
+</e107Export>

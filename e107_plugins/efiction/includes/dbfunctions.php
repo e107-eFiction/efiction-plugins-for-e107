@@ -1,6 +1,6 @@
 <?php
  
-function dbquery($query) {
+function dbquery($query) { 
     return e107::getDb()->gen($query); 
 }
 

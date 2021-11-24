@@ -44,7 +44,7 @@ $PROFILE_TEMPLATE['profile']['content'] = '
 */
 /* example of custom template */
 
-$PROFILE_TEMPLATE['author']['title'] = ' ';
+$PROFILE_TEMPLATE['author']['title'] = '{PROFILE_USERPENNAME}';
  
 $PROFILE_TEMPLATE['author']['content'] = '
 <div id="profile">
@@ -56,18 +56,14 @@ $PROFILE_TEMPLATE['author']['content'] = '
 			</div>
 			{PROFILE_REALNAME}
 	        {PROFILE_MEMBERSINCE}
-			<div class="row membership_status m-2 border-bottom">
-				<div class="ue-label col-12 col-sm-4">{LAN=LAN_EFICTION_MEMBERSHIP_STATUS}:</div>
-				<div class="ue-value col-12 col-sm-8">{PROFILE_USERLEVEL}</div>
-			</div>		
+            {PROFILE_USERLEVEL}
+			 	
 			<div class="row membership_status m-2 border-bottom">
 				<div class="ue-label col-12 col-sm-4">{LAN=_BIO}</div>
 				<div class="ue-value col-12 col-sm-8">{PROFILE_IMAGE}{PROFILE_BIO}:</div>
 			</div> 
 			{PROFILE_AUTHORFIELDS} 
-			<div class="row codeblock m-2 border-bottom">
-			 {PROFILE_CODEBLOCK=userprofile}
-			</div>
+		    {PROFILE_CODEBLOCK=userprofile}
 		</div>
 	</div> 
 </div>
@@ -88,7 +84,20 @@ $PROFILE_WRAPPER['profile']['PROFILE_MEMBERSINCE'] = '
 <div class="ue-label col-12 col-sm-4">{LAN=LAN_EFICTION_MEMBER_SINCE}:</div><div class="ue-value col-12 col-sm-8">{---}</div></div>'; 
 
 
-$PROFILE_TEMPLATE['user'] = '{PROFILE_USERPENNAME}';
+$PROFILE_WRAPPER['profile']['PROFILE_USERLEVEL'] = '
+<div class="row membership_status m-2 border-bottom">
+<div class="ue-label col-12 col-sm-4">{LAN=LAN_EFICTION_MEMBERSHIP_STATUS}:</div><div class="ue-value col-12 col-sm-8">{---}</div></div>'; 
+
+$PROFILE_WRAPPER['profile']['PROFILE_CODEBLOCK=userprofile'] = '
+<div class="row codeblock m-2 border-bottom">{---}</div>'; 
+
+
+$PROFILE_TEMPLATE['profile']['content'] = '{PROFILE_USERPENNAME}';
+
+
+
+
+//$PROFILE_TEMPLATE['user'] = '{PROFILE_USERPENNAME}';
 $PROFILE_TEMPLATE['user']['title'] = LAN_EFICTION_AUTHOR_PROFILE;
 $PROFILE_TEMPLATE['user']['tablerender']  = "main2";
 

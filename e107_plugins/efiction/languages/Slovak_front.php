@@ -241,9 +241,9 @@ define('_INVALIDUPLOAD', 'Invalid Upload!  File uploads must be in plain text or
 define('_LOCKED', 'This category is locked.');
 define('_MANAGESTORIES', 'Manage Stories');
 define('_MISSINGFIELDS', 'Some of the required information is missing.  Please check your input.  Required fields are title, summary, '.($multiplecats ? strtolower(_CATEGORIES.', ') : '').'rating, and story text.'); // Modified 11/06/05 - If categories are turned off don't show category as required field. :)
-define('_NEWSTORYAT', 'New Story at ');
-define('_NEWSTORYAT2', "A new story has been submitted to the validation queue at $sitename.<br><br> %1\$s by %2\$s<br><br>%3\$s\n\nIf you no longer wish to receive e-mails such as this, please go to <a href='$url/user.php'>your account</a>\r\n
-on $sitename, and edit your profile.");  // Modified 2-3-10 to add reminder for turning off alerts
+define('_NEWSTORYAT', 'Nová poviedka ');
+define('_NEWSTORYAT2', "Nová poviedka zaradená do zoznamu na schválenie $sitename.<br><br> %1\$s by %2\$s<br><br>%3\$s\n\nAk si viac neželáte dostávať tieto maily, prihláste sa do  <a href='$url/member.php'>svojho účtu</a>\r\n
+na stránke $sitename, a zmeňte nastavenia svojich notifikácií.");  // Modified 2-3-10 to add reminder for turning off alerts
 define('_NOSTORYTEXT', 'You must include the text of your story either as an upload or as input into the textarea.');
 define('_READS', 'Read Count');
 define('_ROUNDROBIN', 'Round robin');
@@ -273,6 +273,8 @@ define('_DISPLAYINDEX', 'Pri viackapitolových poviedkach zobraziť zoznam kapit
 define('_EDITPREFS', 'Upraviť preferencie');
 define('_REQUIREDFIELDS', 'Označuje povinné polia');
 define('_USETINYMCE', 'Use tinyMCE WYSWYG editor');
+define('_CONTACTME', 'Povoliť kontaktovanie emailom');
+
 
 // User - Edit Bio/Registration (default)
 define('_AOL', 'AOL IM');
@@ -409,6 +411,8 @@ define('_HELP_TOC', 'Pri zaškrtnutí sa ako zobrazí ako prvý zoznam kapitol d
 define('_HELP_TINYMCE', 'Check this box if you wish to use the tinyMCE editor when entering content in forms.  You will have the option to toggle the editor on/off if need be.');
 define('_HELP_AGE', 'Týmto súhlasom potvrdzujete, že ste dosiahli plnoletosť a že si želáte zobrazovať obsah pre dospelých bez upozorňovania.');
 define('_HELP_DEFAULTSORT', 'Nastavte si poradie, v ktorom vám budú zobrazované poviedky. Buď to bude podľa abecedy alebo podľa pridania (od najnovších po najstaršie).');
+define("_HELP_CONTACTME", "Povoliť možnosť členom poslať mi email cez kontaktný formulár, ak je táto možnosť na stránke defaultne povolená. ");
+
 
 // Log strings
 define('_LOG_ADMIN_DEL', "<a href='viewuser.php?uid=%2\$d'>%1\$s</a> deleted <a href='viewstory.php?sid=%4\$d'>%3\$s</a> by <a href='viewuser.php?uid=%6\$d'>%5\$s</a>.");

@@ -112,14 +112,9 @@ if(!defined("_CHARSET")) exit( );
 			if($category == $cat || $info['pid'] == $cat) $output .= "<option value=\"$category\"".($category == $cat ? " selected" : "").">".$info['name']."</option>";
 		}
 		$output .= "</select></form></div>";
-
-		// Repopulate the characters list to reflect any changes we made.
-		$charlist = array( );
-		$result = dbquery("SELECT charname, catid, charid FROM ".TABLEPREFIX."fanfiction_characters ORDER BY charname");
-		while($char = dbassoc($result)) {
-			$charlist[$char['charid']] = array("name" => stripslashes($char['charname']), "catid" => $char['catid']);
-		}
-
+ 
+        $charlist = efiction_characters::charlist(); 
+        
 		//List of current characters
 		$output .= "<center>"._CHOOSECATNOTE."</center><br /><table class=\"tblborder\" cellspacing=\"0\" cellpadding=\"3\" style='margin: 0 auto;' align=\"center\">
 		<tr>

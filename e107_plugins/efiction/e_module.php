@@ -22,8 +22,10 @@ else {
   e107::getSingleton('efiction_classes', e_PLUGIN.'efiction/classes/classes.class.php');   
   e107::getSingleton('efiction_ratings', e_PLUGIN.'efiction/classes/ratings.class.php'); 
   e107::getSingleton('efiction_stories', e_PLUGIN.'efiction/classes/stories.class.php'); 
-    
-  /**************  LOAD EFICTION SETTINGS ***************************************/    
+  e107::getSingleton('efiction_series', e_PLUGIN.'efiction/classes/series.class.php'); 
+  e107::getSingleton('efiction_characters', e_PLUGIN.'efiction/classes/characters.class.php'); 
+  
+    /**************  LOAD EFICTION SETTINGS ***************************************/    
   $settings = efiction_settings::get_settings();
  
   $defaultskin = $settings['skin']; //used in get_session_vars.php

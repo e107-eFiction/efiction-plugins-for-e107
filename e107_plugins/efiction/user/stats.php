@@ -25,23 +25,34 @@
 if(!defined("e107_INIT")) exit( );
 
 $stat = isset($_GET['stat']) ? $_GET['stat'] : false;
+
 if(!empty($_GET['favstor'])) $stat = "favstor";
 if(!empty($_GET['favseries'])) $stat = "favseries";
 if(!empty($_GET['favauthor'])) $stat = "favauthor";
+
+$user_id = USERID;  /* actually log in member, not author */
+
 if(!isset($uid)) {
 	$uid = USERUID;
-	$pagetitle =  "<div id='pagetitle'>"._YOURSTATS."</div>";
+	$caption =   _YOURSTATS ;
 	$penname = USERPENNAME;
 }
 else {
 	$authquery = dbquery("SELECT "._PENNAMEFIELD." FROM "._AUTHORTABLE." WHERE "._UIDFIELD." = '$uid'");
 	list($penname) = dbrow($authquery);
-	$pagetitle = "<div class='sectionheader'>"._STATSFOR." ".$penname."</div>";
+	$caption =   _STATSFOR." ".$penname ;
 }
-$output = $pagetitle;
+ 
+/* Are favorites allowed at all?*/
+$favorites = efiction_settings::get_single_setting('favorites');
+
+/* list of author stories */
 $storyquery = dbquery("SELECT s.title, s.sid, s.rating, s.reviews, s.count, count(fs.item) as fscount FROM ".TABLEPREFIX."fanfiction_stories as s LEFT JOIN ".TABLEPREFIX."fanfiction_favorites as fs ON s.sid = fs.item AND fs.type = 'ST' LEFT JOIN ".TABLEPREFIX."fanfiction_coauthors AS c ON s.sid = c.sid WHERE (s.uid = '$uid' OR c.uid = '$uid') AND s.validated > 0 GROUP BY s.sid");
 $storycount = dbnumrows($storyquery);
-$thislink = basename($_SERVER['PHP_SELF']).(basename($_SERVER['PHP_SELF']) == "viewuser.php" ? "?uid=$uid&amp;" : "?");
+
+/* see yourself or other author */
+$thislink = e_PAGE.(e_PAGE == "viewuser.php" ? "?uid=$uid&amp;" : "?");
+ 
 $authorof[] = "<a href='".$thislink."action=stats&amp;stat=stories'>$storycount "._STORIES."</a>";
 if($stat == "stories" && dbnumrows($storyquery)) {
 	$hidechapters = isset($_GET["chapters"]) ? $_GET["chapters"] : false;
@@ -64,6 +75,9 @@ if($stat == "stories" && dbnumrows($storyquery)) {
 	$output .= "</table>";
 	if(dbnumrows($storyquery) < 1) $output .= write_message(_NORESULTS);
 }
+
+/* list of author series */
+
 $seriesquery = dbquery("SELECT s.title, s.seriesid, s.rating, s.reviews, count(fs.item) as count FROM ".TABLEPREFIX."fanfiction_series as s LEFT JOIN ".TABLEPREFIX."fanfiction_favorites as fs ON s.seriesid = fs.item AND fs.type = 'SE' WHERE s.uid = '$uid' GROUP BY s.seriesid");
 $seriescount = dbnumrows($seriesquery);
 $authorof[] =  "<a href='".$thislink."action=stats&amp;stat=series'>$seriescount "._SERIES."</a>";
@@ -75,6 +89,8 @@ if($stat == "series" && dbnumrows($seriesquery)) {
 	}
 	$output .= "</table>";
 }
+
+/* list of author reviews */
 $reviewquery = dbquery("SELECT count(reviewid) FROM ".TABLEPREFIX."fanfiction_reviews WHERE uid = '$uid' AND review != 'No Review'");
 list($reviewcount) = dbrow($reviewquery);
 $authorof[] = "<a href='".$thislink."action=reviewsby'>$reviewcount "._REVIEWS."</a>";
@@ -83,9 +99,14 @@ while($ao = dbassoc($aocode)) {
 	eval($ao['code_text']);
 }
 if(empty($stat)) $output .= "<div class='authorstats'><span class='label'>"._AUTHOROF."</span> ". implode(", ", $authorof)."</div>";
+
+/* list of author favorites */  
+ 
 if($favorites) {
-	$favof = dbquery("SELECT count(uid) FROM ".TABLEPREFIX."fanfiction_favorites WHERE item = '$uid' AND type = 'AU'");
-	list($favcount) = dbrow($favof);
+
+
+ 
+
 	if(isset($_GET['favstor']) && isNumber($_GET['favstor'])) {
 		$favstor = $_GET['favstor'];
 		$squery = "SELECT title FROM ".TABLEPREFIX."fanfiction_stories WHERE sid = '$favstor' LIMIT 1";
@@ -115,19 +136,33 @@ if($favorites) {
 		include("includes/members_list.php");
 	}
 
+
+	/* for whom you are favorite author */
+	$favof_query = "SELECT count(user_id) FROM ".TABLEPREFIX."fanfiction_favorites WHERE item = '$uid' AND type = 'AU'";
+	$favcount = e107::getDb()->retrieve($favof_query);
+
+	/* user favorites */ 
 	$favlist = array( );
-	$panelquery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_panels WHERE panel_type = 'F' AND panel_name != 'favlist' ORDER BY panel_title ASC");
-	if(!$panelquery) $output .= write_error(_ERROR);
-	while($panel = dbassoc($panelquery)) {
+ 
+	$panels = efiction_panels::favorites_panel();
+	foreach($panels AS $panel)
+ 	{    
 		$panellink = "";
 		if(substr($panel['panel_name'], 0, 3) == "fav" && $type = substr($panel['panel_name'], 3)) {
 			if($panel['panel_name'] == "favlist") continue;
+			
 			$itemcount = 0;
-			$countquery = dbquery("SELECT COUNT(item) FROM ".TABLEPREFIX."fanfiction_favorites WHERE uid = '$uid' AND type = '$type'");
-			list($itemcount) = dbrow($countquery);
+			$itemcount =  e107::getDb()->retrieve("SELECT COUNT(item) FROM ".TABLEPREFIX."fanfiction_favorites WHERE user_id = '$user_id' AND type = '$type'");
+			
 			$favlist[] = "<a href=\"".$thislink."action=".$panel['panel_name']."&amp;uid=$uid\">".(isset($itemcount) ? " $itemcount " : "").stripslashes($panel['panel_title'])."</a>";
 		}
 	}
-	if(empty($stat)) $output .= "<div class='authorstats'><span class='label'>"._FAVOF.": </span> <a href='".$thislink."action=stats&amp;stat=favauthor'>$favcount "._MEMBERS."</a><br /><span class='label'>".(USERUID == $uid ? _YOURFAVORITES : _FAVORITESOF." $penname").": </span>".implode(", ", $favlist)."</div>";
+
+	if(empty($stat)) 
+	
+	$output .= "<div class='authorstats'>
+	<span class='label'>"._FAVOF.": </span> 
+	<a href='".$thislink."action=stats&amp;stat=favauthor'>$favcount "._MEMBERS."</a><br />
+	<span class='label'>".(USERUID == $uid ? _YOURFAVORITES : _FAVORITESOF." $penname").": </span>".implode(", ", $favlist)."</div>";
 }
-?>
+ 

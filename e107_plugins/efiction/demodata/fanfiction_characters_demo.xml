@@ -1,0 +1,574 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<e107Export version="2.3.1 (git)" timestamp="1632138671" >
+	<database>
+	<dbTable name="fanfiction_characters">
+		<item>
+			<field name="charid">35</field>
+			<field name="catid">-1</field>
+			<field name="charname">Draco Malfoy</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">36</field>
+			<field name="catid">-1</field>
+			<field name="charname">Hermione Granger</field>
+			<field name="bio">Hermiona Grangerová</field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">37</field>
+			<field name="catid">-1</field>
+			<field name="charname">Severus Snape</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">38</field>
+			<field name="catid">-1</field>
+			<field name="charname">Harry Potter</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">45</field>
+			<field name="catid">-1</field>
+			<field name="charname">Alastor Mad-Eye Moody</field>
+			<field name="bio">Alastor Pošuk Moody / Alastor Divooký Moody</field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">46</field>
+			<field name="catid">-1</field>
+			<field name="charname">Albus Dumbledore</field>
+			<field name="bio">Albus Percival Wulfric Brian Brumbál / Albus Percival Wulfric Brian Dumbledore</field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">47</field>
+			<field name="catid">-1</field>
+			<field name="charname">Alicia Spinnet</field>
+			<field name="bio">Alice Spinnetová</field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">48</field>
+			<field name="catid">-1</field>
+			<field name="charname">Angelina Johnson</field>
+			<field name="bio">Angelina Johnsonová</field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">50</field>
+			<field name="catid">-1</field>
+			<field name="charname">Bill Weasley</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">51</field>
+			<field name="catid">-1</field>
+			<field name="charname">Blaise Zabini</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">52</field>
+			<field name="catid">-1</field>
+			<field name="charname">Fred Weasley</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">53</field>
+			<field name="catid">-1</field>
+			<field name="charname">George Weasley</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">54</field>
+			<field name="catid">-1</field>
+			<field name="charname">Ginny Weasley</field>
+			<field name="bio">Ginny Weasleyová</field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">55</field>
+			<field name="catid">-1</field>
+			<field name="charname">Charlie Weasley</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">56</field>
+			<field name="catid">-1</field>
+			<field name="charname">Lavender Brown</field>
+			<field name="bio">Levandule Brownová / Lavender Brownová</field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">57</field>
+			<field name="catid">-1</field>
+			<field name="charname">Lucius Malfoy</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">58</field>
+			<field name="catid">-1</field>
+			<field name="charname">Luna Lovegood</field>
+			<field name="bio">Lenka Láskorádová / Luna Lovegoodová</field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">59</field>
+			<field name="catid">-1</field>
+			<field name="charname">Molly Weasley</field>
+			<field name="bio">Molly Weasleová</field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">60</field>
+			<field name="catid">-1</field>
+			<field name="charname">Pansy Parkinson</field>
+			<field name="bio">Pansy Parkinsonová</field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">61</field>
+			<field name="catid">-1</field>
+			<field name="charname">Percy Weasley</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">62</field>
+			<field name="catid">-1</field>
+			<field name="charname">Remus Lupin</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">63</field>
+			<field name="catid">-1</field>
+			<field name="charname">Ron Weasley</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">68</field>
+			<field name="catid">-1</field>
+			<field name="charname">Vincent Crabbe</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">69</field>
+			<field name="catid">-1</field>
+			<field name="charname">Gregory Goyle</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">70</field>
+			<field name="catid">-1</field>
+			<field name="charname">Scorpius Malfoy</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">71</field>
+			<field name="catid">-1</field>
+			<field name="charname">Rubeus Hagrid</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">72</field>
+			<field name="catid">-1</field>
+			<field name="charname">Neville Longbottom</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">74</field>
+			<field name="catid">-1</field>
+			<field name="charname">Sirius Black</field>
+			<field name="bio">Sirius se narodil kolem roku 1960. Pocházel z čistokrevné kouzelnické rodiny a byl synem Orion a Walburga. Sirius měl ještě bratra Reguluse a sestřenice Narcissu, Belatrix Lestrang a Andromedu, což je matka Nymfadory Tonksové. Sirius byl finančně nezávislý, protože mu jeho strýc Alphard odkázal velké množství peněz.</field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">75</field>
+			<field name="catid">-1</field>
+			<field name="charname">Arthur Weasley</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">76</field>
+			<field name="catid">-1</field>
+			<field name="charname">Minerva McGonagall</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">77</field>
+			<field name="catid">-1</field>
+			<field name="charname">Alice Longbottom</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">78</field>
+			<field name="catid">-1</field>
+			<field name="charname">Rose Weasley</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">80</field>
+			<field name="catid">-1</field>
+			<field name="charname">Crookshanks</field>
+			<field name="bio">Křivonožka, Krivolab</field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">81</field>
+			<field name="catid">-1</field>
+			<field name="charname">Pomona Sprout</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">82</field>
+			<field name="catid">-1</field>
+			<field name="charname">Seamus Finnigan</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">83</field>
+			<field name="catid">-1</field>
+			<field name="charname">Salazar Slytherin</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">84</field>
+			<field name="catid">-1</field>
+			<field name="charname">Godric Gryffindor</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">85</field>
+			<field name="catid">-1</field>
+			<field name="charname">Viktor Krum</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">86</field>
+			<field name="catid">-1</field>
+			<field name="charname">Marcus Flint</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">87</field>
+			<field name="catid">-1</field>
+			<field name="charname">Cedric Diggory</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">88</field>
+			<field name="catid">-1</field>
+			<field name="charname">Dean Thomas</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">89</field>
+			<field name="catid">-1</field>
+			<field name="charname">Oliver Wood</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">90</field>
+			<field name="catid">-1</field>
+			<field name="charname">Theodore Nott</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">91</field>
+			<field name="catid">-1</field>
+			<field name="charname">Lee Jordan</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">92</field>
+			<field name="catid">-1</field>
+			<field name="charname">Albus Severus Potter</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">93</field>
+			<field name="catid">-1</field>
+			<field name="charname">Justin Finch-Fletchley</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">94</field>
+			<field name="catid">-1</field>
+			<field name="charname">Teddy Lupin</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">95</field>
+			<field name="catid">-1</field>
+			<field name="charname">Bellatrix Lestrange</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">96</field>
+			<field name="catid">-1</field>
+			<field name="charname">Astoria Greengrass</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">97</field>
+			<field name="catid">-1</field>
+			<field name="charname">Dudley Dursley</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">98</field>
+			<field name="catid">-1</field>
+			<field name="charname">Argus Filch</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">99</field>
+			<field name="catid">-1</field>
+			<field name="charname">Mrs Norris</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">100</field>
+			<field name="catid">-1</field>
+			<field name="charname">James Potter</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">101</field>
+			<field name="catid">-1</field>
+			<field name="charname">Lily Evans</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">102</field>
+			<field name="catid">-1</field>
+			<field name="charname">Voldemort</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">103</field>
+			<field name="catid">-1</field>
+			<field name="charname">Narcissa Malfoy</field>
+			<field name="bio">Narcisa Malfoyová</field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">104</field>
+			<field name="catid">-1</field>
+			<field name="charname">Daphne Greengrass</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">110</field>
+			<field name="catid">-1</field>
+			<field name="charname">Filius Flitwick</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">111</field>
+			<field name="catid">-1</field>
+			<field name="charname">Victoire Weasley</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">112</field>
+			<field name="catid">-1</field>
+			<field name="charname">Peter Pettigrew</field>
+			<field name="bio">Petr Pettigrew / Peter Pettigrew</field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">113</field>
+			<field name="catid">-1</field>
+			<field name="charname">Hedwig</field>
+			<field name="bio">Hedvika/Hedviga</field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">114</field>
+			<field name="catid">-1</field>
+			<field name="charname">Lily Luna Potter</field>
+			<field name="bio">Lily Lenka Potterová / Lily Luna Potterová</field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">115</field>
+			<field name="catid">-1</field>
+			<field name="charname">James Sirius Potter</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">116</field>
+			<field name="catid">-1</field>
+			<field name="charname">Terry Boot</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">117</field>
+			<field name="catid">-1</field>
+			<field name="charname">Hugo Weasley</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">119</field>
+			<field name="catid">-1</field>
+			<field name="charname">Sorting Hat</field>
+			<field name="bio">Moudrý klobouk</field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">120</field>
+			<field name="catid">-1</field>
+			<field name="charname">Nymphadora Tonks</field>
+			<field name="bio">Nymfadora Tonksová</field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">121</field>
+			<field name="catid">-1</field>
+			<field name="charname">Katie Bell</field>
+			<field name="bio">Katie Bellová</field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">123</field>
+			<field name="catid">-1</field>
+			<field name="charname">Rowena R.</field>
+			<field name="bio">Rowena z Havraspáru</field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">124</field>
+			<field name="catid">-1</field>
+			<field name="charname">Grawp</field>
+			<field name="bio">Dráp/Grawp</field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">125</field>
+			<field name="catid">-1</field>
+			<field name="charname">Dolores Umbridge</field>
+			<field name="bio">Dolores Umbridgeová</field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">126</field>
+			<field name="catid">-1</field>
+			<field name="charname">Rolanda Hooch</field>
+			<field name="bio">Rolanda Hoochová</field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">127</field>
+			<field name="catid">-1</field>
+			<field name="charname">Sybill Trelawney</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">128</field>
+			<field name="catid">-1</field>
+			<field name="charname">Tom Marvolo Riddle</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">129</field>
+			<field name="catid">-1</field>
+			<field name="charname">Horace Slughorn</field>
+			<field name="bio">Horácio Křiklan</field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">130</field>
+			<field name="catid">-1</field>
+			<field name="charname">Dobby</field>
+			<field name="bio">Dobby</field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">131</field>
+			<field name="catid">-1</field>
+			<field name="charname">Garrick Ollivander</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">132</field>
+			<field name="catid">-1</field>
+			<field name="charname">Quirinus Quirell</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">133</field>
+			<field name="catid">-1</field>
+			<field name="charname">Fleur Delacour</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">1</field>
+			<field name="catid">-1</field>
+			<field name="charname">Nešpecifikované</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+		<item>
+			<field name="charid">134</field>
+			<field name="catid">23</field>
+			<field name="charname">Sherlock Holmes</field>
+			<field name="bio"></field>
+			<field name="image"></field>
+		</item>
+	</dbTable>
+	</database>
+</e107Export>

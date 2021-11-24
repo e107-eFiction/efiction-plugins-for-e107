@@ -73,13 +73,13 @@ $penname =  e107::getDb()->retrieve("SELECT "._PENNAMEFIELD." as penname FROM ".
  
 $tpl->assign("pagetitle", "<div id='pagetitle'>$penname</div>");
 $panel =  e107::getDb()->retrieve("SELECT * FROM ".TABLEPREFIX."fanfiction_panels WHERE ".($action ? "panel_name = '$action' AND (panel_type = 'P' OR panel_type = 'F')" : "panel_type = 'P' AND panel_hidden = 0 ORDER BY panel_order ASC")." LIMIT 1") ;
- 
+
 if($panel) {
 	if(!empty($panel['panel_url']) && file_exists(_BASEDIR.$panel['panel_url'])) include(_BASEDIR.$panel['panel_url']);
 	else if(file_exists(_BASEDIR."user/".$panel['panel_name'].".php")) include(_BASEDIR."user/".$panel['panel_name'].".php");
 	else $output .= write_error("(1)"._ERROR);
 }
-else if($action) $output .= write_error("(2)"._ERROR);
+else if($action) $output .= write_error("(2P)"._ERROR);
 
 $tpl->gotoBlock("_ROOT");
 $panelquery = e107::getDb()->retrieve("SELECT * FROM ".TABLEPREFIX."fanfiction_panels WHERE panel_hidden != '1' AND panel_level = '0' AND (panel_type = 'P'".($favorites ? " OR panel_type = 'F'" : "").") ORDER BY panel_type DESC, panel_order ASC, panel_title ASC", true);

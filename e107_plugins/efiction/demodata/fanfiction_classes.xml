@@ -1,0 +1,427 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<e107Export version="2.3.1 (git)" timestamp="1632160786" >
+	<database>
+	<dbTable name="fanfiction_classes">
+		<item>
+			<field name="class_id">1</field>
+			<field name="class_type">1</field>
+			<field name="class_name">EN</field>
+		</item>
+		<item>
+			<field name="class_id">2</field>
+			<field name="class_type">1</field>
+			<field name="class_name">RU</field>
+		</item>
+		<item>
+			<field name="class_id">3</field>
+			<field name="class_type">1</field>
+			<field name="class_name">HU</field>
+		</item>
+		<item>
+			<field name="class_id">5</field>
+			<field name="class_type">2</field>
+			<field name="class_name">Dramione</field>
+		</item>
+		<item>
+			<field name="class_id">6</field>
+			<field name="class_type">2</field>
+			<field name="class_name">Snamione</field>
+		</item>
+		<item>
+			<field name="class_id">7</field>
+			<field name="class_type">2</field>
+			<field name="class_name">Drarry</field>
+		</item>
+		<item>
+			<field name="class_id">8</field>
+			<field name="class_type">3</field>
+			<field name="class_name">_5K-10K</field>
+		</item>
+		<item>
+			<field name="class_id">9</field>
+			<field name="class_type">3</field>
+			<field name="class_name">_10K-30K</field>
+		</item>
+		<item>
+			<field name="class_id">10</field>
+			<field name="class_type">3</field>
+			<field name="class_name">_  30K-50K</field>
+		</item>
+		<item>
+			<field name="class_id">11</field>
+			<field name="class_type">3</field>
+			<field name="class_name"> _50K-100K</field>
+		</item>
+		<item>
+			<field name="class_id">12</field>
+			<field name="class_type">3</field>
+			<field name="class_name">sakra dlhé 200K-300K</field>
+		</item>
+		<item>
+			<field name="class_id">13</field>
+			<field name="class_type">3</field>
+			<field name="class_name"><![CDATA[nenormálne  dlhé > 300K]]></field>
+		</item>
+		<item>
+			<field name="class_id">14</field>
+			<field name="class_type">4</field>
+			<field name="class_name">Romance</field>
+		</item>
+		<item>
+			<field name="class_id">15</field>
+			<field name="class_type">4</field>
+			<field name="class_name">General</field>
+		</item>
+		<item>
+			<field name="class_id">16</field>
+			<field name="class_type">4</field>
+			<field name="class_name">Humor</field>
+		</item>
+		<item>
+			<field name="class_id">17</field>
+			<field name="class_type">4</field>
+			<field name="class_name">Drama</field>
+		</item>
+		<item>
+			<field name="class_id">18</field>
+			<field name="class_type">4</field>
+			<field name="class_name">Adventure</field>
+		</item>
+		<item>
+			<field name="class_id">19</field>
+			<field name="class_type">4</field>
+			<field name="class_name">Angst</field>
+		</item>
+		<item>
+			<field name="class_id">20</field>
+			<field name="class_type">4</field>
+			<field name="class_name">Hurt/Comfort</field>
+		</item>
+		<item>
+			<field name="class_id">21</field>
+			<field name="class_type">4</field>
+			<field name="class_name">Friendship</field>
+		</item>
+		<item>
+			<field name="class_id">22</field>
+			<field name="class_type">4</field>
+			<field name="class_name">Family</field>
+		</item>
+		<item>
+			<field name="class_id">23</field>
+			<field name="class_type">4</field>
+			<field name="class_name">Tragedy</field>
+		</item>
+		<item>
+			<field name="class_id">24</field>
+			<field name="class_type">4</field>
+			<field name="class_name">Supernatural</field>
+		</item>
+		<item>
+			<field name="class_id">25</field>
+			<field name="class_type">4</field>
+			<field name="class_name">Fantasy</field>
+		</item>
+		<item>
+			<field name="class_id">26</field>
+			<field name="class_type">4</field>
+			<field name="class_name">Sci-Fi</field>
+		</item>
+		<item>
+			<field name="class_id">27</field>
+			<field name="class_type">4</field>
+			<field name="class_name">Horror</field>
+		</item>
+		<item>
+			<field name="class_id">28</field>
+			<field name="class_type">4</field>
+			<field name="class_name">Mystery</field>
+		</item>
+		<item>
+			<field name="class_id">29</field>
+			<field name="class_type">4</field>
+			<field name="class_name">Suspense</field>
+		</item>
+		<item>
+			<field name="class_id">30</field>
+			<field name="class_type">4</field>
+			<field name="class_name">Parody</field>
+		</item>
+		<item>
+			<field name="class_id">31</field>
+			<field name="class_type">4</field>
+			<field name="class_name">Poetry</field>
+		</item>
+		<item>
+			<field name="class_id">32</field>
+			<field name="class_type">4</field>
+			<field name="class_name">Crime</field>
+		</item>
+		<item>
+			<field name="class_id">33</field>
+			<field name="class_type">4</field>
+			<field name="class_name">Spiritual</field>
+		</item>
+		<item>
+			<field name="class_id">34</field>
+			<field name="class_type">4</field>
+			<field name="class_name">Western</field>
+		</item>
+		<item>
+			<field name="class_id">39</field>
+			<field name="class_type">6</field>
+			<field name="class_name">Founders era</field>
+		</item>
+		<item>
+			<field name="class_id">40</field>
+			<field name="class_type">6</field>
+			<field name="class_name">Hogwarts-era Canon</field>
+		</item>
+		<item>
+			<field name="class_id">41</field>
+			<field name="class_type">6</field>
+			<field name="class_name">Pobertové</field>
+		</item>
+		<item>
+			<field name="class_id">42</field>
+			<field name="class_type">6</field>
+			<field name="class_name">Next Generation</field>
+		</item>
+		<item>
+			<field name="class_id">43</field>
+			<field name="class_type">6</field>
+			<field name="class_name">Before Hogwarts</field>
+		</item>
+		<item>
+			<field name="class_id">44</field>
+			<field name="class_type">6</field>
+			<field name="class_name">Post-Hogwarts</field>
+		</item>
+		<item>
+			<field name="class_id">49</field>
+			<field name="class_type">6</field>
+			<field name="class_name">Hogwarts-era After Canon</field>
+		</item>
+		<item>
+			<field name="class_id">64</field>
+			<field name="class_type">6</field>
+			<field name="class_name">Past AU</field>
+		</item>
+		<item>
+			<field name="class_id">65</field>
+			<field name="class_type">6</field>
+			<field name="class_name">War period</field>
+		</item>
+		<item>
+			<field name="class_id">66</field>
+			<field name="class_type">3</field>
+			<field name="class_name">super dlhé 100K-200K</field>
+		</item>
+		<item>
+			<field name="class_id">67</field>
+			<field name="class_type">2</field>
+			<field name="class_name">Snarry</field>
+		</item>
+		<item>
+			<field name="class_id">68</field>
+			<field name="class_type">2</field>
+			<field name="class_name">Scorpius+Albus</field>
+		</item>
+		<item>
+			<field name="class_id">69</field>
+			<field name="class_type">2</field>
+			<field name="class_name">Scorpius+Rose</field>
+		</item>
+		<item>
+			<field name="class_id">70</field>
+			<field name="class_type">2</field>
+			<field name="class_name">Harry+Hermiona</field>
+		</item>
+		<item>
+			<field name="class_id">71</field>
+			<field name="class_type">2</field>
+			<field name="class_name">Ron+Pansy</field>
+		</item>
+		<item>
+			<field name="class_id">72</field>
+			<field name="class_type">2</field>
+			<field name="class_name">Draco+Pansy</field>
+		</item>
+		<item>
+			<field name="class_id">73</field>
+			<field name="class_type">1</field>
+			<field name="class_name">DE</field>
+		</item>
+		<item>
+			<field name="class_id">79</field>
+			<field name="class_type">1</field>
+			<field name="class_name">FR</field>
+		</item>
+		<item>
+			<field name="class_id">80</field>
+			<field name="class_type">2</field>
+			<field name="class_name">Wolfstar</field>
+		</item>
+		<item>
+			<field name="class_id">81</field>
+			<field name="class_type">2</field>
+			<field name="class_name">Remus+Hermiona</field>
+		</item>
+		<item>
+			<field name="class_id">82</field>
+			<field name="class_type">2</field>
+			<field name="class_name">Remadora</field>
+		</item>
+		<item>
+			<field name="class_id">83</field>
+			<field name="class_type">2</field>
+			<field name="class_name">Snupin</field>
+		</item>
+		<item>
+			<field name="class_id">105</field>
+			<field name="class_type">3</field>
+			<field name="class_name">__1K-5K</field>
+		</item>
+		<item>
+			<field name="class_id">106</field>
+			<field name="class_type">3</field>
+			<field name="class_name">___201-500</field>
+		</item>
+		<item>
+			<field name="class_id">107</field>
+			<field name="class_type">3</field>
+			<field name="class_name"><![CDATA[_____< 200]]></field>
+		</item>
+		<item>
+			<field name="class_id">108</field>
+			<field name="class_type">3</field>
+			<field name="class_name">___501-1000</field>
+		</item>
+		<item>
+			<field name="class_id">109</field>
+			<field name="class_type">6</field>
+			<field name="class_name">Not set</field>
+		</item>
+		<item>
+			<field name="class_id">118</field>
+			<field name="class_type">1</field>
+			<field name="class_name">ES</field>
+		</item>
+		<item>
+			<field name="class_id">122</field>
+			<field name="class_type">1</field>
+			<field name="class_name">PL</field>
+		</item>
+		<item>
+			<field name="class_id">154</field>
+			<field name="class_type">2</field>
+			<field name="class_name">Harry+Ginny</field>
+		</item>
+		<item>
+			<field name="class_id">155</field>
+			<field name="class_type">2</field>
+			<field name="class_name">Draco+Ginny</field>
+		</item>
+		<item>
+			<field name="class_id">156</field>
+			<field name="class_type">2</field>
+			<field name="class_name">Ron+Astória</field>
+		</item>
+		<item>
+			<field name="class_id">157</field>
+			<field name="class_type">2</field>
+			<field name="class_name">Draco+Astória</field>
+		</item>
+		<item>
+			<field name="class_id">158</field>
+			<field name="class_type">2</field>
+			<field name="class_name">Sirius+Hermiona</field>
+		</item>
+		<item>
+			<field name="class_id">159</field>
+			<field name="class_type">2</field>
+			<field name="class_name">Wood+Hermiona</field>
+		</item>
+		<item>
+			<field name="class_id">160</field>
+			<field name="class_type">2</field>
+			<field name="class_name">George+Hermiona</field>
+		</item>
+		<item>
+			<field name="class_id">161</field>
+			<field name="class_type">2</field>
+			<field name="class_name">Fred+Hermiona</field>
+		</item>
+		<item>
+			<field name="class_id">162</field>
+			<field name="class_type">2</field>
+			<field name="class_name">Lucius+Hermiona</field>
+		</item>
+		<item>
+			<field name="class_id">163</field>
+			<field name="class_type">2</field>
+			<field name="class_name">Nevillle+Hermiona</field>
+		</item>
+		<item>
+			<field name="class_id">164</field>
+			<field name="class_type">2</field>
+			<field name="class_name">Ostatní+Hermiona</field>
+		</item>
+		<item>
+			<field name="class_id">174</field>
+			<field name="class_type">7</field>
+			<field name="class_name">Bestiality</field>
+		</item>
+		<item>
+			<field name="class_id">175</field>
+			<field name="class_type">7</field>
+			<field name="class_name">Blood</field>
+		</item>
+		<item>
+			<field name="class_id">176</field>
+			<field name="class_type">7</field>
+			<field name="class_name">Character Death</field>
+		</item>
+		<item>
+			<field name="class_id">177</field>
+			<field name="class_type">7</field>
+			<field name="class_name">Graphic Violence</field>
+		</item>
+		<item>
+			<field name="class_id">178</field>
+			<field name="class_type">7</field>
+			<field name="class_name">Incest</field>
+		</item>
+		<item>
+			<field name="class_id">179</field>
+			<field name="class_type">7</field>
+			<field name="class_name">Rape/Non-con</field>
+		</item>
+		<item>
+			<field name="class_id">180</field>
+			<field name="class_type">7</field>
+			<field name="class_name">Sexual Violence</field>
+		</item>
+		<item>
+			<field name="class_id">181</field>
+			<field name="class_type">7</field>
+			<field name="class_name">Slash</field>
+		</item>
+		<item>
+			<field name="class_id">182</field>
+			<field name="class_type">7</field>
+			<field name="class_name">None</field>
+		</item>
+		<item>
+			<field name="class_id">183</field>
+			<field name="class_type">7</field>
+			<field name="class_name">Bestiality</field>
+		</item>
+		<item>
+			<field name="class_id">192</field>
+			<field name="class_type">7</field>
+			<field name="class_name">Other Warning</field>
+		</item>
+	</dbTable>
+	</database>
+</e107Export>

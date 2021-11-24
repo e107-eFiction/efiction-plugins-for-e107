@@ -124,7 +124,7 @@ define ("_IMAGESIZE", "Maximum image size");
 define ("_INACTIVE", "Inactive");
 define ("_INDEXONLY", "Index Only");
 define ("_INITIALIZE", "Initialize Block");
-define ("_INPUTBYADMIN", "Authors Input by Admins");
+define ("_INPUTBYADMIN", "Pridané administrátorom");
 define ("_IP", "IP Address");
 define ("_INSTALLMODULE", "Install this module");
 define ("_LANGUAGE", "Language");

@@ -143,7 +143,7 @@ class efiction_event // plugin-folder + '_event'
    
   					$insert2 = array(
   						'uid'    =>  $dbinsertid,
-                        'level'  => 1,
+                        'level'  => 0,   //1 = superadmin
   						'_DUPLICATE_KEY_UPDATE' => 1
   					);
   					e107::getDB()->insert("fanfiction_authorprefs", $insert2);

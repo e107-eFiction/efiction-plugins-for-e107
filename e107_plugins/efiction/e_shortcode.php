@@ -140,7 +140,7 @@ class efiction_shortcodes extends e_shortcode
                         $adata = array_merge($adata, $udata);   
                      
                         $author_uid = $adata['uid'];  
-                        
+                 
                         $sc_profile->setVars($adata);
             }
 
@@ -163,7 +163,7 @@ class efiction_shortcodes extends e_shortcode
                 
                 $block_user_profile = e107::getRender()->tablerender($profile_title, $profile_content, $profile_tablerender, true); 
             }
-            
+      
             return $block_user_profile;
     }
     

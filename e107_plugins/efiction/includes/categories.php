@@ -31,13 +31,11 @@ if (!isset($catid)) {
     $catid = array();
 }
 
-$output .= "<div class='row form-check-inline'><label class='col-form-label fw-bold' for='catid'>"._CATOPTIONS.'</label> <br />';
+$form_categories = "<div class='row form-check-inline'><label class='col-form-label fw-bold' for='catid'>"._CATOPTIONS.'</label> <br />';
  
 $categories = efiction_categories::get_categories();
  
 $options = array('title' => _SELECTCATS, 'inline' => true,  'useKeyValues' => 1  );
-$output .= e107::getForm()->checkboxes('catid', $categories, $catid, $options);
+$form_categories .= e107::getForm()->checkboxes('catid', $categories, $catid, $options);
 
-$output .= '
-
-</div>';
+$form_categories .= '</div>';

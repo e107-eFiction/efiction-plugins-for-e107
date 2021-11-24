@@ -108,7 +108,7 @@ if (!class_exists('efiction_pagelinks')) {
 						"link" => "<a class='efiction_links efiction_".$link['link_name']."' href=\"".$link['link_url']."\" title=\"".$link['link_text']."\"".($link['link_target'] ? " target=\"_blank\"" : "").(!empty($link['link_key']) ? " accesskey='".$link['link_key']."'" : "").($current == $link['link_name'] ? " id=\"current\"" : "").">".$link['link_text']."</a>");
 		        }
             }
-				
+ 
 			return $pagelinks;
 		}
         

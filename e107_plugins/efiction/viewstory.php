@@ -60,7 +60,7 @@ if(empty($chapter)) $chapter = isset($_GET['chapter']) && isNumber($_GET['chapte
 
 	// if the above checks came back with a warning, output an error page.
 	if(!empty($warning)) {
-		$current = "storyerror";
+		$current = "storyerror";   var_dump($warning);
 		// load our template files to set up the page.
 		if(file_exists("$skindir/default.tpl")) $tpl = new TemplatePower( "$skindir/default.tpl" );
 		else $tpl = new TemplatePower(_BASEDIR."default_tpls/default.tpl");
@@ -251,6 +251,7 @@ else if(($displayindex && empty($chapter)) || !empty($_GET['index'])) {
 else {
 	if(file_exists("$skindir/viewstory.tpl")) $tpl = new TemplatePower( "$skindir/viewstory.tpl" );
 	else $tpl = new TemplatePower(_BASEDIR."default_tpls/viewstory.tpl");
+    
 	include(_BASEDIR."includes/pagesetup.php");
 	$jumpmenu = "";
 	$jumpmenu2 = "";
@@ -320,7 +321,7 @@ else {
 	$stories = $storyinfo;
 	$tpl->gotoBlock("_ROOT");
 	$jumpmenu2 = ""; 
-	include(_BASEDIR."includes/storyblock.php");
+ 	include(_BASEDIR."includes/storyblock.php");
 	unset($adminlinks);
 	if(isADMIN && uLEVEL < 3) 
 		$adminlinks = "<div class=\"adminoptions\"><span class='label'>"._ADMINOPTIONS.":</span> "._EDIT." - <a href=\"stories.php?action=editstory&amp;sid=$sid&amp;admin=1\">"._STORY."</a> "._OR." <a href=\"stories.php?action=editchapter&amp;chapid=$chapid&amp;admin=1\">"._CHAPTER."</a> | "._DELETE." - <a href=\"stories.php?action=delete&amp;sid=$sid&amp;admin=1\">"._STORY."</a> "._OR." <a href=\"stories.php?action=delete&amp;chapid=$chapid&amp;sid=$sid&amp;admin=1\">"._CHAPTER."</a></div>";
@@ -391,6 +392,7 @@ else {
 		$tpl->gotoBlock("_ROOT");
 	}
 	$tpl->gotoBlock("_ROOT");
+ 
 	$tpl->assign("chaptertitle", $chaptertitle);
 	$tpl->assign("chapternumber", $inorder);
 	$tpl->assign( "story", "<span style=\"font-size: ".(100 + ($textsize * 20))."%;\">$story</span>" );

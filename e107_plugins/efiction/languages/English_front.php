@@ -288,6 +288,7 @@ define('_DISPLAYINDEX', 'Display table of contents for stories.');
 define('_EDITPREFS', 'Edit Preferences');
 define('_REQUIREDFIELDS', 'Indicates required fields.');
 define('_USETINYMCE', 'Use tinyMCE WYSWYG editor');
+define('_CONTACTME', 'Allow to contact me by email');
 
 // User - Edit Bio/Registration (default)
 define('_AOL', 'AOL IM');
@@ -424,6 +425,7 @@ define('_HELP_TOC', 'Check this box if you wish to see the story index first rat
 define('_HELP_TINYMCE', 'Check this box if you wish to use the tinyMCE editor when entering content in forms.  You will have the option to toggle the editor on/off if need be.');
 define('_HELP_AGE', 'By agreeing, you are confirming you are above the age of majority in your locality and that you wish to view the adult oriented material on this site.');
 define('_HELP_DEFAULTSORT', 'Select the order in which to sort stories by default.  Your choices are Alphabetically or Most Recent (newest to oldest).');
+define("_HELP_CONTACTME", "Allow members to send me email via contact form, if this option is allowed generally on the site.");
 
 // Log strings
 define('_LOG_ADMIN_DEL', "<a href='viewuser.php?uid=%2\$d'>%1\$s</a> deleted <a href='viewstory.php?sid=%4\$d'>%3\$s</a> by <a href='viewuser.php?uid=%6\$d'>%5\$s</a>.");

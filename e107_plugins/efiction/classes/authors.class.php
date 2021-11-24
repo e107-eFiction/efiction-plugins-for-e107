@@ -73,7 +73,9 @@ if (!class_exists('efiction_authors')) {
             $var = array();
 
             if ($authordata) {
+                unset($authordata['user_prefs']);
                 $var = $authordata;
+                
             }
  
             return $var;
@@ -97,6 +99,22 @@ if (!class_exists('efiction_authors')) {
 
             return $authordata;
         }
+        
+        public static function get_penname_by_uid($uid = NULL) 
+        {
+             $uid = intval($uid);
+
+            if (empty($uid)) {
+                return false;
+            }
+            
+           
+           $authorquery = "SELECT "._PENNAMEFIELD." FROM "._AUTHORTABLE." WHERE "._UIDFIELD." = '$uid' LIMIT 1 ";
+           
+           $penname = e107::getDb()->retrieve($authorquery);
+           
+           return $penname;
+        }
  
         /*
         public static function get_user_id_by_author_uid($uid = null)
@@ -115,6 +133,19 @@ if (!class_exists('efiction_authors')) {
         }
         
 */
+        public function get_author_avatar($uid = null, $parm = NULL) {
+          $avatar = '';
+          $author = self::get_single_author($uid);
+          
+          if( isset($author['user_id'])) {
+          
+            $parm['type'] = 'url';
+            $avatar =  e107::getParser()->toAvatar($author, $parm);
+          }
+           
+          return $avatar;
+        }
+ 
         
     }
 

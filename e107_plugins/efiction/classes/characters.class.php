@@ -36,58 +36,44 @@
  * #######################################
  */
 
-if (!class_exists('efiction_ratings')) {
-    class efiction_ratings
-    {
-        public function __construct()
+if (!class_exists('efiction_characters')) {
+
+	/*query = 'SELECT charname, catid, charid FROM #fanfiction_characters ORDER BY charname';*/ 
+    class efiction_characters
+    {    
+        /* $charlist id => array(name, catid) */
+        public static function charlist()
         {
+            $charlist = array( );
+            $query = "SELECT charname, catid, charid FROM ".TABLEPREFIX."fanfiction_characters ORDER BY charname";
+         
+            $result = e107::getDb()->retrieve($query, true);
+            foreach ($result as $char) {
+                $charlist[$char['charid']] = array("name" => stripslashes($char['charname']), "catid" => $char['catid']);
+			}
+            return $charlist;
         }
- 
-
-		/* all data, id => array() */
-		public static function get_ratings()
-		{
-			$ratingslist = array();
-
-			$table_name = MPREFIX.'fanfiction_ratings';
-			$query = 'SELECT * FROM '.$table_name  ;
-
-			$result = e107::getDb()->retrieve($query, true);
- 
-			foreach ($result as $rate) {
-				$ratingslist[$rate['rid']] = array('rid' => $rate['rid'], 'name' => $rate['rating'], 'ratingwarning' => $rate['ratingwarning'], 'warningtext' => $rate['warningtext']);
-			}
-
-			return $ratingslist;
-		}
 
 
-		/* used for ratings select in storyform */
-		/* ID => NAME */
-		// used in story_shortcodes.php, series_shortcodes.php
-		public function get_ratings_list()
-		{
-			$authors = array();
-			$ratingquery = 'SELECT rid, rating FROM #fanfiction_ratings';
-			$ratingsarray = e107::getDb()->retrieve($ratingquery, true);
+		/* characters by category, id => name */
 
-			foreach ($ratingsarray as $ratingresult) {
-				$ratings[$ratingresult['rid']] = $ratingresult['rating'];
-			}
-			return $ratings;
-		}
+        public static function characters($catid = -1) {
 
-        public static function get_single_rating($rating_name)
-        {
-            $ratings = self::get_ratings();
+			$characters = array( );
+            $query = "SELECT charname, catid, charid FROM ".TABLEPREFIX."fanfiction_characters ORDER BY charname";
 
-            if ($rating_name) {
-                return $ratings[$rating_name];
+			$result = e107::getDb()->retrieve($query, true);   
+            foreach ($result as $charresults) {
+				if ((is_array($catid) && in_array($charresults['catid'], $catid)) || $charresults['catid'] == -1) {
+					$characters[$charresults['charid']] = stripslashes($charresults['charname']);
+				}
             }
 
-            return null;
-        }
-    }
+			return $characters;
 
-    new efiction_ratings();
+		}
+       
+
+    }
+    new efiction_characters();
 }

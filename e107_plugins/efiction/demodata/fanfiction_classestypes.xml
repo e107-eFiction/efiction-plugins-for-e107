@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<e107Export version="2.3.1 (git)" timestamp="1632160797" >
+	<database>
+	<dbTable name="fanfiction_classtypes">
+		<item>
+			<field name="classtype_id">1</field>
+			<field name="classtype_name">lang</field>
+			<field name="classtype_title">Language</field>
+		</item>
+		<item>
+			<field name="classtype_id">2</field>
+			<field name="classtype_name">pairing</field>
+			<field name="classtype_title">Pairing</field>
+		</item>
+		<item>
+			<field name="classtype_id">3</field>
+			<field name="classtype_name">length</field>
+			<field name="classtype_title">Length</field>
+		</item>
+		<item>
+			<field name="classtype_id">4</field>
+			<field name="classtype_name">genre</field>
+			<field name="classtype_title">Genre</field>
+		</item>
+		<item>
+			<field name="classtype_id">6</field>
+			<field name="classtype_name">era</field>
+			<field name="classtype_title">Era</field>
+		</item>
+		<item>
+			<field name="classtype_id">7</field>
+			<field name="classtype_name">warnings</field>
+			<field name="classtype_title">Warnings</field>
+		</item>
+	</dbTable>
+	</database>
+</e107Export>

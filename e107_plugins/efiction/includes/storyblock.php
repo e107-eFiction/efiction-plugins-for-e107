@@ -22,6 +22,7 @@
 // ----------------------------------------------------------------------
 
 if(!defined("e107_INIT")) exit( );
+
 	if(!isset($count)) $count = 0;
 	$tpl->assign("sid", $stories['sid']);
 	unset($challengelinks, $challengeadmin, $serieslinks, $categorylinks, $adminlinks, $authlink);
@@ -35,6 +36,7 @@ if(!defined("e107_INIT")) exit( );
 		unset($coauthors);
 	}
 	else if(empty($stories['coauthors'])) $stories['coauthors'] = array( );	
+ 
 	$tpl->assign("title"   , stripslashes(title_link($stories)) );
 	$tpl->assign("author"   , author_link($stories));
 	$tpl->assign("summary", stripslashes($stories['summary']) );

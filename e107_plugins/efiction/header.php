@@ -96,9 +96,6 @@ if(ini_get('register_globals')) {
 	}
 }                   
  
- 
-
-
 
 if(isset($_GET['debug'])) $debug = 1;
 if(!$displaycolumns) $displaycolumns = 1; // shouldn't happen, but just in case.
@@ -111,9 +108,9 @@ else $action = false;
  
 require_once(HEADERF);
  
-
 $alphabet = efiction_settings::get_alphabet(); 
 
+include_once(_BASEDIR."includes/corefunctions_old.php");
 include_once(_BASEDIR."includes/corefunctions.php");
 
 // Check and/or set some variables used at various points throughout the script
@@ -292,10 +289,6 @@ echo "</head>";
 $headerSent = true;
 include (_BASEDIR."includes/class.TemplatePower.inc.php");
  
-if($debug == 1) {
-	@ error_reporting(E_ALL);
-	echo "\n<!-- \$_COOKIE \n"; print_r($_COOKIE); echo " -->";
-	echo "\n<!-- \$_POST \n"; print_r($_POST); echo " -->";
-}
+ 
  
 

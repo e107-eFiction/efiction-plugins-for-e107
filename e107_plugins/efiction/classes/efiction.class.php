@@ -52,7 +52,7 @@ if (!class_exists('efiction_core')) {
 		public function init()
 		{
 		}
-	
+ 	
 	
 		// replace for e107::getParser()->truncate($text, $limit); see issue https://github.com/e107inc/e107/issues/4480
 		public static function truncate_text($str, $n = 75, $delim = '...')
