@@ -359,18 +359,7 @@ function check_prefs($uid) {
 	else return false;
 }
 
-// Function builds the alphabet links on various pages.
-function build_alphalinks($url, $let) {
- 
-    $alphabet = efiction_settings::get_alphabet();
-	$alpha = "<div id=\"alphabet\">";
-	foreach( $alphabet as $link ) {
-		// Build a link that calls a function with ($link and 1 (page number) )
-		$alpha .= "<a href=\"{$url}let=$link\"".($let == $link ? " id='currentletter'" : "").">$link</a> \n";
-	}
-	$alpha .= "</div>";
-	return $alpha;
-}
+
 
 // Function builds the pagination links
 function build_pagelinks($url, $total, $offset = 0, $columns = 1) {

@@ -59,9 +59,9 @@ if (!class_exists('efiction_series')) {
       
         //"SELECT series.*, "._PENNAMEFIELD." as penname FROM "._AUTHORTABLE.", ".TABLEPREFIX."fanfiction_series as series WHERE "._UIDFIELD." = series.uid ");
         $seriesquery =  _SERIESQUERY." AND seriesid = '$seriesid'  " ;
-        print_a($seriesquery);
+ 
         $series  = e107::getDb()->retrieve($query, true);
-        print_a($series );
+ 
         return $series;
         
         

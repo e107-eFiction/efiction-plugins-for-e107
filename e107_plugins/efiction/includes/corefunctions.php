@@ -184,3 +184,78 @@ function title_link($stories, $parm = NULL) {
     //return $link;
 }
 
+
+// Most of the pages that list stories and series use this fuction.  This handles showing the series and stories and pagination of the two together when needed
+// template is used instead storyblock 
+
+function search_new($storyquery, $countquery, $pagelink = "searching.php?", $pagetitle = 0) {
+	global $tpl, $new, $ratingslist, $itemsperpage, $reviewsallowed, $output, $dateformat, $current, $featured, $favorites, $retired, $ageconsent, $classtypelist, $classlist, $offset, $recentdays;
+     
+	$count = dbquery($countquery);
+	list($numrows) = dbrow($count);
+	if($numrows) {
+		$tpl->assign("output", ($pagetitle ? "<div id=\"pagetitle\">$pagetitle</div>" : ""));
+		$tpl->newBlock("listings");
+		if(!$ratingslist) {
+			$ratlist = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_ratings");
+			while($rate = dbassoc($ratlist)) {
+				$ratings[$rate['rid']] = array("rating" => $rate['rating'], "ratingwarning" => $rate['ratingwarning'], "warningtext" => $rate['warningtext']);
+			}
+		}
+		$tpl->newBlock("listings");
+		$tpl->gotoBlock("listings");
+		$caption = "<div class=\"listingsheader\">"._STORIES."</div>";
+		$storyquery .= " LIMIT $offset, $itemsperpage";
+		$result3 = e107::getDb()->retrieve($storyquery, true);     
+		$count = 0;        
+        
+        $sc = e107::getScParser()->getScObject('story_shortcodes', 'efiction', false);
+        
+        $template = e107::getTemplate('efiction', 'listings', 'browse', true, true);             
+        
+        $text = '';
+        foreach($result3 AS $stories) {     
+            $sc->setVars($stories);
+            
+            $text .=  e107::getParser()->parseTemplate($template['item'], true, $sc);    
+              
+			//$tpl->newBlock("storyblock");
+            
+		    //include(_BASEDIR."includes/storyblock.php"); 
+		}
+        $storyblock = e107::getRender()->tablerender($caption, $start.$text.$end, $current, true);
+        $tpl->assign("stories",  $storyblock);
+		$tpl->gotoBlock("_ROOT");		
+	}
+	else {
+		$tpl->newBlock("listings");
+		$tpl->assign("pagelinks", write_message(_NORESULTS));
+	}
+	if($numrows > $itemsperpage) {
+		$termArray = array_merge($_GET, $_POST);
+		$terms = array();
+		foreach($termArray as $term => $value) {
+			if($term == "submit" || $term == "go" || $term == "offset" || ($term != "complete" &&empty($value))) continue;
+			$terms[] = "$term=".(is_array($value) ? implode(",", $value) : $value);
+		}
+		$terms = implode("&amp;", $terms);
+		$terms .= "&amp;";
+	 	$tpl->gotoBlock("listings");
+		$tpl->assign( "pagelinks", build_pagelinks($pagelink.$terms, $numrows, $offset));
+	}
+	$tpl->gotoBlock("_ROOT");
+	return $numrows;
+}
+
+// Function builds the alphabet links on various pages.
+function build_alphalinks($url, $let) {
+   
+    $alphabet = efiction_settings::get_alphabet();   
+	$alpha = "<div id=\"alphabet\">";
+	foreach( $alphabet as $link ) {
+		// Build a link that calls a function with ($link and 1 (page number) )
+		$alpha .= "<a href=\"{$url}let=$link\"".($let == $link ? " id='currentletter'" : "").">$link</a> \n";
+	}
+	$alpha .= "</div>";   
+	return $alpha;
+}

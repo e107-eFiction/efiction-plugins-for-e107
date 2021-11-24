@@ -23,7 +23,7 @@
 if(!defined("e107_INIT")) exit( );
 
 		$output .= build_alphalinks($pagelink, $let);
-         print_r($countquery);  
+ 
 		$count = e107::getDb()->retrieve($countquery);
 		list($numrows)= dbrow($count);
 		$limit = $itemsperpage *  $displaycolumns;
@@ -34,8 +34,6 @@ if(!defined("e107_INIT")) exit( );
 		$count = 0;
 		$column = 1;
 		$authorquery = $authorquery. " ORDER BY "._PENNAMEFIELD." LIMIT $offset,$limit";
-   
-  print_r($count);
  
 		$result2 = e107::getDb()->retrieve($authorquery, true);   
 		$output .= "<div id=\"columncontainer\"><div id=\"memberblock\">".($displaycolumns ? "<div class=\"column\">" : "");

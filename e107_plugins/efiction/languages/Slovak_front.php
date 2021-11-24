@@ -34,6 +34,7 @@ define ("_CLEAR", "Clear");
 define ("_CHAPTER", "Kapitola");
 define ("_CHAPTER2", "Kapitolu");  
 define ("_CHAPTERS", "Kapitoly");
+
 define ("_CHARACTERS", "Postavy");
 define ("_CHOOSECAT", "Choose a Category");
 define ("_CONFIRMDELETE", "Are you sure you want to delete this?");
@@ -68,9 +69,9 @@ define(
 );
 define('_MULTIPLESELECT', 'Podržaním klávesy CTRL vykonáte viacero výberov.');
 define('_NAME', 'Názov');
-define('_NAUGHTYWORDS', 'Zachytil vás náš filter neslušných slov.  Vyžadujeme, aby všetok obsah, ktorý nie je za varovaním o overení veku, bol vhodný pre všetky skupiny divákov.  To zahŕňa názvy, zhrnutia a mená (pre anonymné recenzie, výzvy atď.). Prosím, <a href="javascript: history.back(1)">skúšajte to znova.</a>');
+define('_NAUGHTYWORDS', 'Zachytil vás náš filter neslušných slov.  Vyžadujeme, aby všetok obsah, ktorý nie je za varovaním o overení veku, bol vhodný pre všetky skupiny divákov.  To zahŕňa názvy, zhrnutia a mená (pre anonymné hodnotenie, výzvy atď.). Prosím, <a href="javascript: history.back(1)">skúšajte to znova.</a>');
 define('_NEXT', 'Ďalej');
-define('_NEW', 'Nový!');
+define('_NEW', '[Novinka!]');
 define('_NO', 'Nie');
 define('_NODBFUNCTIONALITY', 'Zdá sa, že v konfigurácii php pre túto webovú stránku nebola povolená žiadna použiteľná funkcia databázy pre PHP.  Pozrite si prosím dokumentáciu PHP alebo sa opýtajte svojho poskytovateľa hostingu.');
 define('_NOMAILSENT', 'Vyskytla sa chyba. Nebol odoslaný žiadny e-mail.');
@@ -97,7 +98,7 @@ define('_REQUIREDINFO', 'Chýbajú niektoré z požadovaných informácií.  Sko
 define('_REVIEW', 'Hodnotenie');
 define('_REVIEWNOTE', '<span style="text-decoration: underline; font-weight: bold;">Poznámka:</span> Môžete zadať buď hodnotenie, alebo recenziu, alebo oboje.');
 define('_REVIEWRATING', _RATING);
-define('_REVIEWS', 'Recenzie');
+define('_REVIEWS', 'Hodnotenie');
 define('_RETIRE', 'Retire');
 define('_RETIRED', 'Retired');
 define('_RUSERSONLY', 'Len registrovaní užívatelia');
@@ -114,7 +115,7 @@ define('_SUMMARY', 'Zhrnutie');
 define('_TEXT', 'Text');
 define('_TINYMCETOGGLE', 'Použiť tinyMCE');
 define('_TITLE', 'Názov');
-define('_TOC', 'Table of Contents');
+define('_TOC', 'Zoznam kapitol');
 define('_TOPLEVEL', 'Top Level Category'); // V skutočnosti sa používa len v administrácii, ale musí sa načítať spolu so záhlavím.
 define('_UP', 'šípka nahor');
 define('_WIP', 'Work in Progress Only'); // Pridané 01/12/07
@@ -130,7 +131,7 @@ define('_MEMBERLOGIN', 'Member Login');
 define('_BROWSE', 'Browse');
 define('_RECENTSTORIES', 'Poviedky aktualizované za posledných [x] dní.');
 define('_EMAILSENT', 'Your e-mail has been sent.');
-define('_TITLES', 'Titles');
+define('_TITLES', 'Podľa názvu');
 // Contact Us
 define('_YOUREMAIL', 'Your E-mail');
 define('_CONTACTUS', 'Contact Us');
@@ -445,3 +446,12 @@ define ("LAN_EFICTION_MEMBER_SINCE", "Člen od");
 define ("LAN_EFICTION_MEMBERSHIP_STATUS", "Status členstva");
 
 define ("LAN_EFICTION_BY", "Od");
+
+define ("_NUMCHAPTERS", "Počet kapitol");
+define ("_RATED", "Hodnotenie");
+define ("_STATS", "Štatistika");
+define ("_HITS", "Zobrazené");
+define ("_PUBLISHED", "Vydané");
+define ("_UPDATED", "Aktualizované");
+define ("_WORDCOUNT", "Počet slov");
+define ("_COMPLETED", "Dokončené");

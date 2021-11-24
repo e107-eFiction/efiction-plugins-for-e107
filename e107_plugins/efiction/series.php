@@ -36,7 +36,7 @@ $seriesid = isset($_GET['seriesid']) && isNumber($_GET['seriesid']) ? $_GET['ser
 $showlist = true;
 $inorder = isset($_GET['inorder']) && isNumber($_GET['inorder']) ? $_GET['inorder'] : false;
 $add = isset($_GET['add']) ? $_GET['add'] : false;
- print_a($action);
+ 
 // before doing anything else check if the visitor is logged in.  If they are, check if they're an admin.  If not, check that they're 
 // trying to edit/delete/etc. their own stuff then get the penname 
 if(!isMEMBER) accessDenied( );

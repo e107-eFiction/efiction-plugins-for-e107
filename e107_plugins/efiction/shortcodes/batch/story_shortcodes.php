@@ -411,6 +411,8 @@
         /* {STORY_RATINGPICS} {ratingpics} */
         public function sc_story_ratingpics($parm = null)
     	{
+           global $ratings, $like, $dislike, $star, $halfstar;
+ 
            $text = ratingpics($this->var['rating']);
            return  $text;  
             
@@ -439,8 +441,10 @@
             if($reviewsallowed && (isMEMBER || $anonreviews)) {
                 $score = ratingpics($this->var['rating']);
             }
+            else $score = "-";
             return $score;  
         }
+        
         /* {STORY_SERIESLINKS} {serieslinks} */
         public function sc_story_serieslinks($parm = null)
     	{
@@ -482,7 +486,7 @@
             }
             return $text;
              
-        }
+       }
              
         /* {STORY_SUMMARY} {summary} */
         // ex. {STORY_SUMMARY: limit=100}
@@ -633,11 +637,12 @@
         public function sc_story_rating_name($parm)
         {
             $stories = $this->var;
-            if (class_exists('efiction')) { 
-                $ratingslist = efiction::ratingslist();  
-                $rating_name = $ratingslist[$stories['rid']]['name']; 
-                return $rating_name;
-            }
+     
+            $ratingslist = efiction_ratings::get_ratings_list(); 
+               
+            $rating_name = $ratingslist[$stories['rid']]['name']; 
+            return $rating_name;
+            
             return '';
         }
         
@@ -713,7 +718,5 @@
         }
         
         
-        
-        
-ÿ   
+  
     }
