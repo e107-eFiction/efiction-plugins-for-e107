@@ -16,7 +16,7 @@ define ("_AUTHORTABLE", _AUTHORPREFIX."fanfiction_authors as author"); // Do not
 define ("_STORYQUERY",  "SELECT stories.*, "._PENNAMEFIELD." as penname, stories.date as date, stories.updated as updated FROM ("._AUTHORTABLE.", ".TABLEPREFIX."fanfiction_stories as stories) WHERE "._UIDFIELD." = stories.uid AND stories.validated > 0 ");
 define ("_STORYCOUNT", "SELECT count(sid) FROM ".TABLEPREFIX."fanfiction_stories as stories WHERE validated > 0");
 define ("_SERIESQUERY", "SELECT series.*, "._PENNAMEFIELD." as penname FROM "._AUTHORTABLE.", ".TABLEPREFIX."fanfiction_series as series WHERE "._UIDFIELD." = series.uid ");
-define ("_SERIESCOUNT", "SELECT COUNT(seriesid) FROM ".TABLEPREFIX."fanfiction_series as series ");
+define ("_SERIESCOUNT", "SELECT COUNT(seriesid) AS count FROM ".TABLEPREFIX."fanfiction_series as series ");
 
 define ("_MEMBERLIST", "SELECT "._PENNAMEFIELD." as penname, "._UIDFIELD." as uid, ap.stories, ap.level 
  FROM  "._AUTHORTABLE."  
