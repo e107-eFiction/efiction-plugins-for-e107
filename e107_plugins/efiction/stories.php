@@ -1002,46 +1002,75 @@ function delete( ) {
 
 	$confirmed = isset($_GET['confirmed']) ? $_GET['confirmed'] : false;
 	if(!$sid && !$chapid) return write_error(_ERROR);
-	$output = "<div id=\"pagetitle\">".($chapid ? _DELETECHAPTERTITLE : _DELETESTORYTITLE)."</div>";
+	$caption = "<div id=\"pagetitle\">".($chapid ? _DELETECHAPTERTITLE : _DELETESTORYTITLE)."</div>";
 	if($admin) {
-		if($chapid) $authorquery = dbquery("SELECT uid FROM ".TABLEPREFIX."fanfiction_chapters WHERE chapid = '$chapid' LIMIT 1");
-		else $authorquery = dbquery("SELECT uid FROM ".TABLEPREFIX."fanfiction_stories WHERE sid = '$sid' LIMIT 1");
-		list($uid) = dbrow($authorquery);
+		if($chapid) $authorquery =  "SELECT uid FROM ".TABLEPREFIX."fanfiction_chapters WHERE chapid = '$chapid' LIMIT 1" ;
+		else $authorquery =  "SELECT uid FROM ".TABLEPREFIX."fanfiction_stories WHERE sid = '$sid' LIMIT 1" ;
+        $uid = e107::getDb()->retrieve($authorquery);
+        e107::getMessage()->addDebug($authorquery);
 	}
 	else $uid = USERUID;
+    
 	if($confirmed == "no") {
-		$output .= "<center>"._ACTIONCANCELLED."  ".($admin ? _BACK2ADMIN : _BACK2ACCT)."</center>";
+		$caption  = "<div class='text-center'>"._ACTIONCANCELLED."  ".($admin ? _BACK2ADMIN : _BACK2ACCT)."</div>";
 	}
+    
 	else if($confirmed == "yes") {
-		$storyquery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_stories WHERE sid = '$sid' LIMIT 1");
-		$story = dbassoc($storyquery);
+
+		$storyquery =  "SELECT * FROM ".TABLEPREFIX."fanfiction_stories WHERE sid = '$sid' LIMIT 1" ;
+        $story= e107::getDb()->retrieve($storyquery);
+        e107::getMessage()->addDebug($storyquery);
+ 
 		if($chapid) {
-			$chapterquery = dbquery("SELECT inorder, chapid, uid FROM ".TABLEPREFIX."fanfiction_chapters WHERE sid = '$sid'");
-			$orderquery = dbquery("SELECT inorder FROM ".TABLEPREFIX."fanfiction_chapters WHERE chapid = '$chapid' LIMIT 1");
-			list($inorder) = dbrow($orderquery);
+            
+			$chapterquery =  "SELECT inorder, chapid, uid FROM ".TABLEPREFIX."fanfiction_chapters WHERE sid = '$sid'";
+            $chapters = e107::getDb()->retrieve($chapterquery);
+            
+			$orderquery = "SELECT inorder FROM ".TABLEPREFIX."fanfiction_chapters WHERE chapid = '$chapid' LIMIT 1";
+            $inorder = e107::getDb()->retrieve($orderquery);
+            e107::getMessage()->addDebug($orderquery);
 			if(empty($inorder)) { // Shouldn't be possible and yet someone managed to do it.
 				errorExit();
 			}
-			$num_chapters = dbnumrows($chapterquery);
-		}
-		if(isset($num_chapters) && $num_chapters > 1) {
-			list($valid) = dbrow(dbquery("SELECT validated FROM ".TABLEPREFIX."fanfiction_chapters where chapid = '$chapid' LIMIT 1"));
-			dbquery("DELETE FROM ".TABLEPREFIX."fanfiction_chapters WHERE chapid = '$chapid' LIMIT 1");
-			if($valid) dbquery("UPDATE ".TABLEPREFIX."fanfiction_stats SET chapters = chapters - 1");
-			if($store == "files") unlink(STORIESPATH."/$uid/".$chapid.".txt"); 
-			if($inorder < $num_chapters) 
-				dbquery("UPDATE ".TABLEPREFIX."fanfiction_chapters SET inorder = (inorder - 1) WHERE sid = '$sid' AND inorder > $inorder");
-			$codequery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'delchapter'");
-			while($code = dbassoc($codequery)) {
-				eval($code['code_text']);
-			}
+			$num_chapters = count($chapters);
+            e107::getMessage()->addDebug($chapterquery);
+		
 
-			if($logging && $admin) {
-				$authorquery = dbquery("SELECT "._PENNAMEFIELD." as penname FROM "._AUTHORTABLE." WHERE "._UIDFIELD." = '$uid' LIMIT 1");
-				list($penname) = dbrow($authorquery);
-				dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_log (`log_action`, `log_uid`, `log_ip`, `log_type`) VALUES('".escapestring(sprintf(_LOG_ADMIN_DEL_CHAPTER, USERPENNAME, USERUID, $story['title'], $sid, $penname, $uid, $inorder))."', '".USERUID."', INET_ATON('".$_SERVER['REMOTE_ADDR']."'), 'DL')");
-			}
-			return "<center>"._ACTIONSUCCESSFUL."</center>".editstory( $sid );
+    		if(isset($num_chapters) && $num_chapters > 1) {
+        
+                $validquery = "SELECT validated FROM ".TABLEPREFIX."fanfiction_chapters where chapid = '$chapid' LIMIT 1";
+                $valid = e107::getDb()->retrieve($validquery);
+                e107::getMessage()->addDebug($validquery);
+     
+    			$deletequery = "DELETE FROM ".TABLEPREFIX."fanfiction_chapters WHERE chapid = '$chapid' LIMIT 1";
+                e107::getDb()->gen($deletequery);
+                e107::getMessage()->addDebug($deletequery);
+         
+    			if($valid) {
+                   $statsquery = "UPDATE ".TABLEPREFIX."fanfiction_stats SET chapters = chapters - 1";
+                   e107::getDb()->gen($statsquery);
+                   e107::getMessage()->addDebug($statsquery);
+    			}
+                if($store == "files") unlink(STORIESPATH."/$uid/".$chapid.".txt"); 
+                
+    			if($inorder < $num_chapters) {
+                    $orderquery = "UPDATE ".TABLEPREFIX."fanfiction_chapters SET inorder = (inorder - 1) WHERE sid = '$sid' AND inorder > $inorder";
+                    e107::getDb()->gen($orderquery);
+                    e107::getMessage()->addDebug($$orderquery);               
+                }
+    				
+    			$codequery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'delchapter'");
+    			while($code = dbassoc($codequery)) {
+    				eval($code['code_text']);
+    			}
+    
+    			if($logging && $admin) {
+    				$authorquery = dbquery("SELECT "._PENNAMEFIELD." as penname FROM "._AUTHORTABLE." WHERE "._UIDFIELD." = '$uid' LIMIT 1");
+    				list($penname) = dbrow($authorquery);
+    				dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_log (`log_action`, `log_uid`, `log_ip`, `log_type`) VALUES('".escapestring(sprintf(_LOG_ADMIN_DEL_CHAPTER, USERPENNAME, USERUID, $story['title'], $sid, $penname, $uid, $inorder))."', '".USERUID."', INET_ATON('".$_SERVER['REMOTE_ADDR']."'), 'DL')");
+    			}
+    			return "<center>"._ACTIONSUCCESSFUL."</center>".editstory( $sid );
+            }
 		}
 		else {
 			include(_BASEDIR."includes/deletefunctions.php");  
@@ -1061,6 +1090,8 @@ function delete( ) {
 				<a href=\"stories.php?action=delete&amp;confirmed=no\">"._NO."</a> ]");
 		}
 	}
+    
+    $output .= e107::getMessage()->render();
 	return $output;
 }
 // end delete

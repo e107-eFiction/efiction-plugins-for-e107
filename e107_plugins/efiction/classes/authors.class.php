@@ -82,6 +82,7 @@ if (!class_exists('efiction_authors')) {
         }
         
         /* get author information on e107 profile page */
+        /* with manual change use e107 ID not author ID */
         public static function get_single_author_by_user($user_id = null)
         {
             $user_id = intval($user_id);
@@ -96,7 +97,8 @@ if (!class_exists('efiction_authors')) {
 			LEFT JOIN ".MPREFIX."fanfiction_authorprefs as ap ON ap.uid = author.uid WHERE author.user_id =  ".$user_id ;
             
             $authordata = e107::getDb()->retrieve($authorquery);
-
+            echo e107::getMessage()->addDebug($authorquery)->render();
+            
             return $authordata;
         }
         

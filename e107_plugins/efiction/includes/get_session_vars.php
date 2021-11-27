@@ -36,7 +36,7 @@ if (USERID) {
          */
  
     $authordata = efiction_authors::get_single_author_by_user(USERID);
-    
+ 
     if (getperms('0'))  //e107 superadmin
     {
 		define('uLEVEL', "1");
