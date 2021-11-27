@@ -127,16 +127,6 @@ CREATE TABLE `fanfiction_codeblocks` (
  KEY `code_type` (`code_type`)
 ) ENGINE=InnoDB;
  
-CREATE TABLE `fanfiction_comments` (
- `cid` int(11) NOT NULL auto_increment,
- `nid` int(11) NOT NULL default '0',
- `uid` int(11) NOT NULL default '0',
- `comment` text NOT NULL,
- `time` int(11) NOT NULL default '0',
- PRIMARY KEY (`cid`),
- KEY `commentlist` (`nid`,`time`)
-) ENGINE=InnoDB;
- 
 CREATE TABLE `fanfiction_favorites` (
  `uid` int(11) NOT NULL default '0',
  `item` int(11) NOT NULL default '0',

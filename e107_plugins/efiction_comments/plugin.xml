@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e107Plugin name="eFiction Comments" lan="" version="1.0.0" date="2021-12-01" compatibility="2.3.1" installRequired="true" >
+	<author name="Jimako" url="https://www.e107sk.com" />
+	<summary lan="">eFiction comments manager </summary>
+	<description lan="">eFiction comments manager</description>
+ 
+	<category>content</category>
+	<copyright>e107sk.com</copyright>
+	<adminLinks>
+        <link url="admin_comments.php" description="" icon="images/icon_64.png" iconSmall="images/icon_16.png"  icon128="images/icon_128.png">LAN_COMMENTS</link>
+	</adminLinks>
+</e107Plugin>

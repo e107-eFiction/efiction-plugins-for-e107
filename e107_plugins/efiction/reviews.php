@@ -44,6 +44,8 @@ $type = isset($_REQUEST['type']) ? $_REQUEST['type'] : false;
 $item = isset($_REQUEST['item']) ? $_REQUEST['item'] : false;
 if(!isNumber($item)) unset($item);
 
+if($action == "false") {
+	/*
 if($action == "delete") {
 	if(isADMIN && uLEVEL <= 3) $notauthor = 1;
 	$query = dbquery("SELECT item, chapid, type, review, rating, uid FROM ".TABLEPREFIX."fanfiction_reviews WHERE reviewid = '$reviewid' LIMIT 1");
@@ -110,7 +112,11 @@ if($action == "delete") {
 		$output .= write_message(_CONFIRMDELETE."<BR><BR>
 			[ <a href=\"reviews.php?action=delete&amp;delete=yes&amp;reviewid=$reviewid\">"._YES."</a> | <a href=\"reviews.php?action=delete&amp;delete=no&amp;reviewid=$reviewid\">"._NO."</a> ]");
 	}
+
+*/
 }
+elseif(false) {
+	/*
 else if($action == "edit" || $action == "add") {
 	if(isset($_GET['next']) && isNumber($_GET['next'])) $nextchapter = $_GET['next'];
 	if(!isMEMBER && !$anonreviews) accessDenied( );
@@ -235,38 +241,55 @@ else if($action == "edit" || $action == "add") {
 			$output .= $form;
 		}
 	}
+	*/
 }
 else {
+	/*
 	$query = "";
 	if(empty($reviewid) && empty($type)) accessDenied( );
 	if(!empty($reviewid) && empty($type)) {
 		list($type, $item) = dbrow(dbquery("SELECT type, item FROM ".TABLEPREFIX."fanfiction_reviews WHERE reviewid = '$reviewid' LIMIT 1"));
 	}
-	if($type == "ST") {
-		$storyquery = dbquery("SELECT s.title, s.uid, s.rid, s.sid, s.coauthors FROM ".TABLEPREFIX."fanfiction_stories as s WHERE s.sid = '$item' LIMIT 1");
-		$story = dbassoc($storyquery);
+	*/
+	if($type == "ST" OR $type == "CH" ) {
+		$storyquery = "SELECT s.title, s.uid, s.rid, s.sid, s.coauthors FROM ".TABLEPREFIX."fanfiction_stories as s WHERE s.sid = '$item' LIMIT 1";
+		$story = e107::getDb()->retrieve($storyquery);
+		e107::getMessage()->addDebug($query);
+
 		$title = title_link($story);
 		$authoruid = $story['uid'];
 		if(!empty($story['coauthors'])) {
+			$colistquery = "SELECT uid FROM ".TABLEPREFIX."fanfiction_coauthors WHERE sid = '$item'";
+			e107::getMessage()->addDebug($query);
+			$coauthors = e107::getDb()->retrieve($storyquery, true);
+			/* todo check
 			$colist = dbquery("SELECT uid FROM ".TABLEPREFIX."fanfiction_coauthors WHERE sid = '$item'");
 			while($c = dbassoc($colist)) {
 				$coauthors[] = $c['uid'];
 			}
+			*/
 		}
 	}
 	else if($type == "SE") {
-		$storyquery = dbquery("SELECT title, uid FROM ".TABLEPREFIX."fanfiction_series WHERE seriesid = '$item' LIMIT 1");
-		list($title, $authoruid) = dbrow($storyquery);
+		$storyquery = "SELECT title, uid FROM ".TABLEPREFIX."fanfiction_series WHERE seriesid = '$item' LIMIT 1";
+		$story = e107::getDb()->retrieve($storyquery);
+		e107::getMessage()->addDebug($query);
+		$title = $story['title'];
+		$authoruid = $story['uid'];
 		$titletext = $title;
 		$title = "<a href=\"series.php?seriesid=$item\">".stripslashes($title)."</a>";
 	}
 	else { 
-		$titlequery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'revtitle'");
-		while($code = dbassoc($titlequery)) {
+		$titlequery =  "SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'revtitle'";
+		$result = e107::getDb()->retrieve($titlequery);
+		e107::getMessage()->addDebug($query);
+		foreach($result AS $code) {
 			eval($code['code_text']);
 		}
 	}
 	$tpl->assign("pagetitle", "<div id=\"pagetitle\">"._REVIEWSFOR." $title</div>");
+	$reviews_vars['pagetitle'] = "<div id=\"pagetitle\">"._REVIEWSFOR." $title</div>";
+
 	if($type == "SE") {
 		$jumpmenu = "";
 		$stinseries = dbquery("SELECT sid, subseriesid, inorder FROM ".TABLEPREFIX."fanfiction_inseries WHERE seriesid = '$item'");
@@ -308,15 +331,18 @@ else {
 			$jumpmenu .= "</select></form>";
 		}
 		$tpl->assign("jumpmenu", $jumpmenu );
+		$reviews_vars['jumpmenu'] = $jumpmenu;
+		/*
 		$query = "SELECT review.reviewid, review.respond, review.review, review.uid, review.reviewer, review.rating, review.date as date, series.title as seriestitle, stories.title as title FROM ".TABLEPREFIX."fanfiction_reviews as review LEFT JOIN ".TABLEPREFIX."fanfiction_series as series ON review.item = series.seriesid AND review.type = 'SE' LEFT JOIN ".TABLEPREFIX."fanfiction_stories as stories ON stories.sid = review.item AND review.type ='ST' WHERE 
 			((series.seriesid = '$item' AND series.seriesid = review.item AND review.type = 'SE')".
 			(isset($storylist) ? " OR (FIND_IN_SET(review.item, '".(implode(",", $storieslist))."') > 0 AND review.type = 'ST')" : "").
 			(isset($serieslist) ? " OR (FIND_IN_SET(item, '".(implode(",", $serieslist))."') > 0 AND type = 'SE')" : "").
 			") AND review.review != 'No Review'";
 		$count =  "SELECT count(reviewid) FROM ".TABLEPREFIX."fanfiction_reviews WHERE item = '$item' AND type = 'SE' AND review != 'No Review'";
-
+		*/
 	}
-	else if($type == "ST") {
+	else if($type == "ST" OR $type == "CH") {
+		/*
 		if(isset($chapid))  {
 			$query = "SELECT review.reviewid, review.respond, review.review, review.uid, review.reviewer, review.rating, date as date, chapter.title as title, chapter.inorder as inorder FROM ".TABLEPREFIX."fanfiction_reviews as review, ".TABLEPREFIX."fanfiction_chapters as chapter WHERE chapter.chapid = '$chapid' AND chapter.chapid = review.chapid AND review.review != 'No Review' ";
 			$count =  "SELECT count(reviewid) FROM ".TABLEPREFIX."fanfiction_reviews as review WHERE chapid = '$chapid' AND review != 'No Review'";
@@ -325,24 +351,30 @@ else {
 			$query = "SELECT review.reviewid, review.respond, review.review, review.uid, review.reviewer, review.rating, review.date as date, chapter.title as title, chapter.inorder as inorder FROM ".TABLEPREFIX."fanfiction_reviews as review, ".TABLEPREFIX."fanfiction_chapters as chapter WHERE chapter.sid = '$item' AND chapter.chapid = review.chapid AND review.review != 'No Review' AND review.type = 'ST'";
 			$count = "SELECT count(reviewid) FROM ".TABLEPREFIX."fanfiction_reviews as review WHERE item = '$item' AND review != 'No Review' AND type = 'ST'";
 		}
+		*/
 		$jumpmenu = "<form name=\"jump\" action=\"\">";
 		$jumpmenu .= "<select name=\"sid\" onChange=\"window.location=this.options[this.selectedIndex].value\">";
 		$jumpmenu .= "<option value=\"reviews.php?type=ST&amp;item=".$story['sid'].(isset($_GET['unresponded']) ? "&amp;unresponded=1" : "")."\"";
-		if(!isset($chapid))
+		if(!isset($chapid))  {
 			$jumpmenu .= " selected";
+			$subject = _REVIEWSFOR." ".$story['title'];
+		}
+			
 		$jumpmenu .= ">"._VIEWALLREVIEWS."</option>";
 		$chapquery = dbquery("SELECT inorder, title, chapid, sid FROM ".TABLEPREFIX."fanfiction_chapters WHERE sid = '".$story['sid']."' ORDER BY inorder ASC");
 		while($chapters = dbassoc($chapquery)) {
-			$jumpmenu .= "<option value=\"reviews.php?chapid=".$chapters['chapid'].(isset($_GET['unresponded']) ? "&amp;unresponded=1" : "")."&amp;type=ST&amp;item=$item\"";
+			$jumpmenu .= "<option value=\"reviews.php?chapid=".$chapters['chapid'].(isset($_GET['unresponded']) ? "&amp;unresponded=1" : "")."&amp;type=CH&amp;item=".$story['sid']."\"";
 	
-			if(isset($chapid) && $chapid == $chapters['chapid'])
+			if(isset($chapid) && $chapid == $chapters['chapid']) {
 				$jumpmenu .= " selected";
-
-			$jumpmenu .= ">"._REVIEWSFOR." ".$chapters['inorder'].". ".$chapters['title']."</option>\n";
+				$subject = _COMMENTSFOR." ".$chapters['inorder'].". ".$chapters['title'];
+			}
+			$jumpmenu .= ">"._COMMENTSFOR." ".$chapters['inorder'].". ".$chapters['title']."</option>\n";
 		}
 		$jumpmenu .= "</select></form>";
 
 		$tpl->assign("jumpmenu", $jumpmenu );
+		$reviews_vars['jumpmenu'] = $jumpmenu;
 	}
 	else {
 		$reviewquery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'revqueries'");
@@ -364,6 +396,7 @@ else {
 
 	list($numrows)= dbrow($count);
 	$counter = 0;
+	/*
 	while($reviews = dbassoc($query))
 	{
 		$adminlink = "";
@@ -393,6 +426,7 @@ else {
 		$tpl->assign("oddeven", ($counter % 2 ? "odd" : "even"));
 		$counter++;
 	}
+	
 	$tpl->gotoBlock( "_ROOT" );
 
 	if ($numrows > $itemsperpage) 
@@ -403,7 +437,10 @@ else {
 	else
 		$reviewslink = write_message(sprintf(_LOGINTOREVIEW, strtolower($pagelinks['login']['link']), strtolower($pagelinks['register']['link'])));
 	$tpl->assign("reviewslink", $reviewslink);
+	*/
+
 	$form = "";
+	/*
 	if($reviewsallowed) {
 		if(isMEMBER || $anonreviews) {
 			$item = $item;
@@ -412,6 +449,14 @@ else {
 		}
 		else $form = write_message(sprintf(_LOGINTOREVIEW, strtolower($pagelinks['login']['link']), strtolower($pagelinks['register']['link'])));
 	}
+	*/
+ 
+	$type = $type;
+    $subject = $subject;
+    if($type == "CH") $item = $chapid;
+	else $item = $item;
+    include(e_PLUGIN."efiction_comments/includes/commentform.php");  
+
 	$tpl->assign("reviewform", $form);
 
 }

@@ -177,6 +177,7 @@ define('_REVEMAIL2', "Hello,
 If you no longer wish to receive e-mails such as this, please go to <a href='$url/user.php'>your account</a>\r\n
 on $sitename, and edit your profile."); // Modified 11-12-05
 define('_REVIEWSFOR', 'Reviews For');
+define('_COMMENTSFOR', 'Comments For');
 define('_REVTHANKYOU', 'Thank you for your review!');
 define('_SIGNED', 'Signed');
 define('_VIEWALLREVIEWS', 'View All Reviews');

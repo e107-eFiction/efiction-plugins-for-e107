@@ -98,7 +98,7 @@ define('_REQUIREDINFO', 'Chýbajú niektoré z požadovaných informácií.  Sko
 define('_REVIEW', 'Hodnotenie');
 define('_REVIEWNOTE', '<span style="text-decoration: underline; font-weight: bold;">Poznámka:</span> Môžete zadať buď hodnotenie, alebo recenziu, alebo oboje.');
 define('_REVIEWRATING', _RATING);
-define('_REVIEWS', 'Hodnotenie');
+define('_REVIEWS', 'Hodnotenia');
 define('_RETIRE', 'Retire');
 define('_RETIRED', 'Retired');
 define('_RUSERSONLY', 'Len registrovaní užívatelia');
@@ -162,10 +162,11 @@ define('_REVEMAIL2', "Hello,
   You have received a new review at $sitename.\r\n You can view your new review at <a href='$url/reviews.php?%1\$s'>$url/reviews.php?%1\$s</a>.
 If you no longer wish to receive e-mails such as this, please go to <a href='$url/user.php'>your account</a>\r\n
 on $sitename, and edit your profile."); // Modified 11-12-05
-define('_REVIEWSFOR', 'Reviews For');
+define('_REVIEWSFOR', 'Hodnotenia k');
+define('_COMMENTSFOR', 'Komentáre k');
 define('_REVTHANKYOU', 'Thank you for your review!');
 define('_SIGNED', 'Signed');
-define('_VIEWALLREVIEWS', 'View All Reviews');
+define('_VIEWALLREVIEWS', 'Zobraziť hodnotenia k poviedke');
 
 // Search
 
@@ -377,7 +378,7 @@ define('_CONTINUE', 'Continue');
 define('_CONTRIBUTE2RR', 'Contribute to Round Robin');
 define('_INVALIDSTORY', "That story does not exist on this archive.  You may <a href='searching.php'>search</a> for it or return to <a href='index.php'>the home page.</a>");
 define('_LOGINTOREVIEW', 'You must %1$s (%2$s) to review.');
-define('_SUBMITREVIEW', 'Submit a Review');
+define('_SUBMITREVIEW', 'Pridať hodnotenie');
 define('_TEXTSIZE', 'Text Size');
 
 // View User
@@ -394,7 +395,7 @@ define('_LOCKMEM', 'Lock Account');
 define('_MAKEADMIN', 'Make User an Admin');
 define('_REVOKEADMIN', 'Revoke Admin Privileges');
 define('_REVOKEVAL', 'Revoke Validation');
-define('_REVIEWSBY', 'Reviews by ');
+define('_REVIEWSBY', 'Hodnotenia od ');
 define('_SERIESBY', 'Series by ');
 define('_SITESIG', "This message was sent to you from $sitename located at <a href='$url'>$url</a>.");
 define('_SITESIG2', "This message was sent to you by %s from $sitename located at <a href='$url'>$url</a>.");

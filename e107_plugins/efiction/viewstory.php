@@ -342,14 +342,22 @@ else {
 		$jumpmenu2 .= "<option value=\"stories.php?action=newchapter&amp;sid=".$sid."\">"._CONTRIBUTE2RR."</option>";
 	}
 	if(isset($jumpmenu2)) $jumpmenu2 = "<form name=\"jump2\" action=\"\"><select class=\"textbox\" name=\"jump2\" onchange=\"if(this.selectedIndex.value != 'false') document.location = document.jump2.jump2.options[document.jump2.jump2.selectedIndex].value\"><option value=\"false\">"._OPTIONS."</option>".$jumpmenu2."</select></form>";
-	if($reviewsallowed) {
+/*	if($reviewsallowed) {
 		if(isMEMBER || $anonreviews) {
 			$item = $sid;
 			$type = "ST";
+            
 			include(_BASEDIR."includes/reviewform.php");  
 		}
 		else $form = write_message(sprintf(_LOGINTOREVIEW, strtolower($pagelinks['login']['link']), strtolower($pagelinks['register']['link'])));
-	}
+	}*/
+    
+    /* e107 comments system */
+    $type = 'CH';
+    $subject = $chaptertitle;
+    $item = $chapid;
+    include(e_PLUGIN."efiction_comments/includes/commentform.php");  
+    
 	$textsizer = "<a href=\"viewstory.php?sid=$sid".($inorder ? "&amp;chapter=$inorder" : "")."&amp;textsize=".($textsize - 1)."\">-</a> <strong>". _TEXTSIZE. "</strong> <a href=\"viewstory.php?sid=$sid".($inorder ? "&amp;chapter=$inorder" : "")."&amp;textsize=".($textsize + 1)."\">+</a> ";
 	// okay now that we know they can see the story and the chapter add 1 to the story and chapter counts;
 	if(empty($viewed) || (is_array($viewed) && !in_array($sid, $viewed))) {
