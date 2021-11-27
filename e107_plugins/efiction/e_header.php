@@ -77,7 +77,14 @@ if(deftrue('USER_AREA') && (e_PAGE != "menus.php") )    // prevents inclusion of
 			padding: 4px;
 			margin: 0;
 		}
-		.multiSelect {width: 300px;}";
+		.multiSelect {width: 300px;}
+        
+       .form-check {min-width: 270px;}  .checkbox-inline {min-width: 270px;}
+		#characters-container .checkbox-inline  {margin-left: 20px!important; } 
+		#catid-container .checkbox-inline  {margin-left: 20px!important; }  
+		#classes-container .checkbox-inline  {margin-left: 20px!important; } 
+	 ';
+        ";
 
 	if(!isset($_GET['action']) || $_GET['action'] != "printable") 
 	{
@@ -128,11 +135,10 @@ if(deftrue('USER_AREA') && (e_PAGE != "menus.php") )    // prevents inclusion of
 	else {
 		
 		e107::css("inline", $inline_css) ;
-	}	
+	}
+    	
     if(!empty($_GET['action']) && $_GET['action'] == "yesletter") { 
        define("e_IFRAME", true);
     }
- 
- 	
-}
- 
+
+ }

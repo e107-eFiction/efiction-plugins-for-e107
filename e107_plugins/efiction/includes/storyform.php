@@ -169,11 +169,6 @@ function storyform($stories, $preview = 0){
     
  	/*  categorization */
     $classrows = e107::getDb()->retrieve('SELECT * FROM #fanfiction_classtypes ORDER BY classtype_name', true);
-    $text .= '<style> .form-check {min-width: 270px;}  .checkbox-inline {min-width: 270px;}
-		#characters-container .checkbox-inline  {margin-left: 20px!important; } 
-		#catid-container .checkbox-inline  {margin-left: 20px!important; }  
-		#classes-container .checkbox-inline  {margin-left: 20px!important; } 
-		</style>';
  
         foreach ($classrows as $type) {   
             $text .= "<div class='row mb-3'>";

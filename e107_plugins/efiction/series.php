@@ -263,11 +263,6 @@ if($add == "series" || ($action == "add" && !$add) || $action == "edit") {
         $text .= '</div>';
     $text .= '</div>';    
  
-	$text .= '<style> .form-check {min-width: 270px;}
-	#characters-container .checkbox-inline  {margin-left: 20px!important; } 
-	#catid-container .checkbox-inline  {margin-left: 20px!important; }  
-	#classes-container .checkbox-inline  {margin-left: 20px!important; } 
-	</style>';
 
 	$output .= $text;  $text = '';
 
