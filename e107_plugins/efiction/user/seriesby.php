@@ -32,7 +32,7 @@ if($numseries) {
 	$tpl->assign("seriesheader", "<div class='sectionheader'>"._SERIESBY." $penname</div>");
 	$seriesquery = dbquery(_SERIESQUERY." AND series.uid = '$uid' LIMIT $offset, $itemsperpage");
 	while($stories = dbassoc($seriesquery)) {
-		include("includes/seriesblock.php");
+		include(_BASEDIR."includes/seriesblock.php");
 	}
 	$tpl->gotoBlock("listings");
 	if($numseries > $itemsperpage) $tpl->assign("pagelinks", build_pagelinks("viewuser.php?action=seriesby&amp;uid=$uid&amp;", $numseries, $offset));

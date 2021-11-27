@@ -20,8 +20,7 @@ if (!defined('e107_INIT'))
 }
 
 e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/lan_comment.php");
-//global $comment_shortcodes;
-//require_once (e_CORE."shortcodes/batch/comment_shortcodes.php");
+ 
 
 if (!class_exists('efiction_comments')) {
     class efiction_comments

@@ -120,11 +120,16 @@ define('_RUSERSONLY', 'Registered Users Only');
 define('_SELECT', 'Select');
 define('_SELECTCATS', 'Selected Categories');
 define('_SERIES', 'Series');
+define('_SERIES1', 'Series');  //singular
+define('_SERIES2', 'Series');
+define('_SERIES3', 'Series');
+
 define('_SORT', 'Sort');
 define('_STAR', 'star');
 define('_STORIES', 'Stories');
 define('_STORY', 'Story');
-define('_STORY2', 'Story');
+define('_STORY2', 'Story');  //What?
+define('_STORY3', 'Story');   //To
 define('_SUBMIT', 'Submit');
 define('_SUMMARY', 'Summary');
 define('_TEXT', 'Text');

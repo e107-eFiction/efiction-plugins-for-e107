@@ -104,12 +104,17 @@ define('_RETIRED', 'Retired');
 define('_RUSERSONLY', 'Len registrovaní užívatelia');
 define('_SELECT', 'Vybrať');
 define('_SELECTCATS', 'Selected Categories');
-define('_SERIES', 'Series');
+define('_SERIES', 'Série');  //plural  
+define('_SERIES1', 'séria');  //singular
+define('_SERIES2', 'sériu');
+define('_SERIES3', 'sérii');
+ 
 define('_SORT', 'Sort');
 define('_STAR', 'star');
 define('_STORIES', 'Poviedky');
 define('_STORY', 'Poviedka');
-define('_STORY2', 'Poviedku');
+define('_STORY2', 'poviedku');  //What?
+define('_STORY3', 'poviedke');   //To
 define('_SUBMIT', 'Odoslať');
 define('_SUMMARY', 'Zhrnutie');
 define('_TEXT', 'Text');
@@ -166,7 +171,9 @@ define('_REVIEWSFOR', 'Hodnotenia k');
 define('_COMMENTSFOR', 'Komentáre k');
 define('_REVTHANKYOU', 'Thank you for your review!');
 define('_SIGNED', 'Signed');
-define('_VIEWALLREVIEWS', 'Zobraziť hodnotenia k poviedke');
+define('_VIEWALLREVIEWS', 'Zobraziť hodnotenia');
+define('_VIEWALLSERRIEREVIEWS', 'Zobraziť hodnotenia k sérii');
+define('_VIEWALLSTORYREVIEWS', 'Zobraziť hodnotenia k poviedke');
 
 // Search
 

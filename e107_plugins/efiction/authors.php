@@ -82,7 +82,7 @@ $listOpts = ""; $countquery = "";
 		<option value=\"authors.php?".($let ? "let=$let&amp;" : "")."list=admins\"".($list == "admins" ? " selected" : "").">"._SITEADMINS."</option>$listOpts
 		</select></form></div>";
 	$pagelink="authors.php?list=".($list ? $list : "members")."&amp;".($let ? "let=$let&amp;" : "");
-	include("includes/members_list.php");
+	include(_BASEDIR."includes/members_list.php");
 
 	$tpl->assign( "output", $output );
 	//$tpl->xprintToScreen( );

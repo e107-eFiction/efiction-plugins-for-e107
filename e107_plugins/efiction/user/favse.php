@@ -56,7 +56,7 @@ if(empty($favorites)) accessDenied( );
 	else if(($add || $edit) && !isset($_POST['submit'])) {
 		$stories = dbassoc(dbquery("SELECT series.*, "._PENNAMEFIELD." as penname FROM ".TABLEPREFIX."fanfiction_series as series, "._AUTHORTABLE." WHERE series.uid = "._UIDFIELD." AND seriesid = '".($add ? $add : $edit)."' LIMIT 1"));
 		$tpl->newBlock("listings");
-		include("includes/seriesblock.php");
+		include(_BASEDIR."includes/seriesblock.php");
 		$tpl->gotoBlock("listings");
 		
 		if($add) {
@@ -86,7 +86,7 @@ if(empty($favorites)) accessDenied( );
 		$list = dbquery($storyquery."  LIMIT $offset, $itemsperpage");
 		$count = 0;
 		while($stories = dbassoc($list)) { 
-			include("includes/seriesblock.php"); 
+			include(_BASEDIR."includes/seriesblock.php"); 
 			if(file_exists("$skindir/favcomment.tpl")) $cmt = new TemplatePower( "$skindir/favcomment.tpl" );
 			else $cmt = new TemplatePower(_BASEDIR."default_tpls/favcomment.tpl" );
 			$cmt->prepare( );

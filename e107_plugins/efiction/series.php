@@ -103,15 +103,8 @@ if($add == "series" || ($action == "add" && !$add) || $action == "edit") {
 		/* IMPORTANT e107 checkboxes returns array directly */
 		$catid = isset($_POST['catid']) ? array_filter($_POST['catid'], "isNumber") : array( );
 		$charid = isset($_POST['charid']) ? array_filter($_POST['charid'], "isNumber") : array( );
+        $classes = isset($_POST['classes']) ? array_filter($_POST['classes'], "isNumber") : array( );
  
-		$classes = array( );
-		foreach($classtypelist as $type => $cinfo) {
-			if(isset($_POST["classes_".$type])) {
-				$opts = is_array($_POST["classes_".$type]) ? array_filter($_POST["classes_".$type], "isNumber") : array( );
-				$classes = array_merge($opts, $classes);
-			}
-		}
-		$classes = implode(",", $classes);
 		if(!empty($_POST['uid']) && isNumber($_POST['uid'])) $owner = $_POST['uid'];
 		else $owner = USERUID;
 		if($title == "" || $summary == "") {
@@ -132,7 +125,7 @@ if($add == "series" || ($action == "add" && !$add) || $action == "edit") {
 					'catid'    =>  ($catid ? implode(",", $catid) : ""),
 					'isopen'    =>  $open,
 					'characters'    => ($charid ? implode(",", $charid) : ""),
-					'classes'    =>  $classes,            
+					'classes'    =>   ($classes ? implode(",", $classes) : ""),       
 					"WHERE"  =>  "seriesid = ".$seriesid
 				 );
  
@@ -263,7 +256,6 @@ if($add == "series" || ($action == "add" && !$add) || $action == "edit") {
         $text .= '</div>';
     $text .= '</div>';    
  
-
 	$output .= $text;  $text = '';
 
 	/*  categorization */
@@ -415,7 +407,7 @@ if($add == "stories") {
 			$authorlink = "<a href=\"series.php?action=$action&amp;add=stories&amp;seriesid=$seriesid&amp;stories=";
 			$countquery = _MEMBERCOUNT." WHERE ap.stories > 0".(isset($letter) ? " AND $letter" : "");
 			$authorquery = _MEMBERLIST." WHERE ap.stories > 0".(isset($letter) ? " AND $letter" : "");
-			include("includes/members_list.php");
+			include(_BASEDIR."includes/members_list.php");
 			$showlist = false;
 		}
 		else {
@@ -488,7 +480,7 @@ if($action == "delete") {
 
 			$seriesinfo = dbquery("SELECT title, uid FROM ".TABLEPREFIX."fanfiction_series WHERE seriesid = '$seriesid'");
 			list($title, $uid) = dbrow($seriesinfo);
-			include("includes/deletefunctions.php");
+			include(_BASEDIR."includes/deletefunctions.php");
 			deleteSeries($seriesid);
 			$output .= write_message(_ACTIONSUCCESSFUL);
 			if($admin || USERUID == $uid) $showlist = true;
@@ -501,6 +493,7 @@ if($action == "delete") {
 		$showlist = false;
 	}
 }
+ 
 if($showlist) {
 	$go = isset($_GET['go']) ? $_GET['go'] : false;
 	if($go != "" && $seriesid != "") {

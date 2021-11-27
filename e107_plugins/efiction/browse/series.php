@@ -71,7 +71,7 @@ list($numrows)= dbrow($count);
 $sresult = dbquery($query);
 $count = 0;
 $tpl->newBlock("listings");
-while($stories = dbassoc($sresult)) { include("includes/seriesblock.php"); }	
+while($stories = dbassoc($sresult)) { include(_BASEDIR."includes/seriesblock.php"); }	
 $tpl->gotoBlock("listings");
 if($numrows > $itemsperpage) $tpl->assign("pagelinks", build_pagelinks("browse.php?$terms&amp;", $numrows, $offset));
 $tpl->gotoBlock("_ROOT");

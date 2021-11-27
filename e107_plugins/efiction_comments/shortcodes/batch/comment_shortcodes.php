@@ -108,7 +108,7 @@ class plugin_efiction_comments_comment_shortcodes extends e_shortcode
 		$REPLY = '';
  
 	//	print_a($this->var);
-		if($this->var['comment_type'] == "ST")  {
+		if($this->var['comment_type'] == "ST" OR $this->var['comment_type'] == "SE")  {
               return "";
 
 		}
@@ -234,7 +234,7 @@ class plugin_efiction_comments_comment_shortcodes extends e_shortcode
 
 	//	e107::getDebug()->log($this->var);
 
-		$text = "<a href='#' data-target='".SITEURL."comments.php' id='efiction-comment-delete-".$this->var['comment_id']."'  data-type='".$this->var['comment_type']."' data-itemid='".$this->var['comment_item_id']."' class='efiction-comment-delete btn btn-default btn-secondary btn-sm btn-mini btn-xs'>".LAN_DELETE."</a> ";
+		$text = "<a href='#' data-target='".EFICTION_COMMENTS_DIR."comments.php' id='efiction-comment-delete-".$this->var['comment_id']."'  data-type='".$this->var['comment_type']."' data-itemid='".$this->var['comment_item_id']."' class='efiction-comment-delete btn btn-default btn-secondary btn-sm btn-mini btn-xs'>".LAN_DELETE."</a> ";
 
 		if($this->var['comment_blocked'] == 2) // pending approval. 
 		{
@@ -263,7 +263,7 @@ class plugin_efiction_comments_comment_shortcodes extends e_shortcode
 		if($this->mode == 'edit')
 		{
  
-            if($this->var['table'] == 'ST')  {
+            if($this->var['table'] == 'ST' OR $this->var['table'] == 'SE') {
                 $value = (varset($this->var['eaction']) == "edit" ? _EDIT." ".REVIEW : _SUBMITREVIEW);
             }
             else {
@@ -385,7 +385,7 @@ class plugin_efiction_comments_comment_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		if($this->var['comment_blocked'] == 1)
 		{
-			return COMLAN_0;
+		 	return COMLAN_0;
 		}
 		
 		return $tp->toHTML($this->var['comment_comment'], TRUE, FALSE, $this->var['user_id']);
@@ -398,10 +398,12 @@ class plugin_efiction_comments_comment_shortcodes extends e_shortcode
 		{
 			case 2:
 				$text = COMLAN_331;
+                $class = 'class="badge bg-info"';
 				break;
 
 			case 1:
 				$text = COMLAN_0;
+                $class = 'class="badge bg-danger"';
 				break;
 
 			default:
@@ -409,7 +411,7 @@ class plugin_efiction_comments_comment_shortcodes extends e_shortcode
 				break;
 		}
 
-		return "<span id='comment-status-".$this->var['comment_id']."'>".$text."</span>";
+		return "<span {$class} id='comment-status-".$this->var['comment_id']."'>".$text."</span>";
 	}
 
 

@@ -50,7 +50,7 @@ if($maint == "reviews") {
 	$series = dbquery("SELECT seriesid FROM ".TABLEPREFIX."fanfiction_series");
 	while($s = dbassoc($series)) {
 		$thisseries = $s['seriesid'];
-		include("includes/seriesreviews.php");
+		include(_BASEDIR."includes/seriesreviews.php");
 	}
 	// For modules which may allow reviews.
 	$codequery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'revfix'");

@@ -116,7 +116,7 @@ if($favorites) {
 		$countquery = "SELECT count(uid) FROM ".TABLEPREFIX."fanfiction_favorites WHERE type = 'ST' AND item = '$favstor'";
 		$authorquery = "SELECT ap.stories, "._PENNAMEFIELD." as penname, "._UIDFIELD." as uid FROM ".TABLEPREFIX."fanfiction_favorites as fav LEFT JOIN "._AUTHORTABLE." ON fav.uid = "._UIDFIELD." LEFT JOIN  ".TABLEPREFIX."fanfiction_authorprefs AS ap ON ap.uid = fav.uid WHERE fav.item = '$favstor' AND fav.type = 'ST' GROUP BY fav.uid";
 		$pagelink= $thislink."action=stats&amp;favstor=$favstor".($offset > 0 ? "&amp;offset=$offset" : "")."&amp;";
-		include("includes/members_list.php");
+		include(_BASEDIR."includes/members_list.php");
 	}
 	else if(isset($_GET['favseries']) && isNumber($_GET['favseries'])) {
 		$favseries = $_GET['favseries'];
@@ -126,14 +126,14 @@ if($favorites) {
 		$countquery = "SELECT count(uid) FROM ".TABLEPREFIX."fanfiction_favorites WHERE item = '$favseries' AND type = 'SE'";
 		$authorquery = "SELECT ap.stories,"._PENNAMEFIELD." as penname, "._UIDFIELD." as uid FROM ".TABLEPREFIX."fanfiction_favorites as fav LEFT JOIN "._AUTHORTABLE." ON fav.uid = "._UIDFIELD." LEFT JOIN ".TABLEPREFIX."fanfiction_authorprefs AS ap ON ap.uid = fav.uid WHERE fav.item = '$favseries' AND fav.type = 'SE' GROUP BY fav.uid";
 		$pagelink= $thislink."action=stats&amp;favseries=$favseries".($offset > 0 ? "&amp;offset=$offset" : "")."&amp;";
-		include("includes/members_list.php");
+		include(_BASEDIR."includes/members_list.php");
 	}
 	else if($stat == "favauthor") {
 		$output =  "<div class='sectionheader'>"._FAVORITE.": $penname</div>";
 		$countquery = "SELECT count(uid) FROM ".TABLEPREFIX."fanfiction_favorites WHERE item = '$uid' AND type = 'AU'";
 		$authorquery = "SELECT ap.stories, "._PENNAMEFIELD." as penname, "._UIDFIELD." as uid FROM ".TABLEPREFIX."fanfiction_favorites AS fav LEFT JOIN "._AUTHORTABLE." ON fav.uid = "._UIDFIELD." LEFT JOIN ".TABLEPREFIX."fanfiction_authorprefs as ap ON ap.uid = fav.uid WHERE  fav.item = '$uid' AND fav.type = 'AU' GROUP BY fav.uid";
 		$pagelink= $thislink."action=stats&amp;stat=favauthor".($offset > 0 ? "&amp;offset=$offset" : "")."&amp;";
-		include("includes/members_list.php");
+		include(_BASEDIR."includes/members_list.php");
 	}
 
 

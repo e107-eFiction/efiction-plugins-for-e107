@@ -237,7 +237,7 @@ else if($action == "edit" || $action == "add") {
 				$result = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_reviews WHERE reviewid = '$reviewid' LIMIT 1");
 				$review = dbassoc($result);
 			}
-			include("includes/reviewform.php");
+			include(_BASEDIR."includes/reviewform.php");
 			$output .= $form;
 		}
 	}
@@ -269,6 +269,7 @@ else {
 			}
 			*/
 		}
+        $pagetitle = _REVIEWSFOR." "._STORY." ". $title;
 	}
 	else if($type == "SE") {
 		$storyquery = "SELECT title, uid FROM ".TABLEPREFIX."fanfiction_series WHERE seriesid = '$item' LIMIT 1";
@@ -278,6 +279,7 @@ else {
 		$authoruid = $story['uid'];
 		$titletext = $title;
 		$title = "<a href=\"series.php?seriesid=$item\">".stripslashes($title)."</a>";
+        $pagetitle = _REVIEWSFOR." "._SERIES3." ". $title;
 	}
 	else { 
 		$titlequery =  "SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'revtitle'";
@@ -287,8 +289,8 @@ else {
 			eval($code['code_text']);
 		}
 	}
-	$tpl->assign("pagetitle", "<div id=\"pagetitle\">"._REVIEWSFOR." $title</div>");
-	$reviews_vars['pagetitle'] = "<div id=\"pagetitle\">"._REVIEWSFOR." $title</div>";
+	$tpl->assign("pagetitle", "<div id=\"pagetitle\">".$pagetitle."</div>");
+	$reviews_vars['pagetitle'] = "<div id=\"pagetitle\">".$pagetitle."</div>";
 
 	if($type == "SE") {
 		$jumpmenu = "";
@@ -322,9 +324,9 @@ else {
 			if(is_array($inlist)) ksort($inlist);
 			$jumpmenu = "<form name=\"jump\" action=\"\">";
 			$jumpmenu .= "<select name=\"sid\" onChange=\"if (this.selectedIndex >0) window.location=this.options[this.selectedIndex].value\">";
-			$jumpmenu .= "<option value=\"reviews.php?type=SE&amp;item=$item\">"._VIEWALLREVIEWS."</option>";
+			$jumpmenu .= "<option value=\"reviews.php?type=SE&amp;item=$item\">"._VIEWALLSERRIEREVIEWS."</option>";
 			foreach($inlist as $x => $st) {
-				$jumpmenu .= "<option value=\"reviews.php?type=".(isset($st['sid']) ? "ST&amp;item=".$st['sid'] : "SE&amp;item=".$st['seriesid'])."\">"._REVIEWSFOR." ".$st['title']."</option>";
+				$jumpmenu .= "<option value=\"reviews.php?type=".(isset($st['sid']) ? "ST&amp;item=".$st['sid'] : "SE&amp;item=".$st['seriesid'])."\">"._REVIEWSFOR." "._STORY3.": ".$st['title']."</option>";
 				if(!empty($st['sid'])) $storylist[] = $st['sid'];
 				else if(!empty($st['subseriesid'])) $serieslist[] = $st['subseriesid'];
 			}
@@ -357,17 +359,17 @@ else {
 		$jumpmenu .= "<option value=\"reviews.php?type=ST&amp;item=".$story['sid'].(isset($_GET['unresponded']) ? "&amp;unresponded=1" : "")."\"";
 		if(!isset($chapid))  {
 			$jumpmenu .= " selected";
-			$subject = _REVIEWSFOR." ".$story['title'];
+			$subject =  _STORY. " ". story['title'];
 		}
 			
-		$jumpmenu .= ">"._VIEWALLREVIEWS."</option>";
+		$jumpmenu .= ">"._VIEWALLSTORYREVIEWS."</option>";
 		$chapquery = dbquery("SELECT inorder, title, chapid, sid FROM ".TABLEPREFIX."fanfiction_chapters WHERE sid = '".$story['sid']."' ORDER BY inorder ASC");
 		while($chapters = dbassoc($chapquery)) {
 			$jumpmenu .= "<option value=\"reviews.php?chapid=".$chapters['chapid'].(isset($_GET['unresponded']) ? "&amp;unresponded=1" : "")."&amp;type=CH&amp;item=".$story['sid']."\"";
 	
 			if(isset($chapid) && $chapid == $chapters['chapid']) {
 				$jumpmenu .= " selected";
-				$subject = _COMMENTSFOR." ".$chapters['inorder'].". ".$chapters['title'];
+				$subject =  _CHAPTER." ".$chapters['inorder'].". ".$chapters['title'];
 			}
 			$jumpmenu .= ">"._COMMENTSFOR." ".$chapters['inorder'].". ".$chapters['title']."</option>\n";
 		}
@@ -445,7 +447,7 @@ else {
 		if(isMEMBER || $anonreviews) {
 			$item = $item;
 			$type = $type;
-			include("includes/reviewform.php");
+			include(_BASEDIR."includes/reviewform.php");
 		}
 		else $form = write_message(sprintf(_LOGINTOREVIEW, strtolower($pagelinks['login']['link']), strtolower($pagelinks['register']['link'])));
 	}

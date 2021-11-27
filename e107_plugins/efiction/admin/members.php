@@ -145,7 +145,7 @@ $confirm = isset($_GET['confirm']) ? $_GET['confirm'] : false;
 	}
 	else if(isset($_GET["delete"]) && isNumber($_GET["delete"])) {
 		 if($confirm == "yes") {
-			include("includes/deletefunctions.php");
+			include(_BASEDIR."includes/deletefunctions.php");
 			$output .= deleteUser($_GET['delete']);
 		}
 		else if ($confirm == "no") {
