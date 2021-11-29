@@ -46,7 +46,7 @@ $newcount = dbquery("SELECT count(reviewid) as totalcount FROM ".TABLEPREFIX."fa
 	(count($serieslist) > 0 ? " OR (FIND_IN_SET(item, '".(implode(",", $serieslist))."') > 0 AND type = 'SE')" : "").
 	") AND review != 'No Review'");
 list($totalcount) = dbrow($newcount);
-if($totalcount) $update = dbquery("UPDATE ".TABLEPREFIX."fanfiction_series SET rating = '".round($totalreviews)."', reviews = '$totalcount' WHERE seriesid = '$thisseries'");
+if($totalcount) $update = e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_series SET rating = '".round($totalreviews)."', reviews = '$totalcount' WHERE seriesid = '$thisseries'");
 $parentq = dbquery("SELECT seriesid FROM ".TABLEPREFIX."fanfiction_inseries WHERE subseriesid = '$thisseries' AND seriesid != '$thisseries'");
 if(dbnumrows($parentq) > 0) list($parent) = dbrow($parentq);
 else $parent = false;
@@ -70,7 +70,7 @@ while($parent) {
 		") AND review != 'No Review'");
 	list($total) = dbrow($pnewrating);
 	list($totalcount) = dbrow($pnewcount);
-	if($total) $update = dbquery("UPDATE ".TABLEPREFIX."fanfiction_series SET rating = '".round($total)."', reviews = '$totalcount' WHERE seriesid = '$parent' AND rating != '-1'");
+	if($total) $update = e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_series SET rating = '".round($total)."', reviews = '$totalcount' WHERE seriesid = '$parent' AND rating != '-1'");
 	$parentq = dbquery("SELECT seriesid FROM ".TABLEPREFIX."fanfiction_inseries WHERE subseriesid = '$parent'");
 	if(dbnumrows($parentq)) list($parent) = dbrow($parentq);
 	else $parent = false;

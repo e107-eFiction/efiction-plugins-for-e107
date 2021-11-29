@@ -26,7 +26,7 @@
 		$output .= "<div id=\"pagetitle\">"._UNLOCK."</div>";
 		if($_GET["confirm"] == "yes")
 		{
-			dbquery("UPDATE ".TABLEPREFIX."fanfiction_authors SET level = '0' WHERE uid = '".$_GET['unlock']."'");
+			e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_authors SET level = '0' WHERE uid = '".$_GET['unlock']."'");
 			$output .= "<center>"._ACTIONSUCCESSFUL."</center>";
 		}
 		else if ($_GET["confirm"] == "no")
@@ -44,7 +44,7 @@
 	else if(isset($do)) {
 	
 		if($_POST['submit'] && isNumber($_POST['uid'])) {
-			dbquery("UPDATE ".TABLEPREFIX."fanfiction_authors SET level = '-1' WHERE uid = '".$_POST['uid']."'");
+			e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_authors SET level = '-1' WHERE uid = '".$_POST['uid']."'");
 			
 			$output .= "<center>"._BACK2ADMIN."</center>";
 			return $output;

@@ -34,6 +34,7 @@ if (!empty(e107::getPref('comments_disabled')))
 	exit;
 }
 
+print_a($_GET);
 
 if(e_AJAX_REQUEST) // TODO improve security
 {
@@ -46,16 +47,16 @@ if(e_AJAX_REQUEST) // TODO improve security
 	$ret = array();
 	 
 	// Comment Pagination 
-	if(varset($_GET['mode']) == 'list' && vartrue($_GET['id']) && vartrue($_GET['type']))
+/*	if(varset($_GET['mode']) == 'list' && vartrue($_GET['id']) && vartrue($_GET['type']))
 	{
 		$clean_type = preg_replace("/[^\w\d]/","",$_GET['type']);
-		
+	 
 		$tmp = e107::getSingleton('efiction_comments')->getComments($clean_type,intval($_GET['id']),intval($_GET['from']));
 		echo $tmp['comments'];
 		exit;
 	}
 	
-
+*/
 	if(varset($_GET['mode']) == 'reply' && vartrue($_POST['itemid']))
 	{	
 		$status 		= e107::getSingleton('efiction_comments')->replyComment($_POST['itemid']);	

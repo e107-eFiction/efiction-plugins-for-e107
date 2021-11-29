@@ -66,7 +66,7 @@ function preview_story($stories) {
 		if(uLEVEL == 1 || (empty($admincats) || sizeof(array_intersect(explode(",", $catid), explode(",", $admincats))))) {
 		 
 			if(!$storyvalid) {
-				dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET validated = '1', updated = ".time()." WHERE sid = '$_GET[sid]'");
+				e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET validated = '1', updated = ".time()." WHERE sid = '$_GET[sid]'");
 				foreach(explode(",", $catid) as $cat) {
 					categoryitems($cat, 1);
 				}
@@ -77,9 +77,9 @@ function preview_story($stories) {
 					while($c = dbassoc($coauth)) {
 						$au[] = $c['uid'];
 					}
-					dbquery("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET stories = stories + 1 WHERE FIND_IN_SET(uid, '".implode(",", $au)."') > 0");
+					e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET stories = stories + 1 WHERE FIND_IN_SET(uid, '".implode(",", $au)."') > 0");
 				}
-				dbquery("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET stories = stories + 1 WHERE uid = '$authoruid'");	
+				e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET stories = stories + 1 WHERE uid = '$authoruid'");	
 				$codequery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'addstory'");
 				while($code = dbassoc($codequery)) {
 					eval($code['code_text']);
@@ -98,7 +98,7 @@ function preview_story($stories) {
 					}				
 				}
 				if($logging) dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_log (`log_action`, `log_uid`, `log_ip`, `log_type`) VALUES('".escapestring(sprintf(_LOG_VALIDATE_STORY, USERPENNAME, USERUID, $title, $sid, $author, $authoruid))."', '".USERUID."', INET_ATON('".$_SERVER['REMOTE_ADDR']."'), 'VS')");
-				dbquery("UPDATE ".TABLEPREFIX."fanfiction_stats SET stories = stories + 1");
+				e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stats SET stories = stories + 1");
 			}
 			else if($alertson) {
 				$subject = _STORYALERT;
@@ -116,17 +116,17 @@ function preview_story($stories) {
 				}
 				if($logging) dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_log (`log_action`, `log_uid`, `log_ip`, `log_type`) VALUES('".escapestring(sprintf(_LOG_VALIDATE_CHAPTER, USERPENNAME, USERUID, $title, $sid, $author, $authoruid, $inorder))."', '".USERUID."', INET_ATON('".$_SERVER['REMOTE_ADDR']."'), 'VS')");
 			}
-			dbquery("UPDATE ".TABLEPREFIX."fanfiction_chapters SET validated = '1' WHERE chapid = '$_GET[chapid]'");
-			dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET updated = ".time()." WHERE sid = '$sid'");
+			e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_chapters SET validated = '1' WHERE chapid = '$_GET[chapid]'");
+			e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET updated = ".time()." WHERE sid = '$sid'");
 			$count =  dbquery("SELECT SUM(wordcount) as totalcount FROM ".TABLEPREFIX."fanfiction_chapters WHERE sid = '$sid' and validated = 1");
 			list($totalcount) = dbrow($count);
 			if($totalcount) {
-				dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET wordcount = '$totalcount' WHERE sid = '$sid'");
+				e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET wordcount = '$totalcount' WHERE sid = '$sid'");
 			}
 			list($chapters, $words) = dbrow(dbquery("SELECT COUNT(chapid), SUM(wordcount) FROM ".TABLEPREFIX."fanfiction_chapters WHERE validated = 1"));
 //			list($authors) = dbrow(dbquery("SELECT COUNT(DISTINCT uid) FROM ".TABLEPREFIX."fanfiction_chapters WHERE validated > 0"));
 			list($authors) = dbrow(dbquery("SELECT COUNT(uid) FROM ".TABLEPREFIX."fanfiction_authorprefs WHERE stories > 0"));
-			dbquery("UPDATE ".TABLEPREFIX."fanfiction_stats set wordcount = '$words', chapters = '$chapters', authors = '$authors'");
+			e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stats set wordcount = '$words', chapters = '$chapters', authors = '$authors'");
 			$output .= write_message(_STORYVALIDATED);
 		}
 		else

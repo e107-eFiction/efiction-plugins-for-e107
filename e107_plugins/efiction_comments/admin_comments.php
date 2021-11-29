@@ -121,10 +121,9 @@ class comments_admin_ui extends e_admin_ui
 
 			$this->fields['comment_type']['writeParms']['optArray'] = 
 		 	array(
-				 'fanfiction_stories'=>_STORIES . " ". _REVIEWS . " [ST]", 
-				 'fanfiction_chapters'=>_CHAPTERS . "", 
-				 'fanfiction_authors'=>_AUTHORS. "[AU]",
-				 'fanfiction_series'=>_SERIES. "[SE]",
+				 'ST'=>_STORIES . " ". _REVIEWS . " [ST]", 
+				 'SCH'=>_CHAPTERS . " ". _REVIEWS .  "CH]", 
+				 'SE'=>_SERIES. " ". _REVIEWS .  "[SE]",
 				);
 
 			$this->prefs['comments_engine']['writeParms']['optArray'] = array('e107'=>'e107');
@@ -206,6 +205,9 @@ class comments_admin_ui extends e_admin_ui
 				break;
 			}
 			*/
+
+		    e107::getEvent()->trigger('efiction_comment_deleted', $deleted_data);
+
 			
 		}
 		
@@ -235,22 +237,59 @@ class comments_admin_ui extends e_admin_ui
 				// Recalculate the comment count
 				//
 
-				$qry = 'SELECT u.user_id, u.user_comments, COUNT(c.comment_id) as new_comments
-				FROM e107_user u 
-				LEFT JOIN e107_comments AS c ON (u.user_id = c.comment_author_id)
-				GROUP BY u.user_id';
-
-				if ($sql->gen($qry))
-				{
-					while($row = $sql->fetch())
-					{
-						if (intval($row['user_id'])>0 && intval($row['user_comments']) != intval($row['new_comments']))
-						{
-							$sql2->update('user', array('data' => array('user_comments' => $row['new_comments']), 'WHERE' => 'user_id = "'.$row['user_id'].'"'));
-						}
-					}
-				}
-				$mes->addSuccess(LAN_SUCC_RECALCULATE_COMMENT_COUNT);
+                $query =  "UPDATE ".TABLEPREFIX."fanfiction_stories SET reviews = '0'";  /* NOTE: access rating is field rid */  // Set them all to 0 before we re-insert. 
+                e107::getDb()->gen($query);
+                e107::getMessage()->addDebug($query);
+               
+                $query = "SELECT COUNT(comment_item_id) as count, comment_item_id FROM ".TABLEPREFIX."fanfiction_comments WHERE comment_type = 'ST' AND comment_blocked = '0'  GROUP BY comment_item_id";
+        	    $stories = e107::getDb()->retrieve($query, true);
+                e107::getMessage()->addDebug($query); 
+    
+				 
+                foreach($stories AS $s)  {
+                    $query = "UPDATE ".TABLEPREFIX."fanfiction_stories SET reviews = '".$s['count']."' WHERE sid = '".$s['comment_item_id']."'";
+                    e107::getDb()->gen($query);
+                    e107::getMessage()->addDebug($query);
+            	}
+                
+				$mes->addSuccess("Stories: ". LAN_SUCC_RECALCULATE_COMMENT_COUNT);
+                
+                
+                $query =  "UPDATE ".TABLEPREFIX."fanfiction_chapters SET reviews = '0'";  /* NOTE: access rating is field rid */  // Set them all to 0 before we re-insert. 
+                e107::getDb()->gen($query);
+                e107::getMessage()->addDebug($query);
+               
+                $query = "SELECT COUNT(comment_item_id) as count, comment_item_id FROM ".TABLEPREFIX."fanfiction_comments WHERE comment_type = 'CH' AND comment_blocked = '0'  GROUP BY comment_item_id";
+        	    $stories = e107::getDb()->retrieve($query, true);
+                e107::getMessage()->addDebug($query); 
+    
+				 
+                foreach($stories AS $s)  {
+                    $query = "UPDATE ".TABLEPREFIX."fanfiction_chapters SET reviews = '".$s['count']."' WHERE chapid = '".$s['comment_item_id']."'";
+                    e107::getDb()->gen($query);
+                    e107::getMessage()->addDebug($query);
+            	}
+                
+                $mes->addSuccess("Chapters: ". LAN_SUCC_RECALCULATE_COMMENT_COUNT);
+    
+    
+                $query =  "UPDATE ".TABLEPREFIX."fanfiction_series SET reviews = '0'";  /* NOTE: access rating is field rid */  // Set them all to 0 before we re-insert. 
+                e107::getDb()->gen($query);
+                e107::getMessage()->addDebug($query);
+               
+                $query = "SELECT COUNT(comment_item_id) as count, comment_item_id FROM ".TABLEPREFIX."fanfiction_comments WHERE comment_type = 'SE' AND comment_blocked = '0' GROUP BY comment_item_id";
+        	    $stories = e107::getDb()->retrieve($query, true);
+                e107::getMessage()->addDebug($query); 
+    
+				 
+                foreach($stories AS $s)  {
+                    $query = "UPDATE ".TABLEPREFIX."fanfiction_series SET reviews = '".$s['count']."' WHERE seriesid = '".$s['comment_item_id']."'";
+                    e107::getDb()->gen($query);
+                    e107::getMessage()->addDebug($query);
+            	}
+                
+                $mes->addSuccess("Series: ". LAN_SUCC_RECALCULATE_COMMENT_COUNT);
+                                
 			}
 
 		}

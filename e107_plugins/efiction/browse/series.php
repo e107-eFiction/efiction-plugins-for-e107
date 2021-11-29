@@ -24,7 +24,7 @@ if(!defined("e107_INIT")) exit( );
 
 // Page Setup
 $current = "series";
-
+ 
 $output .= "<div id=\"pagetitle\">"._SERIES.($let ? " - $let" : "")."</div>".build_alphalinks("browse.php?$terms&amp;", $let);
 
 if($let) {
@@ -65,19 +65,31 @@ if($let) {
 		}
 	}
 
-$count = dbquery(_SERIESCOUNT.(!empty($seriesquery) ? " WHERE ".$seriesquery : ""));
+$countquery =  _SERIESCOUNT.(!empty($seriesquery) ? " WHERE ".$seriesquery : "  " );
+e107::getMessage()->addDebug($query);
+$numrows = e107::getDb()->retrieve($countquery);
+
 $query = _SERIESQUERY.(!empty($seriesquery) ? " AND ".$seriesquery : "")." ORDER BY series.title LIMIT $offset, $itemsperpage";
-list($numrows)= dbrow($count);
-$sresult = dbquery($query);
+e107::getMessage()->addDebug($query);
+$sresult = e107::getDb()->retrieve($query, true);
+ 
 $count = 0;
 $tpl->newBlock("listings");
-while($stories = dbassoc($sresult)) { include(_BASEDIR."includes/seriesblock.php"); }	
+foreach($sresult AS $stories) {
+    include(_BASEDIR."includes/seriesblock.php");
+}
+ 	
 $tpl->gotoBlock("listings");
-if($numrows > $itemsperpage) $tpl->assign("pagelinks", build_pagelinks("browse.php?$terms&amp;", $numrows, $offset));
+if($numrows > $itemsperpage) {
+ $tpl->assign("pagelinks", build_pagelinks("browse.php?$terms&amp;", $numrows, $offset));
+}
+
 $tpl->gotoBlock("_ROOT");
 if(!$numrows) {
 	$tpl->gotoBlock("_ROOT");
 	$output .= write_message(_NORESULTS);
 }
+
+$output .= e107::getMessage()->render();
 $disablesorts = array("ratings", "sorts", "complete");
 ?>

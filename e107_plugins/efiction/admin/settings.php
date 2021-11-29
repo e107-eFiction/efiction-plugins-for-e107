@@ -88,7 +88,7 @@ if(!in_array($sect, $sects  )) {
 }
 
 
-if(isset($_POST['submit'])) {
+if(isset($_POST['submit'])) {      
 	if($sect == "main") {
 		if(!preg_match("!^[a-z0-9_]{3,30}$!i", $_POST['newsitekey'])) $output .= write_error(_BADSITEKEY);
 		else {
@@ -108,9 +108,8 @@ if(isset($_POST['submit'])) {
 			if(empty($sitekey)) $output .= write_message(_SITEKEYREQUIRED);
 			else {
 				if($sitekey != $oldsitekey) $output .= write_message(_SITEKEYCHANGED);
-                echo "UPDATE ".MPREFIX."fanfiction_settings SET sitekey = '$sitekey', sitename = '$sitename', slogan = '$slogan', url = '$url', tableprefix = '$MPREFIX', siteemail = '$siteemail', skin = '$skin', language = '$language' WHERE sitekey = '$oldsitekey'"; 
-                
-				$result = dbquery("UPDATE ".MPREFIX."fanfiction_settings SET sitekey = '$sitekey', sitename = '$sitename', slogan = '$slogan', url = '$url', tableprefix = '$MPREFIX', siteemail = '$siteemail', skin = '$skin', language = '$language' WHERE sitekey = '$oldsitekey'");
+ 
+				$result = e107::getDb()->gen("UPDATE ".MPREFIX."fanfiction_settings SET sitekey = '$sitekey', sitename = '$sitename', slogan = '$slogan', url = '$url', tableprefix = '$MPREFIX', siteemail = '$siteemail', skin = '$skin', language = '$language' WHERE sitekey = '$oldsitekey'");
 			}
 		}
 	}
@@ -127,10 +126,10 @@ if(isset($_POST['submit'])) {
 		$imageupload = $_POST['newimageupload'] == 1 ? 1 : 0;
 		$imageheight = isNumber($_POST['newimageheight']) ? $_POST['newimageheight'] : 0;
 		$imagewidth = isNumber($_POST['newimagewidth']) ? $_POST['newimagewidth'] : 0;
-		$result = dbquery("UPDATE ".MPREFIX."fanfiction_settings SET submissionsoff = '$submissionsoff', autovalidate = '$autovalidate', coauthallowed = '$coauthallowed', store = '$store', storiespath = '$storiespath', minwords = '$minwords', maxwords = '$maxwords', imageupload = '$imageupload', imageheight = '$imageheight', imagewidth = '$imagewidth', roundrobins = '$roundrobins', allowseries = '$allowseries' WHERE sitekey ='".SITEKEY."'");
+		$result = e107::getDb()->gen("UPDATE ".MPREFIX."fanfiction_settings SET submissionsoff = '$submissionsoff', autovalidate = '$autovalidate', coauthallowed = '$coauthallowed', store = '$store', storiespath = '$storiespath', minwords = '$minwords', maxwords = '$maxwords', imageupload = '$imageupload', imageheight = '$imageheight', imagewidth = '$imagewidth', roundrobins = '$roundrobins', allowseries = '$allowseries' WHERE sitekey ='".SITEKEY."'");
 		if($action == "settings") {
-			dbquery("UPDATE ".MPREFIX."fanfiction_panels SET panel_hidden = '".($imageupload ? "0" : "1")."' WHERE panel_name LIKE 'manageimages'");
-			dbquery("UPDATE ".MPREFIX."fanfiction_panels SET panel_hidden = '".($allowseries ? "0" : "1")."' WHERE (panel_name LIKE '%series%' OR panel_title LIKE '%series%') AND panel_type != 'A' AND panel_type != 'B'");
+			e107::getDb()->gen("UPDATE ".MPREFIX."fanfiction_panels SET panel_hidden = '".($imageupload ? "0" : "1")."' WHERE panel_name LIKE 'manageimages'");
+			e107::getDb()->gen("UPDATE ".MPREFIX."fanfiction_panels SET panel_hidden = '".($allowseries ? "0" : "1")."' WHERE (panel_name LIKE '%series%' OR panel_title LIKE '%series%') AND panel_type != 'A' AND panel_type != 'B'");
 			updatePanelOrder( );
 		}
 
@@ -150,19 +149,28 @@ if(isset($_POST['submit'])) {
 	     
     }
 	else if($sect == "display") {
+         
 		$dateformat = $_POST['newdateformat'] ? descript(strip_tags($_POST['newdateformat'])) : descript(strip_tags($_POST['customdateformat']));
 		$timeformat = $_POST['newtimeformat'] ? descript(strip_tags($_POST['newtimeformat'])) : descript(strip_tags($_POST['customtimeformat']));
 		$extendcats = $_POST['newextendcats'] == 1 ? 1 : 0;
 		if(isset($_POST['newdisplaycolumns']) && isNumber($_POST['newdisplaycolumns'])) $displaycolumns = $_POST['newdisplaycolumns'];
 		if(isset($_POST['newitemsperpage']) && isNumber($_POST['newitemsperpage'])) $itemsperpage = $_POST['newitemsperpage'];
-		if(isset($_POST['newlinkstyle']) && isNumber($_POST['newlinkstyle'])) $linkstyle = $_POST['newlinkstyle'];
+ 
+		if(isset($_POST['newlinkstyle']) &&  $_POST['newlinkstyle'] ) $linkstyle = $_POST['newlinkstyle'];
+ 
 		if(isset($_POST['newlinkrange']) && isNumber($_POST['newlinkrange'])) $linkrange = $_POST['newlinkrange'];
 		$displayindex = $_POST['newstoryindex'] == 1 ? 1 : 0;
 		$displayprofile = $_POST['newdisplayprofile'] == 1 ? 1 : 0;
 		$defaultsort = $_POST['newdefaultsort'] == 1 ? 1 : 0;
 		if(isNumber($_POST['newrecentdays'])) $recentdays = $_POST['newrecentdays'];
-		$result = dbquery("UPDATE ".MPREFIX."fanfiction_settings SET dateformat = '$dateformat', timeformat = '$timeformat', extendcats = '$extendcats', displaycolumns = '$displaycolumns', itemsperpage = '$itemsperpage', displayindex = '$displayindex', defaultsort = '$defaultsort', recentdays = '$recentdays', displayprofile = '$displayprofile', linkstyle = '$linkstyle', linkrange = '$linkrange' WHERE sitekey ='".SITEKEY."'");
-	}
+        
+        $query = "UPDATE ".MPREFIX."fanfiction_settings SET dateformat = '$dateformat', timeformat = '$timeformat', extendcats = '$extendcats', 
+        displaycolumns = '$displaycolumns', itemsperpage = '$itemsperpage', displayindex = '$displayindex', 
+        defaultsort = '$defaultsort', recentdays = '$recentdays', displayprofile = '$displayprofile', linkstyle = '$linkstyle', linkrange = '$linkrange' WHERE sitekey ='".SITEKEY."'";
+ 
+        $result = e107::getDb()->gen($query);
+        e107::getMessage()->addDebug($query);
+ 	}
 	else if($sect == "reviews") {
 		$reviewsallowed = $_POST['newreviewsallowed'] == 1 ? 1 : 0;
 		$anonreviews = $_POST['newanonreviews'] == 1 ? 1 : 0;
@@ -178,9 +186,10 @@ if(isset($_POST['submit'])) {
 		$disablepopups = $_POST['newdisablepops'] == 1 ? 1 : 0;
 		$agestatement  = $_POST['newagestatement'] == 1 ? 1 : 0;
 		$pwdsetting = $_POST['newpwdsetting'] == 1 ? 1 : 0;
-		$result = dbquery("UPDATE ".MPREFIX."fanfiction_settings SET alertson = '$alertson', disablepopups = '$disablepopups', agestatement = '$agestatement', pwdsetting = '$pwdsetting' WHERE sitekey ='".SITEKEY."'");
+		$result = e107::getDb()->gen("UPDATE ".MPREFIX."fanfiction_settings SET alertson = '$alertson', disablepopups = '$disablepopups', agestatement = '$agestatement', pwdsetting = '$pwdsetting' WHERE sitekey ='".SITEKEY."'");
 	}
  
+    $output .= e107::getMessage()->render();
     // 0 is correct value, nothing was changed
 	if($result >= 0 ) {
 		$output .= write_message(_ACTIONSUCCESSFUL);
@@ -188,6 +197,8 @@ if(isset($_POST['submit'])) {
 		if(!$sect) $sect = $sects[0];
 	}
 	else $output .= write_error("(4)"._ERROR);
+    
+    die;
 }
  
 	$settings = efiction_settings::get_settings();

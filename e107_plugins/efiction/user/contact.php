@@ -23,7 +23,7 @@
 // ----------------------------------------------------------------------
 
 if(!defined("_CHARSET")) exit( );
-
+ 
 	if(!$uid) $output .= write_error(_ERROR);
 	else {
 		$author = dbquery("SELECT "._PENNAMEFIELD." as penname, "._EMAILFIELD." as email FROM "._AUTHORTABLE." WHERE "._UIDFIELD." = '$uid' LIMIT 1");

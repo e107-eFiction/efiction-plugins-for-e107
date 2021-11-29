@@ -61,7 +61,7 @@ function deleteStory($story) {
 		$countquery = dbquery("SELECT count(seriesid) FROM ".TABLEPREFIX."fanfiction_inseries WHERE seriesid = '".$series['seriesid']."'");
 		list($count) = dbrow($countquery);
 		dbquery("DELETE FROM ".TABLEPREFIX."fanfiction_inseries WHERE seriesid = '".$series['seriesid']."' AND sid = '".$story['sid']."' LIMIT 1");
-		if($series['inorder'] < $count) dbquery("UPDATE ".TABLEPREFIX."fanfiction_inseries SET inorder = (inorder - 1) WHERE seriesid = '".$series['seriesid']."' AND inorder > '".$series['inorder']."'");
+		if($series['inorder'] < $count) e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_inseries SET inorder = (inorder - 1) WHERE seriesid = '".$series['seriesid']."' AND inorder > '".$series['inorder']."'");
 		seriesreview($series); 
 	}
 	$codequery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'delstory'");
@@ -69,15 +69,15 @@ function deleteStory($story) {
 		eval($code['code_text']);
 	}
 	if($story['validated'] > 0) {
-		dbquery("UPDATE ".TABLEPREFIX."fanfiction_stats SET stories = stories - 1");
+		e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stats SET stories = stories - 1");
 		if(!empty($coauthors)) {
 			$coauthors[] = $story['uid'];
-			dbquery("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET stories = stories - 1 WHERE FIND_IN_SET(uid, '".implode(",", $coauthors)."') > 0");
+			e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET stories = stories - 1 WHERE FIND_IN_SET(uid, '".implode(",", $coauthors)."') > 0");
 		}
-		else dbquery("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET stories = stories - 1 WHERE uid = '".$story['uid']."' LIMIT 1");
+		else e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET stories = stories - 1 WHERE uid = '".$story['uid']."' LIMIT 1");
 		list($chapters, $words) = dbrow(dbquery("SELECT COUNT(chapid), SUM(wordcount) FROM ".TABLEPREFIX."fanfiction_chapters WHERE validated > 0"));
 		list($authors) = dbrow(dbquery("SELECT COUNT(uid) FROM ".TABLEPREFIX."fanfiction_authorprefs WHERE stories > 0"));
-		dbquery("UPDATE ".TABLEPREFIX."fanfiction_stats set wordcount = '$words', chapters = '$chapters', authors = '$authors'");
+		e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stats set wordcount = '$words', chapters = '$chapters', authors = '$authors'");
 	}
 }
 
@@ -103,7 +103,7 @@ function deleteUser($uid) {
 					}			
 					if(!empty($newauthor)) {
 						$coauthors = count($coauthors) > 0 ? 1 : 0;
-						dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET uid = '$newauthor', coauthors = '$coauthors' WHERE sid = '".$story['sid']."' LIMIT 1");
+						e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET uid = '$newauthor', coauthors = '$coauthors' WHERE sid = '".$story['sid']."' LIMIT 1");
 						$chapters = dbquery("SELECT chapid FROM ".TABLEPREFIX."fanfiction_chapters WHERE sid = '".$story['sid']."' AND uid = '$uid'");
 						while($chap = dbassoc($chapters)) {
 							$chapid = $chap['chapid'];
@@ -126,7 +126,7 @@ function deleteUser($uid) {
 								}
 								chmod(STORIESPATH."/$newauthor/$chapid.txt", 0644);
 							}
-							dbquery("UPDATE ".TABLEPREFIX."fanfiction_chapters SET uid = '$newauthor' WHERE chapid = '$chapid' LIMIT 1");
+							e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_chapters SET uid = '$newauthor' WHERE chapid = '$chapid' LIMIT 1");
 						}
 					}
 					else deleteStory($story);
@@ -136,7 +136,7 @@ function deleteUser($uid) {
 	}
 	$stories = dbquery("SELECT *, COUNT(uid) AS count FROM ".TABLEPREFIX."fanfiction_coauthors WHERE uid = '$uid' GROUP BY uid");
 	while($s = dbassoc($stories)) {
-		if($s['count'] > 1) dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET coauthors = 0 WHERE sid = '".$s['sid']."'");
+		if($s['count'] > 1) e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET coauthors = 0 WHERE sid = '".$s['sid']."'");
 	}
 	dbquery("DELETE FROM ".TABLEPREFIX."fanfiction_coauthors WHERE uid = '$uid'");
 	$stories = dbquery("SELECT seriesid FROM ".TABLEPREFIX."fanfiction_series where uid = '".$uid."'");
@@ -147,8 +147,8 @@ function deleteUser($uid) {
  
 	dbquery("DELETE FROM ".TABLEPREFIX."fanfiction_favorites WHERE uid = '".$uid."'");
 	dbquery("DELETE FROM ".TABLEPREFIX."fanfiction_favorites WHERE item = '".$uid."' AND type = 'AU'");
-	dbquery("UPDATE ".TABLEPREFIX."fanfiction_comments SET uid = '0' WHERE uid = '".$uid."'");
-	dbquery("UPDATE ".TABLEPREFIX."fanfiction_reviews SET uid = '0', reviewer = '$penname' WHERE uid = '".$uid."'");
+	e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_comments SET uid = '0' WHERE uid = '".$uid."'");
+	e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_reviews SET uid = '0', reviewer = '$penname' WHERE uid = '".$uid."'");
 	$codeblocks = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'deluser'");
 	while($code = dbassoc($codeblocks)) {
 		eval($code['code_text']);
@@ -160,7 +160,7 @@ function deleteUser($uid) {
 		dbquery("DELETE FROM ".substr(_AUTHORTABLE, 0, strpos(_AUTHORTABLE, "as author"))." WHERE ".substr(_UIDFIELD, 7)." = '".$uid."'");
 		$output = write_message(_ACTIONSUCCESSFUL);
 	}
-	dbquery("UPDATE ".TABLEPREFIX."fanfiction_stats SET members = members - 1");
+	e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stats SET members = members - 1");
 	return $output;
 }
 
@@ -176,13 +176,13 @@ function deleteSeries($seriesid) {
 		$countquery = dbquery("SELECT count(seriesid) FROM ".TABLEPREFIX."fanfiction_inseries WHERE seriesid = '".$series['seriesid']."'");
 		list($count) = dbrow($countquery);
 		dbquery("DELETE FROM ".TABLEPREFIX."fanfiction_inseries WHERE seriesid = '".$series['seriesid']."' AND subseriesid = '".$seriesid."' LIMIT 1");
-		if($series['inorder'] < $count) dbquery("UPDATE ".TABLEPREFIX."fanfiction_inseries SET inorder = (inorder - 1) WHERE seriesid = '".$series['seriesid']."' AND inorder > '".$series['inorder']."'");
+		if($series['inorder'] < $count) e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_inseries SET inorder = (inorder - 1) WHERE seriesid = '".$series['seriesid']."' AND inorder > '".$series['inorder']."'");
 		seriesreview($series); 
 	}	
 	dbquery("DELETE FROM ".TABLEPREFIX."fanfiction_series WHERE seriesid = '$seriesid'");
 	dbquery("DELETE FROM ".TABLEPREFIX."fanfiction_favorites WHERE type = 'SE' AND item = '$seriesid'");
 	dbquery("DELETE FROM ".TABLEPREFIX."fanfiction_reviews WHERE type = 'SE' AND item = '$seriesid'");
-	dbquery("UPDATE ".TABLEPREFIX."fanfiction_stats SET series = series - 1");
+	e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stats SET series = series - 1");
 	$codequery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'deleteseries'");
 	while($code = dbassoc($codequery)) {
 			eval($code['code_text']);

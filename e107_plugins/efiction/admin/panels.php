@@ -33,8 +33,8 @@ if(!empty($_GET['go'])) {
 	$order = $_GET['order'];
 	if($go == "up") $oneabove = $order - 1;
 	else $oneabove = $order + 1;
-	dbquery("UPDATE ".TABLEPREFIX."fanfiction_panels SET panel_order = '$order' WHERE panel_type = '$type' and panel_order = '$oneabove'");
-	dbquery("UPDATE ".TABLEPREFIX."fanfiction_panels SET panel_order = '$oneabove' WHERE panel_id = '".$_GET['panel']."'");	
+	e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_panels SET panel_order = '$order' WHERE panel_type = '$type' and panel_order = '$oneabove'");
+	e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_panels SET panel_order = '$oneabove' WHERE panel_id = '".$_GET['panel']."'");	
 }
 if(!empty($_GET['edit'])) {
 	if(!empty($_POST['submit'])) {
@@ -58,7 +58,7 @@ if(!empty($_GET['edit'])) {
 			}
 		}
 		else if($panel_hidden) $nextorder = 0;
-		if($_GET['edit'] != "new") $result = dbquery("UPDATE ".TABLEPREFIX."fanfiction_panels SET panel_name = '$panel_name', panel_title = '$panel_title', panel_url = '$panel_url', panel_level = '$panel_level', panel_hidden = '$panel_hidden', panel_type = '$panel_type'".(!empty($panel_hidden) ? ", panel_order = '$nextorder'" : "")." WHERE panel_id = '".$_GET['edit']."'");
+		if($_GET['edit'] != "new") $result = e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_panels SET panel_name = '$panel_name', panel_title = '$panel_title', panel_url = '$panel_url', panel_level = '$panel_level', panel_hidden = '$panel_hidden', panel_type = '$panel_type'".(!empty($panel_hidden) ? ", panel_order = '$nextorder'" : "")." WHERE panel_id = '".$_GET['edit']."'");
 		else $result = dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_panels(`panel_name`, `panel_title`, `panel_url`, `panel_level`, `panel_hidden`, `panel_type`, `panel_order`) VALUES( '$panel_name', '$panel_title', '$panel_url', '$panel_level', '$panel_hidden', '$panel_type', '$nextorder')");
 		if($result) $output .= write_message(_ACTIONSUCCESSFUL);
 		else $output .= write_error(_ERROR);

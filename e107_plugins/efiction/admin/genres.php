@@ -48,7 +48,7 @@ function genres( ) {
 						}
 						$tok = strtok(", "); //advance to the next token
 					}
-					dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET gid = '$newString' WHERE sid = '$genreresult[sid]'");
+					e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET gid = '$newString' WHERE sid = '$genreresult[sid]'");
                     /*  or die(_FATALERROR."Query: UPDATE ".TABLEPREFIX."fanfiction_stories SET gid = '$newString' WHERE sid = '$genreresult[sid]'<br />Error: (".e107::getDb()->getLastErrorNumber().") ".e107::getDb()->getLastErrorText()); */
 				}
 			dbquery("DELETE FROM ".TABLEPREFIX."fanfiction_genres where gid = '$gid'");
@@ -68,7 +68,7 @@ function genres( ) {
 	}
 	if ($_POST[submit]) {
 		if($_GET[genre] == "new") dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_genres (genre) VALUES ('".addslashes(stripinput(strip_tags($_POST[genre])))."')") or die(_FATALERROR."<br />Error: (".e107::getDb()->getLastErrorNumber().") ".e107::getDb()->getLastErrorText());
-		else dbquery("UPDATE ".TABLEPREFIX."fanfiction_genres set genre = '".addslashes(stripinput(strip_tags($_POST[genre])))."' WHERE gid = '$_GET[genre]'") or die(_FATALERROR."<br />Error: (".e107::getDb()->getLastErrorNumber().") ".e107::getDb()->getLastErrorText());
+		else e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_genres set genre = '".addslashes(stripinput(strip_tags($_POST[genre])))."' WHERE gid = '$_GET[genre]'") or die(_FATALERROR."<br />Error: (".e107::getDb()->getLastErrorNumber().") ".e107::getDb()->getLastErrorText());
 			$output .= "<center>"._ACTIONSUCCESSFUL."</center>";
 	}
 	else {

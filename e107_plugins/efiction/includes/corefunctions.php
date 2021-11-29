@@ -30,8 +30,9 @@ function descript($text) {
 
 // Checks that the given $num is actually a number.  Used to help prevent XSS attacks.
 function isNumber($num) {
-	if(empty($num)) return false;
-	if(!is_string($num)) return false;
+ 
+	if(empty($num)) return false;  
+	if(!is_string($num)) return false;   
 	return preg_match("/^[0-9]+$/", $num);
 }
 
@@ -258,4 +259,40 @@ function build_alphalinks($url, $let) {
 	}
 	$alpha .= "</div>";   
 	return $alpha;
+}
+
+// Function builds the pagination links
+function build_pagelinks($url, $total, $offset = 0, $columns = 1) {
+ 
+ 
+    $itemsperpage = e107::getSingleton('efiction_settings')->getPref("itemsperpage");
+    $linkstyle = e107::getSingleton('efiction_settings')->getPref("linkstyle");  /* 0,1,2 */
+    $linkrange = e107::getSingleton('efiction_settings')->getPref("linkrange");
+ 
+	$pages = "";
+	$itemsperpage = $itemsperpage * $columns;
+
+	if($itemsperpage >= $total) return;
+ 	if($itemsperpage == 0) return;   
+
+	if(empty($linkrange)) $linkrange = 4;
+ 
+	$totpages = floor($total/$itemsperpage) + ($total % $itemsperpage ? 1 : 0);
+	$curpage = floor($offset/$itemsperpage) + 1;
+	if(!$linkstyle) $startrange = $curpage;
+	else {
+		if($totpages <= $linkrange || $curpage == 1) $startrange = 1;
+		else if($curpage >= $totpages - floor($linkrange / 2) + 1) $startrange = $totpages - $linkrange;
+		else $startrange = $curpage - floor($linkrange / 2) > 0 ? $curpage - floor($linkrange / 2) : 1;
+	}
+	if($startrange >= $totpages - $linkrange ) $startrange = $totpages - $linkrange > 0 ? $totpages - $linkrange : 1;
+	$stoprange = $totpages > $startrange + $linkrange ? $startrange + $linkrange : $totpages + 1;
+	if($curpage > 1 && $linkstyle != 1) $pages .= "<a href='".$url."offset=".( $offset - $itemsperpage)."' id='plprev'>["._PREVIOUS."]</a> ";
+	if($startrange > 1 && $linkstyle > 0) $pages .= "<a href='".$url."offset=0'>1</a><span class='ellipses'>...</span>";
+	for($x = $startrange; $x < $stoprange; $x++) {
+		$pages .= "<a href='".$url."offset=".(($x - 1) * $itemsperpage)."'".($x == $curpage ? "id='currentpage'" : "").">".$x."</a> \n";
+	}
+	if($stoprange < $totpages && $linkstyle > 0) $pages .= "<span class='ellipses'>...</span> <a href='".$url."offset=".(($totpages - 1) * $itemsperpage)."'>$totpages</a>\n";
+	if ($curpage < $totpages && $linkstyle != 1) $pages .=  " <a href='".$url."offset=".($offset+$itemsperpage)."' id='plnext'>["._NEXT."]</a>";
+	return "<div id=\"pagelinks\">$pages</div>";
 }

@@ -37,7 +37,7 @@ if(isset($_POST['submit'])) {
 		$pagename = descript($_POST['name']);
 		$pagetitle = descript($_POST['title']);
 		if(isset($_GET['edit']) && isNumber($_GET['edit'])) 
-			$result = dbquery("UPDATE ".TABLEPREFIX."fanfiction_messages SET message_name = '".escapestring($pagename)."', message_title = '".escapestring($pagetitle)."', message_text = '".escapestring(descript($_POST['text']))."' WHERE message_id = ".$_GET['edit']." LIMIT 1");
+			$result = e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_messages SET message_name = '".escapestring($pagename)."', message_title = '".escapestring($pagetitle)."', message_text = '".escapestring(descript($_POST['text']))."' WHERE message_id = ".$_GET['edit']." LIMIT 1");
 		else {
 			$result = dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_messages(`message_name`, `message_title`, `message_text`) VALUES( '".escapestring($pagename)."', '".escapestring($pagetitle)."', '".escapestring(descript($_POST['text']))."')");
 			if($result) $result = dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_pagelinks(`link_name`, `link_text`, `link_url`, `link_target`, `link_access`) VALUES('".escapestring($pagename)."_link', '".escapestring($pagetitle)."', 'viewpage.php?page=$pagename', '0', '0')");

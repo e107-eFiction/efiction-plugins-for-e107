@@ -26,11 +26,11 @@
 if(!defined("_CHARSET")) exit( );
 
 	if(isset($_GET['retire']) && preg_match("/^[0-9]+$/", $_GET['retire']))
-		dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET featured = 2 WHERE sid = ".$_GET['retire']);
+		e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET featured = 2 WHERE sid = ".$_GET['retire']);
 	if(isset($_GET['remove']) && preg_match("/^[0-9]+$/", $_GET['remove']))
-		dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET featured = 0 WHERE sid = ".$_GET['remove']);
+		e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET featured = 0 WHERE sid = ".$_GET['remove']);
 	if(isset($_GET['feature']))
-		dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET featured = 1 WHERE sid = ".$_GET['feature']);
+		e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET featured = 1 WHERE sid = ".$_GET['feature']);
 	$fresult = dbquery("SELECT stories.*, stories.title as title, "._PENNAMEFIELD." as penname,  stories.updated as updated, stories.date as date FROM "._AUTHORTABLE.", ".TABLEPREFIX."fanfiction_stories as stories WHERE stories.featured > 0 AND stories.uid = "._UIDFIELD." ORDER BY stories.featured");
 	$output .= "<div id='pagetitle'>"._FEATUREDSTORIES."</div>";
 	if(!dbnumrows($fresult)) $output .= write_message(_NORESULTS);

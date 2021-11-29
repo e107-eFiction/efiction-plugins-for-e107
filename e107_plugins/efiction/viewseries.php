@@ -36,6 +36,10 @@ $tpl->assignInclude( "footer", "$skindir/footer.tpl" );
 include(_BASEDIR."includes/pagesetup.php");
 
 
+$seriestemplate = file_get_contents(_BASEDIR."default_tpls/series_block.tpl");
+$seriesvars = array();
+ 
+
 $seriesid = (isset($_GET['seriesid']) && is_numeric($_GET['seriesid'])) ? escapestring($_GET['seriesid']) : false;
 $sresult = dbquery(_SERIESQUERY." AND seriesid = '$seriesid' LIMIT 1");
 $series = dbassoc($sresult);
@@ -54,6 +58,12 @@ if($series['classes']) {
 		$classes[$classlist[$c]['type']][] = "<a href='browse.php?type=class&amp;type_id=".$classlist["$c"]['type']."&amp;classid=$c'>".$classlist[$c]['name']."</a>";
 	}
 }
+
+$seriesvars['title'] = stripslashes($series['title'])." "._BY." <a href=\"viewuser.php?uid=".$series['uid']."\">".$series['penname']."</a>";
+print_a($seriesvars);
+$text = e107::getParser()->simpleParse($seriestemplate,$seriesvars,false);
+e107::getRender()->tablerender("", $text, "seriesblock");
+
 $allclasslist = "";
 foreach($classtypelist as $num => $c) {
 	if(isset($classes[$num])) {

@@ -78,7 +78,7 @@ if($action == "manage") {
 
 if($action == "validate") {
 	$inorder = isset($_GET['inorder']) && isNumber($_GET['inorder']) ? $_GET['inorder'] : 0;
-	$valid = dbquery("UPDATE ".TABLEPREFIX."fanfiction_inseries SET confirmed = 1 WHERE seriesid = '$seriesid' AND inorder = '$inorder' LIMIT 1");
+	$valid = e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_inseries SET confirmed = 1 WHERE seriesid = '$seriesid' AND inorder = '$inorder' LIMIT 1");
 	if($valid) {
 		$output .= write_message(_ACTIONSUCCESSFUL);
 		$showlist = true;
@@ -149,7 +149,7 @@ if($add == "series" || ($action == "add" && !$add) || $action == "edit") {
 			else {
 				dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_series (title, summary, catid, isopen, uid, characters, classes) VALUES('$title', '$summary', '$category', '$open', '$owner', '$charid', '$classes')");
 				$seriesid = dbinsertid();
-				dbquery("UPDATE ".TABLEPREFIX."fanfiction_stats SET series = series + 1");
+				e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stats SET series = series + 1");
 				$codequery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'addseries'");
 				while($code = dbassoc($codequery)) {
 					eval($code['code_text']);
@@ -472,7 +472,7 @@ if($action == "delete") {
 			$countquery = dbquery("SELECT count(seriesid) FROM ".TABLEPREFIX."fanfiction_inseries WHERE seriesid = '$seriesid'");
 			list($count) = dbrow($countquery);
 			dbquery("DELETE FROM ".TABLEPREFIX."fanfiction_inseries WHERE seriesid = '$seriesid' AND ".($sid ? "sid = '$sid'" : "subseriesid = '$subseriesid'"). " LIMIT 1");
-			if($inorder < $count) dbquery("UPDATE ".TABLEPREFIX."fanfiction_inseries SET inorder = (inorder - 1) WHERE seriesid = '$seriesid' AND inorder > '$inorder'");
+			if($inorder < $count) e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_inseries SET inorder = (inorder - 1) WHERE seriesid = '$seriesid' AND inorder > '$inorder'");
 			$output .= write_message(_ACTIONSUCCESSFUL);
 			$showlist = true;
 		}
@@ -503,8 +503,8 @@ if($showlist) {
 			if($go == "up") $oneabove = $inorder - 1;
 			else $oneabove = $inorder + 1;
 			if($oneabove >= 1) {
-				dbquery("UPDATE ".TABLEPREFIX."fanfiction_inseries SET inorder = '$inorder' WHERE inorder = '$oneabove' AND seriesid = '$seriesid'");
-				dbquery("UPDATE ".TABLEPREFIX."fanfiction_inseries SET inorder = '$oneabove' WHERE ".(isset($sid) ? "sid = '$sid'" : "subseriesid = '$subseriesid'")." AND seriesid = '$seriesid'");	
+				e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_inseries SET inorder = '$inorder' WHERE inorder = '$oneabove' AND seriesid = '$seriesid'");
+				e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_inseries SET inorder = '$oneabove' WHERE ".(isset($sid) ? "sid = '$sid'" : "subseriesid = '$subseriesid'")." AND seriesid = '$seriesid'");	
 			}
 		}
 	}

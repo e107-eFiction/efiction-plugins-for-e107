@@ -28,7 +28,7 @@ else include_once("blocks/shoutbox/en.php");
 			$replace = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&lt;", "&gt;", " ", " ");
 			$shout_message = str_replace($search, $replace, replace_naughty(trim($shout_message)));
 			$shout_message = str_replace("\n", "<br />", $shout_message);
-			$result = dbquery("UPDATE ".TABLEPREFIX."fanfiction_shoutbox SET shout_message = '$shout_message' WHERE shout_id = '".$_GET['shout_id']."' LIMIT 1");
+			$result = e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_shoutbox SET shout_message = '$shout_message' WHERE shout_id = '".$_GET['shout_id']."' LIMIT 1");
 			if($result) $output .= write_message(_ACTIONSUCCESSFUL);
 		}
 		$shoutquery = dbquery("SELECT shout_message FROM ".TABLEPREFIX."fanfiction_shoutbox WHERE shout_id = '".$_GET['shout_id']."' LIMIT 1");

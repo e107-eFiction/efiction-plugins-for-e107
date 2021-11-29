@@ -51,7 +51,7 @@ function warnings( ) {
 						}
 						$tok = strtok(", "); //advance to the next token
 					}
-					dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET wid = '$newString' WHERE sid = '".$warningresult['sid']."'");
+					e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET wid = '$newString' WHERE sid = '".$warningresult['sid']."'");
 				}
 			dbquery("DELETE FROM ".TABLEPREFIX."fanfiction_warnings where wid = '$wid'");
 			$output .= "<center>"._ACTIONSUCCESSFUL."</center>";
@@ -70,7 +70,7 @@ function warnings( ) {
 	if ($_POST['submit']) {
 		if($_GET['warning'] == "new") dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_warnings (warning) VALUES ('".addslashes(stripinput(strip_tags($_POST['warning'])))."')");
         /* or die(_FATALERROR."Query: INSERT INTO ".TABLEPREFIX."fanfiction_warnings (warning) VALUES ('".addslashes(strip_tags($_POST['warning']))."')<br />Error: (".e107::getDb()->getLastErrorNumber().") ".e107::getDb()->getLastErrorText()); */
-		else dbquery("UPDATE ".TABLEPREFIX."fanfiction_warnings set warning = '".addslashes(stripinput(strip_tags($_POST['warning'])))."' WHERE wid = '".$_GET['warning']."'");
+		else e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_warnings set warning = '".addslashes(stripinput(strip_tags($_POST['warning'])))."' WHERE wid = '".$_GET['warning']."'");
         /* or die(_FATALERROR."Query: UPDATE ".TABLEPREFIX."fanfiction_warnings set warning = '".addslashes(strip_tags($_POST['warnings']))."' WHERE wid = '".$_GET['warning']."'<br />Error: (".e107::getDb()->getLastErrorNumber().") ".e107::getDb()->getLastErrorText()); */
 			$output .= "<center>"._ACTIONSUCCESSFUL."</center>";
 	}

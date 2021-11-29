@@ -8,7 +8,7 @@ else include_once(_BASEDIR."blocks/info/en.php");
 	if(_AUTHORTABLE != TABLEPREFIX."fanfiction_authors") {
 		list($members) = dbrow(dbquery("SELECT COUNT("._UIDFIELD.") as members FROM "._AUTHORTABLE));
 		list($newest) = dbrow(dbquery("SELECT "._UIDFIELD." as uid FROM "._AUTHORTABLE." ORDER BY "._UIDFIELD." DESC LIMIT 1"));
-		dbquery("UPDATE ".TABLEPREFIX."fanfiction_stats SET members = $members, newestmember = '$newest' WHERE sitekey = '".SITEKEY."' LIMIT 1");
+		e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stats SET members = $members, newestmember = '$newest' WHERE sitekey = '".SITEKEY."' LIMIT 1");
 	}
 	$stats = dbassoc(dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_stats WHERE sitekey = '".SITEKEY."' LIMIT 1"));
 	list($newmember) = dbrow(dbquery("SELECT "._PENNAMEFIELD." as penname FROM "._AUTHORTABLE." WHERE "._UIDFIELD." = '".$stats['newestmember']."' LIMIT 1"));

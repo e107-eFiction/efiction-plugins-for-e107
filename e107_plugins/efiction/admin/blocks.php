@@ -32,7 +32,7 @@ function save_blocks( $blocks ) {
 		foreach($value as $var=>$val) {
 			if($var != "name" && $var != "title" && $var != "file" && $var != "status") $blockvars[$var] = $val;
 		}
-		dbquery("UPDATE ".TABLEPREFIX."fanfiction_blocks SET block_name = '$block', block_title = '".escapestring($value['title'])."', block_file = '".$value['file']."', block_status = '".$value['status']."', block_variables =  '".(isset($blockvars) ? addslashes(serialize($blockvars)) : "")."' WHERE block_name = '$block'");
+		e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_blocks SET block_name = '$block', block_title = '".escapestring($value['title'])."', block_file = '".$value['file']."', block_status = '".$value['status']."', block_variables =  '".(isset($blockvars) ? addslashes(serialize($blockvars)) : "")."' WHERE block_name = '$block'");
 	}
 }
 if(isset($_GET['admin'])) $admin = $_GET['admin'];

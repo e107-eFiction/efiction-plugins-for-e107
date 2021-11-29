@@ -37,12 +37,12 @@ if(!defined("_CHARSET")) exit( );
 			$storyquery = dbquery("SELECT charid, sid FROM ".TABLEPREFIX."fanfiction_stories WHERE FIND_IN_SET('$charid', charid) > 0");
 			while($story = dbassoc($storyquery)) {
 				$newcharlist = array_diff(explode(",", $story['charid']), array($charid));
-				dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET charid = '".($newcharlist ? implode(",", $newcharlist) : "")."' WHERE sid = '$story[sid]'");
+				e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET charid = '".($newcharlist ? implode(",", $newcharlist) : "")."' WHERE sid = '$story[sid]'");
 			}
 			$seriesquery = dbquery("SELECT characters, seriesid FROM ".TABLEPREFIX."fanfiction_series WHERE FIND_IN_SET('$charid', characters) > 0");
 			while($series = dbassoc($seriesquery)) {
 				$newcharlist = array_diff(explode(",", $series['characters']), array($charid));
-				dbquery("UPDATE ".TABLEPREFIX."fanfiction_series SET characters = '".($newcharlist ? implode(",", $newcharlist) : "")."' WHERE seriesid = '$series[seriesid]'");
+				e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_series SET characters = '".($newcharlist ? implode(",", $newcharlist) : "")."' WHERE seriesid = '$series[seriesid]'");
 			}
 			$code = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'delchar'");
 			while($c = dbassoc($code)) {
@@ -96,7 +96,7 @@ if(!defined("_CHARSET")) exit( );
 			}
 		}
 		else if($_GET["do"] == "update") {
-			$result = dbquery("UPDATE ".TABLEPREFIX."fanfiction_characters SET charname = '".escapestring(descript(strip_tags(trim($_POST["character1"]))))."', bio = '".escapestring(descript($_POST["bio1"]))."' WHERE charid = '$_POST[charid]'");
+			$result = e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_characters SET charname = '".escapestring(descript(strip_tags(trim($_POST["character1"]))))."', bio = '".escapestring(descript($_POST["bio1"]))."' WHERE charid = '$_POST[charid]'");
 		}
 		$output .= write_message(_ACTIONSUCCESSFUL);
 	}

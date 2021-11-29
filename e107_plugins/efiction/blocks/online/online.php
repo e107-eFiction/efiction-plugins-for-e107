@@ -6,7 +6,7 @@ if(!defined("_CHARSET")) exit( );
 	else include(_BASEDIR."blocks/online/en.php");
 	$where = "online_uid=".(USERUID ? USERUID : "0 AND online_ip = INET_ATON('".$_SERVER['REMOTE_ADDR']."')");
 	$result = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_online WHERE $where");
-	if(dbnumrows($result) > 0) dbquery("UPDATE ".TABLEPREFIX."fanfiction_online SET online_timestamp = '".time( )."' WHERE $where");
+	if(dbnumrows($result) > 0) e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_online SET online_timestamp = '".time( )."' WHERE $where");
 	else dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_online(online_uid, online_ip, online_timestamp) VALUES('".(USERUID ? USERUID : 0)."', INET_ATON('".$_SERVER['REMOTE_ADDR']."'), '".time( )."')");
 	$result = dbquery("DELETE FROM ".TABLEPREFIX."fanfiction_online WHERE online_timestamp < ".(time()-60));
 	$q1 = dbquery("SELECT COUNT(online_ip) FROM ".TABLEPREFIX."fanfiction_online WHERE online_uid = 0");

@@ -70,15 +70,15 @@ if($action == "delete") {
 			
 			list($author) = dbrow($query);
 			if($review != "No Review") {
-				dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET reviews = (reviews - 1) WHERE sid = '$item'");
-				dbquery("UPDATE ".TABLEPREFIX."fanfiction_chapters SET reviews = (reviews - 1) WHERE chapid = '$chapid'");
+				e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET reviews = (reviews - 1) WHERE sid = '$item'");
+				e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_chapters SET reviews = (reviews - 1) WHERE chapid = '$chapid'");
 			}
 			$count =  dbquery("SELECT AVG(rating) as totalcount FROM ".TABLEPREFIX."fanfiction_reviews WHERE item = '$item' AND type='ST' AND rating != '-1'");
 			list($totalcount) = dbrow($count);
-			if($totalcount) dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET rating = '".round($totalcount)."' WHERE sid = '$item'");
+			if($totalcount) e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET rating = '".round($totalcount)."' WHERE sid = '$item'");
 			$count2 =  dbquery("SELECT AVG(rating) as totalcount FROM ".TABLEPREFIX."fanfiction_reviews WHERE chapid = '$chapid' AND rating != '-1'");
 			list($totalcount) = dbrow($count2);
-			if($totalcount) dbquery("UPDATE ".TABLEPREFIX."fanfiction_chapters SET rating = '".round($totalcount)."' WHERE chapid = '$chapid'");
+			if($totalcount) e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_chapters SET rating = '".round($totalcount)."' WHERE chapid = '$chapid'");
 			$series = dbquery("SELECT seriesid FROM ".TABLEPREFIX."fanfiction_inseries WHERE sid = '$item'");
 			if(dbnumrows($series)) {
 				while($thisseries = dbassoc($series)) {
@@ -87,7 +87,7 @@ if($action == "delete") {
 			}
 		}
 		if($type == "SE") {
-			if($review != "No Review") dbquery("UPDATE ".TABLEPREFIX."fanfiction_series SET reviews = (reviews - 1) WHERE seriesid = '$item'");
+			if($review != "No Review") e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_series SET reviews = (reviews - 1) WHERE seriesid = '$item'");
 			seriesreview($item);
 		}
 		else {
@@ -97,9 +97,9 @@ if($action == "delete") {
 			}
 		}
 		if($review != "No Review") {
-			dbquery("UPDATE ".TABLEPREFIX."fanfiction_stats SET reviews = reviews - 1");
+			e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stats SET reviews = reviews - 1");
 			list($count) = dbrow(dbquery("SELECT COUNT(DISTINCT uid) FROM ".TABLEPREFIX."fanfiction_reviews WHERE review != 'No Review' AND uid != 0"));
-			dbquery("UPDATE ".TABLEPREFIX."fanfiction_stats SET reviewers = '$count'");
+			e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stats SET reviewers = '$count'");
 		}
 		dbquery("DELETE FROM ".TABLEPREFIX."fanfiction_reviews WHERE reviewid = '$reviewid'");
 		
@@ -141,7 +141,7 @@ else if($action == "edit" || $action == "add") {
 		else {
 			$output .= write_message(_REVTHANKYOU);
 			if($action == "edit") {
-				$update = dbquery("UPDATE ".TABLEPREFIX."fanfiction_reviews SET review = '$review', rating = '$rating' WHERE reviewid = '$reviewid' LIMIT 1");
+				$update = e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_reviews SET review = '$review', rating = '$rating' WHERE reviewid = '$reviewid' LIMIT 1");
 				$info = dbquery("SELECT item, type, chapid FROM ".TABLEPREFIX."fanfiction_reviews WHERE reviewid = '$reviewid' LIMIT 1");
 				list($item, $type, $chapid) = dbrow($info);
 			}
@@ -150,14 +150,14 @@ else if($action == "edit" || $action == "add") {
 				dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_reviews (item, type, reviewer, review, rating, date, uid, chapid) VALUES ('$item', 'ST', '$reviewer', '$review', '$rating', ".time().", '".(USERUID && isNumber(USERUID) ? USERUID : 0)."', '$chapid')");
 				$count =  dbquery("SELECT AVG(rating) as totalcount FROM ".TABLEPREFIX."fanfiction_reviews WHERE item = '$item' AND type = 'ST' AND rating != '-1'");
 				list($totalcount) = dbrow($count);
-				if($totalcount) $update = dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET rating = '".round($totalcount)."' WHERE sid = '$item'");
+				if($totalcount) $update = e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET rating = '".round($totalcount)."' WHERE sid = '$item'");
 				unset($totalcount);
 				$count2 = dbquery("SELECT AVG(rating) as totalcount FROM ".TABLEPREFIX."fanfiction_reviews WHERE chapid = '$chapid' AND rating != '-1'");
 				list($totalcount) = dbrow($count2);
-				if($totalcount) $update = dbquery("UPDATE ".TABLEPREFIX."fanfiction_chapters SET rating = '".round($totalcount)."' WHERE chapid = '$chapid'");
+				if($totalcount) $update = e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_chapters SET rating = '".round($totalcount)."' WHERE chapid = '$chapid'");
 				if($review != "No Review") {
-					dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET reviews = (reviews + 1) WHERE sid = '$item'");
-					dbquery("UPDATE ".TABLEPREFIX."fanfiction_chapters SET reviews = (reviews + 1) WHERE chapid = '$chapid'");
+ 
+					 
 				}
 				$series = dbquery("SELECT seriesid FROM ".TABLEPREFIX."fanfiction_inseries WHERE sid = '$item'");
 				if(dbnumrows($series)) {
@@ -201,9 +201,9 @@ else if($action == "edit" || $action == "add") {
 						$result = efiction_core::sendemail($mail['penname'], $mail['email'], $sitename, $siteemail, $subject, $mailtext, "html");
 					}
 				}
-				dbquery("UPDATE ".TABLEPREFIX."fanfiction_stats SET reviews = reviews + 1");
+				e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stats SET reviews = reviews + 1");
 				list($count) = dbrow(dbquery("SELECT COUNT(DISTINCT uid) FROM ".TABLEPREFIX."fanfiction_reviews WHERE review != 'No Review' AND uid != 0"));
-				dbquery("UPDATE ".TABLEPREFIX."fanfiction_stats SET reviewers = '$count'");
+				e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stats SET reviewers = '$count'");
 			}
 			if($logging && !USERUID) {
 				if($type == "ST") {
@@ -353,7 +353,7 @@ else {
 			$query = "SELECT review.reviewid, review.respond, review.review, review.uid, review.reviewer, review.rating, review.date as date, chapter.title as title, chapter.inorder as inorder FROM ".TABLEPREFIX."fanfiction_reviews as review, ".TABLEPREFIX."fanfiction_chapters as chapter WHERE chapter.sid = '$item' AND chapter.chapid = review.chapid AND review.review != 'No Review' AND review.type = 'ST'";
 			$count = "SELECT count(reviewid) FROM ".TABLEPREFIX."fanfiction_reviews as review WHERE item = '$item' AND review != 'No Review' AND type = 'ST'";
 		}
-		*/
+ÿ */
 		$jumpmenu = "<form name=\"jump\" action=\"\">";
 		$jumpmenu .= "<select name=\"sid\" onChange=\"window.location=this.options[this.selectedIndex].value\">";
 		$jumpmenu .= "<option value=\"reviews.php?type=ST&amp;item=".$story['sid'].(isset($_GET['unresponded']) ? "&amp;unresponded=1" : "")."\"";

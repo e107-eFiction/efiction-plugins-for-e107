@@ -575,7 +575,7 @@ if (!class_exists('efiction_comments')) {
 		$status = e107::getDb()->update("fanfiction_comments","comment_blocked=1 WHERE comment_id = ".intval($id)."");
 
 		$data = array('comment_id'=>intval($id), 'comment_type'=>$table, 'comment_item_id'=> intval($itemid));
-		e107::getEvent()->trigger('user_comment_deleted', $data);
+		e107::getEvent()->trigger('efiction_comment_deleted', $data);
 
 
 		return $status;
@@ -813,9 +813,8 @@ if (!class_exists('efiction_comments')) {
 						/*unset($edata_li['comment_pid']);
 						unset($edata_li['comment_author_email']);
 						unset($edata_li['comment_ip']);*/
-
-						e107::getEvent()->trigger("postcomment", $edata_li);
-				//		e107::getEvent()->trigger('user_comment_posted', $edata_li);
+ 
+			   		    e107::getEvent()->trigger('efiction_comment_posted', $edata_li);
 						e107::getCache()->clear("fanfiction_revcomment");
 
 						// Moved to e107_plugins/news/e_event.php
@@ -1194,8 +1193,8 @@ if (!class_exists('efiction_comments')) {
 		
 		$this->totalComments = $sql->gen($query);
 			
-		$query .= " LIMIT ".$from.",".$this->commentsPerPage;
-		
+//		$query .= " LIMIT ".$from.",".$this->commentsPerPage;
+ 
 		$text 			= "";
 		$lock 			= '';
 
@@ -1235,7 +1234,8 @@ if (!class_exists('efiction_comments')) {
 
 	function nextprev($table,$id,$from=0)
 	{
-		//return "table=".$table."  id=".$id."  from=".$from;
+		return '';
+        //return "table=".$table."  id=".$id."  from=".$from;
 		//$from = $from + $this->commentsPerPage;
 
 		$target = "efiction-comments-container-".e107::getForm()->name2id($table);
@@ -1245,8 +1245,8 @@ if (!class_exists('efiction_comments')) {
 		// from calculations are done by eNav() js.
 		if($this->totalComments > $this->commentsPerPage)
 		{
-			$prev = EFICTION_COMMENTS_DIR . 'reviews.php?mode=list&amp;type=' . $table . '&amp;id=' . $id . '&amp;from=0';
-			$next = EFICTION_COMMENTS_DIR . 'reviews.php?mode=list&amp;type=' . $table . '&amp;id=' . $id . '&amp;from=0';
+			$prev = EFICTION_COMMENTS_DIR . 'comments.php?mode=list&amp;type=' . $table . '&amp;id=' . $id . '&amp;from=0';
+			$next = EFICTION_COMMENTS_DIR . 'comments.php?mode=list&amp;type=' . $table . '&amp;id=' . $id . '&amp;from=0';
 
 			return "<a class='e-ajax btn btn-default btn-secondary btn-mini btn-sm {$navid}' href='#' data-nav-id='{$navid}' data-nav-total='{$this->totalComments}' data-nav-dir='down' data-nav-inc='{$this->commentsPerPage}' data-target='{$target}' data-src='{$prev}'>" . LAN_PREVIOUS . "</a>
 			<a class='e-ajax btn btn-default btn-secondary btn-mini btn-sm {$navid}' href='#' data-nav-id='{$navid}' data-nav-total='{$this->totalComments}' data-nav-dir='up' data-nav-inc='{$this->commentsPerPage}' data-target='{$target}' data-src='{$next}'>" . LAN_NEXT . "</a>";

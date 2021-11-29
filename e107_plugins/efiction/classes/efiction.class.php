@@ -52,6 +52,8 @@ if (!class_exists('efiction_core')) {
 		public function init()
 		{
 		}
+        
+        
  	
 	
 		// replace for e107::getParser()->truncate($text, $limit); see issue https://github.com/e107inc/e107/issues/4480
@@ -94,8 +96,8 @@ if (!class_exists('efiction_core')) {
 			return $html;
 		}
 
-		public function sendemail
-		 ($to_name, $to_email, $from_name, $from_email, $subject,$message,$type="plain",$cc="",$bcc="", $template ="") {
+		public function sendemail ($to_name, $to_email, $from_name, $from_email, $subject,$message,$type="plain",$cc="",$bcc="", $template ="") 
+        {
                  
 			$eml = array();
 			$eml['email_subject']		= $subject;
@@ -124,5 +126,26 @@ if (!class_exists('efiction_core')) {
 		   
 		}
         
+        /* temp solution before e107 templating to replace TemplatePower solution */
+        
+        public function getTpl($filename) {
+        
+         $sitetheme = deftrue('USERTHEME', e107::getPref('sitetheme'));
+         $themepath = e_THEME.$sitetheme."/skins/";
+         
+         /*
+         $defaultskin =   e107::getSingleton('efiction_settings')->getPref('skin');  //will be removed ???
+         $skinpath = _BASEDIR."skins/".$defaultskin."/";
+         */
+         
+         $default = "efiction_tpls/";   //new folder used to see what left
+         $defaultpath = _BASEDIR.$default;
+
+         if(file_exists($themepath.$filename)) $tpl = file_get_contents($themepath.$filename) ;
+         else $tpl = file_get_contents($defaultpath.$filename) ;
+
+         return $tpl;
+         
+        } 
     }
 }

@@ -379,8 +379,8 @@ function newstory($current = '') {
 				         efiction_core::sendemail($favuser['penname'], $favuser['email'], $sitename, $siteemail, $subject, $mailtext, "html");
 					}				
 				}
-				dbquery("UPDATE ".TABLEPREFIX."fanfiction_stats SET stories = stories + 1");
-				dbquery("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET stories = stories + 1 WHERE FIND_IN_SET(uid, '".implode(",", $au)."') > 0");
+				e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stats SET stories = stories + 1");
+				e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET stories = stories + 1 WHERE FIND_IN_SET(uid, '".implode(",", $au)."') > 0");
 			}
 			else if($alertson && $newchapter) {
 				$pennames[] = $penname;
@@ -398,14 +398,14 @@ function newstory($current = '') {
 				}
 			}
    
-			$update = dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET updated = ".time()." WHERE sid = '$sid'");
+			$update = e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET updated = ".time()." WHERE sid = '$sid'");
 			list($num_chapters, $words) = dbrow(dbquery("SELECT COUNT(chapid), SUM(wordcount) FROM ".TABLEPREFIX."fanfiction_chapters WHERE validated > 0"));
 			list($authors) = dbrow(dbquery("SELECT COUNT(uid) FROM ".TABLEPREFIX."fanfiction_authorprefs WHERE stories > 0"));
-			dbquery("UPDATE ".TABLEPREFIX."fanfiction_stats set wordcount = '$words', chapters = '$num_chapters', authors = '$authors'");
+			e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stats set wordcount = '$words', chapters = '$num_chapters', authors = '$authors'");
 			$count =  dbquery("SELECT SUM(wordcount) as totalcount FROM ".TABLEPREFIX."fanfiction_chapters WHERE sid = '$sid' AND validated = '1'");
 			list($totalcount) = dbrow($count);
 			if($totalcount) {
-				dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET wordcount = '$totalcount' WHERE sid = '$sid'");
+				e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET wordcount = '$totalcount' WHERE sid = '$sid'");
 			}
 		}
 		else {
@@ -520,10 +520,10 @@ function viewstories( ) {
 		if($inorder && $chapid) {
 			if($go == "up") $oneabove = $inorder - 1;
 			else $oneabove = $inorder + 1;
-			dbquery("UPDATE ".TABLEPREFIX."fanfiction_chapters SET inorder = '$inorder' WHERE sid = '$sid' and inorder = '$oneabove'");
-			dbquery("UPDATE ".TABLEPREFIX."fanfiction_chapters SET inorder = '$oneabove' WHERE chapid = '$chapid'");	
+			e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_chapters SET inorder = '$inorder' WHERE sid = '$sid' and inorder = '$oneabove'");
+			e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_chapters SET inorder = '$oneabove' WHERE chapid = '$chapid'");	
 		}
-		if($com)  dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET completed = ".($com == "yes" ? "1" : "0")." WHERE sid = '$sid'");
+		if($com)  e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET completed = ".($com == "yes" ? "1" : "0")." WHERE sid = '$sid'");
 	}
 	$output .= "<p style=\"text-align: right; margin: 1em;\"><a class=\"btn btn-outline-primary\" href=\"stories.php?action=viewstories&amp;chapters=".($hidechapters != "view" ? "view\">"._VIEWCHAPTERS : "hide\">"._HIDECHAPTERS)."</a></p>
 		<div style=\"width: 90%; margin: 0 auto;\"><table cellpadding=\"3\" cellspacing=\"0\" width=\"100%\" class=\"tblborder\"><tr><th class=\"tblborder\">"._STORIES."</th><th colspan=\"3\" class=\"tblborder\">"._OPTIONS."</th>".($reviewsallowed ? "<th class=\"tblborder\">"._REVIEWS."</th>" : "").($autovalidate ? "" : "<th class=\"tblborder\">"._VALIDATED."</th>")."<th class=\"tblborder\">"._READS."</th></tr>";
@@ -612,10 +612,10 @@ function editchapter( $chapid ) {
 			else $uid= USERUID;
   
 			if($store == "db") {
-                dbquery("UPDATE ".TABLEPREFIX."fanfiction_chapters SET uid = '$uid', title = '".addslashes($chaptertitle)."', notes = '".addslashes($notes)."', endnotes = '".addslashes($endnotes)."', wordcount = '$wordcount', storytext = '".addslashes($storytext)."' WHERE chapid = '$chapid' LIMIT 1");
+                e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_chapters SET uid = '$uid', title = '".addslashes($chaptertitle)."', notes = '".addslashes($notes)."', endnotes = '".addslashes($endnotes)."', wordcount = '$wordcount', storytext = '".addslashes($storytext)."' WHERE chapid = '$chapid' LIMIT 1");
 			}
 			else if($store == "files"){
-				$updatequery = dbquery("UPDATE ".TABLEPREFIX."fanfiction_chapters SET uid = '$uid', title = '".addslashes($chaptertitle)."', notes = '".addslashes($notes)."', endnotes = '".addslashes($endnotes)."', wordcount = '$wordcount' WHERE chapid = '$chapid' LIMIT 1");
+				$updatequery = e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_chapters SET uid = '$uid', title = '".addslashes($chaptertitle)."', notes = '".addslashes($notes)."', endnotes = '".addslashes($endnotes)."', wordcount = '$wordcount' WHERE chapid = '$chapid' LIMIT 1");
 				if( !file_exists( STORIESPATH."/$uid/" ) )
 				{
 					mkdir(STORIESPATH."/$uid", 0755);
@@ -638,7 +638,7 @@ function editchapter( $chapid ) {
 				$count =  dbquery("SELECT SUM(wordcount) as totalcount FROM ".TABLEPREFIX."fanfiction_chapters WHERE sid = '$sid'");
 				list($totalcount) = dbrow($count);
 				if($totalcount) {
-					dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET wordcount = '$totalcount' WHERE sid = '$sid'");
+					e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET wordcount = '$totalcount' WHERE sid = '$sid'");
 				}
 			}
 			$codequery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'editchapter'");
@@ -793,11 +793,11 @@ function editstory($sid) {
 								}
 								chmod(STORIESPATH."/$uid/$chapid.txt", 0644);
 							}
-							dbquery("UPDATE ".TABLEPREFIX."fanfiction_chapters SET uid = '$uid' WHERE chapid = '$chapid' LIMIT 1");
+							e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_chapters SET uid = '$uid' WHERE chapid = '$chapid' LIMIT 1");
 						}
 					}
-					else $chapupdate = dbquery("UPDATE ".TABLEPREFIX."fanfiction_chapters SET uid = '$uid' WHERE sid = '$sid' AND uid = '$olduid'");
-					$switch = dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET uid = '$uid' WHERE sid = '$sid' LIMIT 1");
+					else $chapupdate = e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_chapters SET uid = '$uid' WHERE sid = '$sid' AND uid = '$olduid'");
+					$switch = e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET uid = '$uid' WHERE sid = '$sid' LIMIT 1");
 					if($logging) {
 						$authorquery = dbquery("SELECT "._PENNAMEFIELD." as penname FROM "._AUTHORTABLE." WHERE "._UIDFIELD." = '$olduid' LIMIT 1");
 						list($oldpenname) = dbrow($authorquery);
@@ -848,27 +848,27 @@ function editstory($sid) {
 						}
 					}
   
-					$update = dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET validated = '$validated', updated = " .time(). " WHERE sid = '$sid'");
-					$update2 = dbquery("UPDATE ".TABLEPREFIX."fanfiction_chapters SET validated = 1 WHERE sid = '$sid'");
+					$update = e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET validated = '$validated', updated = " .time(). " WHERE sid = '$sid'");
+					$update2 = e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_chapters SET validated = 1 WHERE sid = '$sid'");
 					$coauths = dbquery("SELECT uid FROM ".TABLEPREFIX."fanfiction_coauthors WHERE sid = '$sid'");
 					while($c = dbassoc($coauths)) {
-						dbquery("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET stories = stories + 1 WHERE uid = '".$c['uid']."'");
+						e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET stories = stories + 1 WHERE uid = '".$c['uid']."'");
                     }
-					dbquery("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET stories = stories + 1 WHERE uid = '$uid'");
+					e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET stories = stories + 1 WHERE uid = '$uid'");
 					$count =  dbquery("SELECT SUM(wordcount) as totalcount FROM ".TABLEPREFIX."fanfiction_chapters WHERE sid = '$sid' AND validated = '1'");
 					list($totalcount) = dbrow($count);
 					if($totalcount) {
-						dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET wordcount = '$totalcount' WHERE sid = '$sid'");
+						e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET wordcount = '$totalcount' WHERE sid = '$sid'");
 					}
-					dbquery("UPDATE ".TABLEPREFIX."fanfiction_stats SET stories = stories + 1");
+					e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stats SET stories = stories + 1");
 				}
 				else if($validated == 2) {
-					$update = dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET validated = '$validated' WHERE sid = '$sid'");
-					$update2 = dbquery("UPDATE ".TABLEPREFIX."fanfiction_chapters SET validated = 1 WHERE sid = '$sid'");
+					$update = e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET validated = '$validated' WHERE sid = '$sid'");
+					$update2 = e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_chapters SET validated = 1 WHERE sid = '$sid'");
 					$count =  dbquery("SELECT SUM(wordcount) as totalcount FROM ".TABLEPREFIX."fanfiction_chapters WHERE sid = '$sid' AND validated = '1'");
 					list($totalcount) = dbrow($count);
 					if($totalcount) {
-						dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET wordcount = '$totalcount' WHERE sid = '$sid'");
+						e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET wordcount = '$totalcount' WHERE sid = '$sid'");
 					}
 				}
 				$newcats = array_diff($catid, $oldcats);
@@ -878,26 +878,26 @@ function editstory($sid) {
 			}
 			else if($admin && !$validated && $oldvalid > 0) {
 				foreach($oldcats as $cat) { categoryitems($cat, -1); }
-				$update = dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET validated = '0' WHERE sid = '$sid'");
-				$update2 = dbquery("UPDATE ".TABLEPREFIX."fanfiction_chapters SET validated = 0 WHERE sid = '$sid'");
-				dbquery("UPDATE ".TABLEPREFIX."fanfiction_stats SET stories = stories - 1");
+				$update = e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET validated = '0' WHERE sid = '$sid'");
+				$update2 = e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_chapters SET validated = 0 WHERE sid = '$sid'");
+				e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stats SET stories = stories - 1");
 				$coauths = dbquery("SELECT uid FROM ".TABLEPREFIX."fanfiction_coauthors WHERE sid = '$sid'");
 				while($c = dbassoc($coauths)) {
-					dbquery("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET stories = stories - 1 WHERE uid = '".$c['uid']."'");
+					e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET stories = stories - 1 WHERE uid = '".$c['uid']."'");
 				}
-				dbquery("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET stories = stories - 1 WHERE uid = '$uid'");
+				e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET stories = stories - 1 WHERE uid = '$uid'");
 				list($num_chapters, $words) = dbrow(dbquery("SELECT COUNT(chapid), SUM(wordcount) FROM ".TABLEPREFIX."fanfiction_chapters WHERE validated > 0"));
 				list($authors) = dbrow(dbquery("SELECT COUNT(uid) FROM ".TABLEPREFIX."fanfiction_authorprefs WHERE stories > 0"));
-				dbquery("UPDATE ".TABLEPREFIX."fanfiction_stats set wordcount = '$words', chapters = '$num_chapters', authors = '$authors'");
+				e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stats set wordcount = '$words', chapters = '$num_chapters', authors = '$authors'");
 			}
 			else if(!$admin) $validated = $oldvalid;
 			if(!$admin && $oldfeat != $feat) $feat = $oldfeat;
 			// Update the site stats
 			list($num_chapters, $words) = dbrow(dbquery("SELECT COUNT(chapid), SUM(wordcount) FROM ".TABLEPREFIX."fanfiction_chapters WHERE validated > 0"));
 			list($authors) = dbrow(dbquery("SELECT COUNT(uid) FROM ".TABLEPREFIX."fanfiction_authorprefs WHERE stories > 0"));
-			dbquery("UPDATE ".TABLEPREFIX."fanfiction_stats set wordcount = '$words', chapters = '$num_chapters', authors = '$authors'");
+			e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stats set wordcount = '$words', chapters = '$num_chapters', authors = '$authors'");
  
-			$updatequery = dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET title = '".addslashes($title)."', summary = '".addslashes(format_story($summary))."', storynotes = '".addslashes(format_story($storynotes))."', rr = '".($rr ? 1 : 0)."', completed = '".($complete ? 1 : 0)."', validated = '$validated', rid = '$rid', classes = '".(is_array($classes) ? implode(",", $classes) : $classes)."', charid = '".(is_array($charid) ? implode(",", $charid) : $charid)."', catid = '".(is_array($catid) ? implode(",", $catid) : $catid)."', coauthors = '".(is_array($coauthors) ? implode(",", $coauthors) : $coauthors)."', featured = '$feat' WHERE sid = '$sid'");
+			$updatequery = e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET title = '".addslashes($title)."', summary = '".addslashes(format_story($summary))."', storynotes = '".addslashes(format_story($storynotes))."', rr = '".($rr ? 1 : 0)."', completed = '".($complete ? 1 : 0)."', validated = '$validated', rid = '$rid', classes = '".(is_array($classes) ? implode(",", $classes) : $classes)."', charid = '".(is_array($charid) ? implode(",", $charid) : $charid)."', catid = '".(is_array($catid) ? implode(",", $catid) : $catid)."', coauthors = '".(is_array($coauthors) ? implode(",", $coauthors) : $coauthors)."', featured = '$feat' WHERE sid = '$sid'");
 			$clist = array( );
 			$coauths = dbquery("SELECT uid FROM ".TABLEPREFIX."fanfiction_coauthors WHERE sid = '$sid'");
 			while($c = dbassoc($coauths)) {
@@ -906,13 +906,13 @@ function editstory($sid) {
 			foreach($au AS $a) {
 				if($a == $uid) continue;
 				if(!in_array($a, $clist)) {
-					dbquery("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET stories = stories + 1 WHERE uid = '$a'");
+					e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET stories = stories + 1 WHERE uid = '$a'");
 					dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_coauthors(`sid`, `uid`) VALUES('$sid', '$a')");
 				}
 			}
 			foreach($clist AS $c) {
 				if(!in_array($c, $au)) {
-					dbquery("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET stories = stories - 1 WHERE uid = '$c'");
+					e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET stories = stories - 1 WHERE uid = '$c'");
 					dbquery("DELETE FROM ".TABLEPREFIX."fanfiction_coauthors WHERE sid = '$sid' AND uid = '$c'");
 				}		
 			}

@@ -28,9 +28,9 @@ function featured( ) {
 	global $tableprefix;
 
 	if($_GET['retire'])
-		dbquery("UPDATE ".$tableprefix."fanfiction_stories SET featured = 2 WHERE sid = ".$_GET['retire']);
+		e107::getDb()->gen("UPDATE ".$tableprefix."fanfiction_stories SET featured = 2 WHERE sid = ".$_GET['retire']);
 	if($_GET['feature'])
-		dbquery("UPDATE ".$tableprefix."fanfiction_stories SET featured = 1 WHERE sid = ".$_GET['feature']);
+		e107::getDb()->gen("UPDATE ".$tableprefix."fanfiction_stories SET featured = 1 WHERE sid = ".$_GET['feature']);
 	$fquery = "SELECT stories.*, stories.title as title, author.penname, DATE_FORMAT(stories.updated, '%Y.%m.%d') as updatesort, DATE_FORMAT(stories.date, '$datim') as date, DATE_FORMAT(stories.updated, '$datim') as updated FROM ".$tableprefix."fanfiction_authors as author, ".$tableprefix."fanfiction_stories as stories WHERE stories.featured > 0 AND stories.uid = author.uid ORDER BY stories.featured";
 	$fresult = dbquery($fquery) or die(_FATALERROR."Query: ".$fquery."<br />Error: (".e107::getDb()->getLastErrorNumber().") ".e107::getDb()->getLastErrorText());
 	$output .= "<center><table class=\"tblborder\" cellpadding=\"5\"><tr><th colspan=\"2\" align=\"center\">"._FEATUREDSTORIES."</th></tr>";
@@ -83,7 +83,7 @@ function validate( ) {
 		if($admincats == "0" || sizeof(array_intersect(explode(",", $catid), explode(",", $admincats)))) {
 		 
 			if($validated != "1") {
-				dbquery("UPDATE ".$tableprefix."fanfiction_stories SET validated = '1', updated = ".time()." WHERE sid = '".$_GET['sid']."'");
+				e107::getDb()->gen("UPDATE ".$tableprefix."fanfiction_stories SET validated = '1', updated = ".time()." WHERE sid = '".$_GET['sid']."'");
 				$categories = explode(",", $catid);
 				include("functions.php");
 				foreach($categories as $cat) {
@@ -92,8 +92,8 @@ function validate( ) {
 				if($alertson) {
 					$subject = _NEWSTORYAT;
 					$mailtext = sprintf(_AUTHORALERTNOTE, $title, $author, $summary, $sid);
-					$favorites = dbquery("SELECT author.uid, email, penname FROM ".$tableprefix."fanfiction_favauth as fav, ".$tableprefix."fanfiction_authors as author WHERE fav.favuid = $authoruid AND fav.uid = author.uid");
-					while($favuser = dbassoc($favorites)) { 
+					$favorites = e107::getDb()->retrieve("SELECT author.uid, email, penname FROM ".$tableprefix."fanfiction_favauth as fav, ".$tableprefix."fanfiction_authors as author WHERE fav.favuid = $authoruid AND fav.uid = author.uid", true);
+					foreach($favorites AS $favuser ) { 
 						$result = efiction_core::sendemail($favuser['penname'], $favuser['email'], $sitename, $siteemail, $subject, $mailtext, "html");
 					}				
 				}
@@ -101,13 +101,13 @@ function validate( ) {
 			else if($alertson) {
 				$subject = _STORYALERT;
 				$mailtext = sprintf(_STORYALERTNOTE, $title, $author, $sid, $inorder);
-				$favorites = dbquery("SELECT author.uid, penname, email FROM ".$tableprefix."fanfiction_favstor as fav, ".$tableprefix."fanfiction_authors as author WHERE sid = '$sid' AND fav.uid = author.uid");
-				while($favuser = dbassoc($favorites)) { 
+				$favorites = e107::getDb()->retrieve("SELECT author.uid, penname, email FROM ".$tableprefix."fanfiction_favstor as fav, ".$tableprefix."fanfiction_authors as author WHERE sid = '$sid' AND fav.uid = author.uid", true);
+                foreach($favorites AS $favuser ) { 
 					$result = efiction_core::sendemail($favuser['penname'], $favuser['email'], $sitename, $siteemail, $subject, $mailtext, "html");
 				}
 			}
-			dbquery("UPDATE ".$tableprefix."fanfiction_chapters SET validated = '1' WHERE chapid = '".$_GET['chapid']."'");
-			dbquery("UPDATE ".$tableprefix."fanfiction_stories SET updated = ".time()." WHERE sid = '$sid'");
+			e107::getDb()->gen("UPDATE ".$tableprefix."fanfiction_chapters SET validated = '1' WHERE chapid = '".$_GET['chapid']."'");
+			e107::getDb()->gen("UPDATE ".$tableprefix."fanfiction_stories SET updated = ".time()." WHERE sid = '$sid'");
 			$output .= "<center><b>"._STORYVALIDATED."</b></center>";
 		}
 		else

@@ -70,7 +70,7 @@ if(!empty($_GET['edit'])) {
 					VALUES('".escapestring($field_name)."', '".escapestring($field_title)."', '$field_type', '".escapestring($field_options)."', '".escapestring($code_in)."', '".escapestring($code_out)."', '$field_on');");
 			}
 			else {
-				$result = dbquery("UPDATE ".TABLEPREFIX."fanfiction_authorfields SET field_type = '$field_type', field_name = '".escapestring($field_name)."', field_title = '".escapestring($field_title)."', field_options = '".escapestring($field_options)."', field_code_in = '".escapestring($code_in)."', field_code_out = '".escapestring($code_out)."', field_on = '$field_on' WHERE field_id = '".$_GET['edit']."'");
+				$result = e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_authorfields SET field_type = '$field_type', field_name = '".escapestring($field_name)."', field_title = '".escapestring($field_title)."', field_options = '".escapestring($field_options)."', field_code_in = '".escapestring($code_in)."', field_code_out = '".escapestring($code_out)."', field_on = '$field_on' WHERE field_id = '".$_GET['edit']."'");
 			}
 			if($result) $output .= write_message(_ACTIONSUCCESSFUL);
 			else $output .= write_error(_ERROR);
@@ -114,10 +114,11 @@ else if(!empty($_GET['delete'])) {
 
 }
 if($list) {
-	$fields = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_authorfields");
-	if(dbnumrows($fields) > 0) {
+	$query = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_authorfields");
+    $fields = e107::getDb()->retrieve($query, true);
+	if(count($fields) > 0) {
 		$output .= "<table class='tblborder' style='margin: 0 auto;'><tr><th class='tblborder'>"._NAME."</th><th class='tblborder'>"._STATUS."</th><th class='tblborder'>"._OPTIONS."</th></tr>";
-		while($field = dbassoc($fields)) {
+		foreach($fields AS $field) {
 			$output .= "<tr><td class='tblborder'>".(empty($field['field_title']) ? $field['field_name'] : $field['field_title'])."</td><td class='tblborder' style='text-align: center;'>".($field['field_on'] ? _ON : _OFF)."</td><td class='tblborder'><a href='admin.php?action=authorfields&amp;edit=".$field['field_id']."'>"._EDIT."</a> | <a href='admin.php?action=authorfields&amp;delete=".$field['field_id']."'>"._DELETE."</a></td></tr>";
 		}
 		$output .= "<tr><td class='tblborder' colspan='3' style='text-align: center;'><a href='admin.php?action=authorfields&amp;edit=new'>"._ADDNEWFIELD."</a></td></tr></table>";

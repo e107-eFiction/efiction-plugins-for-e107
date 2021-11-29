@@ -59,7 +59,7 @@ function relevelcategory($cat, $leveldown) {
 	if(dbnumrows($subs)) {
 		while($sub = dbassoc($subs)) {relevelcategory($sub[catid], $leveldown + 1); }
 	}
-	dbquery("UPDATE ".TABLEPREFIX."fanfiction_categories SET leveldown = $leveldown WHERE catid = '$cat'");
+	e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_categories SET leveldown = $leveldown WHERE catid = '$cat'");
 }
 
 
@@ -73,7 +73,7 @@ function relevelcategory($cat, $leveldown) {
 		if($confirm == "yes") {
 			$result = dbquery("SELECT displayorder,leveldown, parentcatid FROM ".TABLEPREFIX."fanfiction_categories WHERE catid = '$catid'");
 			$cat = dbassoc($result);
-			dbquery("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = (displayorder - '1') WHERE displayorder > '$cat[displayorder]' AND parentcatid = '$cat[parentcatid]'");
+			e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = (displayorder - '1') WHERE displayorder > '$cat[displayorder]' AND parentcatid = '$cat[parentcatid]'");
 			dbquery("DELETE FROM ".TABLEPREFIX."fanfiction_categories WHERE catid = '$catid'");
 			dbquery("DELETE FROM ".TABLEPREFIX."fanfiction_categories WHERE parentcatid = '$catid'");
 			$stories = dbquery("SELECT title,sid, catid FROM ".TABLEPREFIX."fanfiction_stories WHERE FIND_IN_SET(catid, '$catid')");
@@ -81,7 +81,7 @@ function relevelcategory($cat, $leveldown) {
 				$cats = explode(",", $story[catid]);
 				if(count($cats) == 1) $newcat = "-1";
 				else $newcat = implode(",", array_dif($cats, array($catid)));
-				dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET catid = '$newcat' WHERE sid = '$story[sid]' LIMIT 1");					
+				e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET catid = '$newcat' WHERE sid = '$story[sid]' LIMIT 1");					
 			}
 			$code = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'delcategory'");
 			while($c = dbassoc($code)) {
@@ -119,7 +119,7 @@ function relevelcategory($cat, $leveldown) {
 
 		$displayorder = (isNumber($_POST['orderafter']) ? $_POST['orderafter'] : 0) + 1;
 		if($_GET["cat"] == "new") { 
-			$query = dbquery("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = (displayorder + 1) WHERE displayorder > '".$_POST['orderafter']."' AND leveldown = '$leveldown' AND parentcatid ='".$_POST['parentcatid']."'");
+			$query = e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = (displayorder + 1) WHERE displayorder > '".$_POST['orderafter']."' AND leveldown = '$leveldown' AND parentcatid ='".$_POST['parentcatid']."'");
 			$catresult = dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_categories (category, parentcatid, description, locked, image, leveldown, displayorder) VALUES ('".addslashes(descript(strip_tags(trim($_POST['category']))))."', '".$_POST['parentcatid']."', '".addslashes(descript($_POST['description']))."', '$locked', '".$_POST['image']."', '$leveldown', '$displayorder')");
 		}
 		else {
@@ -128,18 +128,18 @@ function relevelcategory($cat, $leveldown) {
 			$catresult = "UPDATE ".TABLEPREFIX."fanfiction_categories SET category = '".addslashes(descript($_POST['category']))."', description = '".addslashes(descript($_POST['description']))."', locked = '$locked', parentcatid = '".$_POST['parentcatid']."', image = '".$_POST['image']."', leveldown = '$leveldown', displayorder = '$displayorder' WHERE catid = '".$_POST['catid']."'";
 			if($oldparent == $_POST['parentcatid']) {
 				if($oldorder && $oldorder < $displayorder) {
-					dbquery("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = displayorder - 1 WHERE displayorder > $oldorder AND displayorder < $displayorder");
-					dbquery("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = $displayorder - 1 WHERE catid = '".$_GET['cat']."'");
+					e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = displayorder - 1 WHERE displayorder > $oldorder AND displayorder < $displayorder");
+					e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = $displayorder - 1 WHERE catid = '".$_GET['cat']."'");
 				}
 				if($oldorder > $displayorder) {
-					dbquery("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = displayorder + 1 WHERE displayorder >= $displayorder AND displayorder < $oldorder");
-					dbquery("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = $displayorder WHERE catid = '".$_GET['cat']."'");
+					e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = displayorder + 1 WHERE displayorder >= $displayorder AND displayorder < $oldorder");
+					e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = $displayorder WHERE catid = '".$_GET['cat']."'");
 				}
 			} 
 			else {
 				if($oldleveldown != $leveldown) relevelcategory($_GET['cat'], $leveldown);
-				dbquery("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = displayorder -1 WHERE displayorder > $oldorder AND parentcatid = '$oldparent'");
-				dbquery("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = displayorder + 1 WHERE displayorder > '".$_POST['orderafter']."' AND parentcatid = '".$_POST['parentcatid']."'");
+				e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = displayorder -1 WHERE displayorder > $oldorder AND parentcatid = '$oldparent'");
+				e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = displayorder + 1 WHERE displayorder > '".$_POST['orderafter']."' AND parentcatid = '".$_POST['parentcatid']."'");
 			}
 			$success = dbquery($catresult);
 		}
@@ -149,13 +149,13 @@ function relevelcategory($cat, $leveldown) {
 		while($cat = dbassoc($resultA)) {
 			$count = 1;
 			if($cat['parentcatid'] = -1) {
-				dbquery("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = $countA WHERE catid = $cat[catid]");
+				e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = $countA WHERE catid = $cat[catid]");
 				$countA++;
 			}
 			$selectB = "SELECT category, catid FROM ".TABLEPREFIX."fanfiction_categories WHERE parentcatid = '$cat[catid]' ORDER BY displayorder";
 			$resultB = dbquery($selectB);
 			while($sub = dbassoc($resultB)) {
-				dbquery("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = $count WHERE catid = $sub[catid]");
+				e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = $count WHERE catid = $sub[catid]");
 				$count++;
 			}
 		}
@@ -166,9 +166,9 @@ function relevelcategory($cat, $leveldown) {
 		if(isset($_GET["go"])) {
 			$displayorder = $_GET["displayorder"];
 			$oneabove =  ($_GET["go"] == "up" ?  $displayorder -1 : $displayorder + 1);
-			dbquery("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = '-1' WHERE displayorder = '$displayorder' AND parentcatid = '".$_GET['parentcatid']."'");
-			dbquery("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = '$displayorder' WHERE displayorder = '$oneabove' AND parentcatid = '".$_GET['parentcatid']."'");
-			dbquery("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = '$oneabove' WHERE displayorder = '-1' AND parentcatid = '".$_GET['parentcatid']."'");
+			e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = '-1' WHERE displayorder = '$displayorder' AND parentcatid = '".$_GET['parentcatid']."'");
+			e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = '$displayorder' WHERE displayorder = '$oneabove' AND parentcatid = '".$_GET['parentcatid']."'");
+			e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_categories SET displayorder = '$oneabove' WHERE displayorder = '-1' AND parentcatid = '".$_GET['parentcatid']."'");
 			$catlist = array( );
             $catlist = efiction_categories::get_catlist();	
 		}

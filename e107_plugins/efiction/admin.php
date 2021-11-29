@@ -68,9 +68,10 @@ e107::lan('efiction', true);
 	}
  
     if($action) {
-		$panelquery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_panels WHERE panel_name = '$action' AND panel_type = 'A' LIMIT 1");
-		if(dbnumrows($panelquery)) {
-			$panel = dbassoc($panelquery);
+		$panelquery =  "SELECT * FROM ".TABLEPREFIX."fanfiction_panels WHERE panel_name = '$action' AND panel_type = 'A' LIMIT 1" ;
+        $panel = e107::getDb()->retrieve($panelquery);
+        e107::getMessage()->addDebug($panelquery);
+		if($panel) {
 			if((isset($panel['panel_level']) ? $panel['panel_level'] : 0) >= uLEVEL) {
 				if($panel['panel_url'] && file_exists(_BASEDIR.$panel['panel_url'])) require_once(_BASEDIR.$panel['panel_url']);
 				else if (file_exists(_BASEDIR."admin/{$action}.php")) require_once("admin/{$action}.php");
@@ -82,11 +83,16 @@ e107::lan('efiction', true);
 		if (file_exists("install"))
 			$output .= write_error(_SECURITYDELETE);
 		$adminnotices = "";
-		$countquery = dbquery("SELECT COUNT(DISTINCT chapid) FROM ".TABLEPREFIX."fanfiction_chapters WHERE validated < 1");
-		list($count) = dbrow($countquery);
+		$countquery =  "SELECT COUNT(DISTINCT chapid) AS count FROM ".TABLEPREFIX."fanfiction_chapters WHERE validated < 1" ;
+        $count = e107::getDb()->retrieve($countquery);
+        e107::getMessage()->addDebug($countquery);
+ 
 		if($count) $adminnotices .= write_message(sprintf(_QUEUECOUNT, $count));
-		$codequery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'adminnotices'");
-		while($code = dbassoc($codequery)) {
+        
+        
+		$codequery =  "SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'adminnotices'";
+        $codearray = e107::getDb()->retrieve($countquery, true);
+        foreach($codearray AS $code) {
 			eval($code['code_text']);
 		}
 		$output .= write_message($adminnotices);

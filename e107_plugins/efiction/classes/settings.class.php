@@ -96,6 +96,18 @@ if (!class_exists('efiction_settings')) {
             return null;
         }
         
+        public function getPref($setting_name = '')
+        {
+            $settings = self::get_settings();
+
+            if ($setting_name) {     
+                return $settings[$setting_name];
+            }
+    
+            return null;
+        }
+        
+        
         /*instead tinymce yes/no */
         public static function get_available_editors()
         {

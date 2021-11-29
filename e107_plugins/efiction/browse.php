@@ -347,12 +347,11 @@ else  {
 	$output .= "</div>".($displaycolumns ? "</div>" : "")."<div class='cleaner'>&nbsp;</div></div>";
 }
 
-
 $tpl->assign("output", $output);
-
-//$tpl->xprintToScreen( );  
  
- $text = $tpl->getOutputContent(); 
+
+$text = $tpl->getOutputContent(); 
+ 
 e107::getRender()->tablerender($caption, $text, $current);
 require_once(FOOTERF); 
 exit;

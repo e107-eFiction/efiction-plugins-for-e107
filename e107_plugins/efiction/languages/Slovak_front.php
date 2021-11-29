@@ -451,7 +451,9 @@ define('_REPORTTHIS', 'Nahlásiť');
 define ("LAN_EFICTION_AUTHOR_PROFILE", "Profil autora");
 // Hardcoded in .tpl 
 define ("LAN_EFICTION_MEMBER_SINCE", "Člen od");
-define ("LAN_EFICTION_MEMBERSHIP_STATUS", "Status členstva");
+define ("LAN_EFICTION_REAL_NAME", "Real name");
+define ("LAN_EFICTION_MEMBERSHIP_STATUS", "Membership status");
+define ("LAN_EFICTION_BIO", "Bio");
 
 define ("LAN_EFICTION_BY", "Od");
 

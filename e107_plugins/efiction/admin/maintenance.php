@@ -28,25 +28,25 @@ $maint = isset($_GET['maint']) ? $_GET['maint'] : false;
 $output .= "<div id='pagetitle'>"._ARCHIVEMAINT."</div>";
  
 if($maint == "reviews") {
-	dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET rating = '0', reviews = '0'"); // Set them all to 0 before we re-insert.
+	e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET rating = '0', reviews = '0'"); // Set them all to 0 before we re-insert.
 	$stories = dbquery("SELECT AVG(rating) as average, item FROM ".TABLEPREFIX."fanfiction_reviews WHERE type = 'ST' AND rating != '-1' GROUP BY item");
 	while($s = dbassoc($stories)) {
-		dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET rating = '".round($s['average'])."' WHERE sid = '".$s['item']."'");
+		e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET rating = '".round($s['average'])."' WHERE sid = '".$s['item']."'");
 	}
 	$stories = dbquery("SELECT COUNT(reviewid) as count, item FROM ".TABLEPREFIX."fanfiction_reviews WHERE type = 'ST' AND review != 'No Review' GROUP BY item");
 	while($s = dbassoc($stories)) {
-		dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET reviews = '".$s['count']."' WHERE sid = '".$s['item']."'");
+		e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET reviews = '".$s['count']."' WHERE sid = '".$s['item']."'");
 	}
-	dbquery("UPDATE ".TABLEPREFIX."fanfiction_chapters SET rating = '0', reviews = '0'");
+	e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_chapters SET rating = '0', reviews = '0'");
 	$chapters = dbquery("SELECT AVG(rating) as average, chapid FROM ".TABLEPREFIX."fanfiction_reviews WHERE type = 'ST' AND rating != '-1' GROUP BY chapid");
 	while($c = dbassoc($chapters)) {
-		dbquery("UPDATE ".TABLEPREFIX."fanfiction_chapters SET rating = '".round($c['average'])."' WHERE chapid = '".$c['chapid']."'");
+		e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_chapters SET rating = '".round($c['average'])."' WHERE chapid = '".$c['chapid']."'");
 	}
 	$chapters = dbquery("SELECT COUNT(reviewid) as count, chapid FROM ".TABLEPREFIX."fanfiction_reviews WHERE type = 'ST' AND review != 'No Review' GROUP BY chapid");
 	while($c = dbassoc($chapters)) {
-		dbquery("UPDATE ".TABLEPREFIX."fanfiction_chapters SET reviews = '".$c['count']."' WHERE chapid = '".$c['chapid']."'");
+		e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_chapters SET reviews = '".$c['count']."' WHERE chapid = '".$c['chapid']."'");
 	}
-	dbquery("UPDATE ".TABLEPREFIX."fanfiction_series SET rating = '0', reviews = '0'");
+	e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_series SET rating = '0', reviews = '0'");
 	$series = dbquery("SELECT seriesid FROM ".TABLEPREFIX."fanfiction_series");
 	while($s = dbassoc($series)) {
 		$thisseries = $s['seriesid'];
@@ -72,11 +72,11 @@ else if($maint == "stories") {
 			else $alist[$ca['uid']] = $ca['count'];
 		}
 		foreach($alist AS $a => $s) {
-			dbquery("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET stories = '$s' WHERE uid = '$a' LIMIT 1");
+			e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET stories = '$s' WHERE uid = '$a' LIMIT 1");
 		}
 		$count =  dbquery("SELECT SUM(wordcount) as count, sid FROM ".TABLEPREFIX."fanfiction_chapters WHERE validated = '1' GROUP BY sid");
 		while($c = dbassoc($count)) {
-			dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET wordcount = '".$c['count']."' WHERE sid = '".$c['sid']."'");
+			e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET wordcount = '".$c['count']."' WHERE sid = '".$c['sid']."'");
 		}
 	$output .= write_message(_ACTIONSUCCESSFUL);
 }
@@ -134,19 +134,19 @@ else if($maint == "stats") {
 	$totalseries = dbnumrows($serieslist);
 	while($s = dbassoc($serieslist)) {
 		$numstories = count(storiesInSeries($s['seriesid']));
-		dbquery("UPDATE ".TABLEPREFIX."fanfiction_series SET numstories = '$numstories' WHERE seriesid = ".$s['seriesid']." LIMIT 1");
+		e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_series SET numstories = '$numstories' WHERE seriesid = ".$s['seriesid']." LIMIT 1");
 	}
 
 	$newslist = dbquery("SELECT count(cid) as count, nid FROM ".TABLEPREFIX."fanfiction_comments GROUP BY nid");
 	while($n = dbassoc($newslist)) {
-		dbquery("UPDATE ".TABLEPREFIX."fanfiction_news SET comments = '".$n['count']."' WHERE nid = ".$n['nid']);
+		e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_news SET comments = '".$n['count']."' WHERE nid = ".$n['nid']);
 	}
 
 	$storiesquery =dbquery("SELECT COUNT(sid) as totals, SUM(wordcount) as totalwords FROM ".TABLEPREFIX."fanfiction_stories WHERE validated > 0 ");
 
 	list($stories, $words) = dbrow($storiesquery);
 	list($authors) = dbrow(dbquery("SELECT count(uid) FROM ".TABLEPREFIX."fanfiction_authorprefs WHERE stories > 0"));
-	dbquery("UPDATE ".TABLEPREFIX."fanfiction_stats SET stories = '$stories', authors = '$authors', wordcount = '$words' WHERE sitekey = '".SITEKEY."'"); 
+	e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stats SET stories = '$stories', authors = '$authors', wordcount = '$words' WHERE sitekey = '".SITEKEY."'"); 
 
 	$chapterquery = dbquery("SELECT COUNT(chapid) as chapters FROM ".TABLEPREFIX."fanfiction_chapters where validated > 0");
 	list($chapters) = dbrow($chapterquery);
@@ -159,10 +159,10 @@ else if($maint == "stats") {
 	list($reviews) = dbrow($reviewquery);
 	$reviewquery = dbquery("SELECT COUNT(DISTINCT uid) FROM ".TABLEPREFIX."fanfiction_reviews WHERE review != 'No Review' AND uid != 0");
 	list($reviewers) = dbrow($reviewquery);
-	dbquery("UPDATE ".TABLEPREFIX."fanfiction_stats SET series = '$totalseries', chapters = '$chapters', members = '$members', newestmember = '$newest', reviews = '$reviews', reviewers = '$reviewers' WHERE sitekey = '".SITEKEY."'"); 
+	e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stats SET series = '$totalseries', chapters = '$chapters', members = '$members', newestmember = '$newest', reviews = '$reviews', reviewers = '$reviewers' WHERE sitekey = '".SITEKEY."'"); 
 	$news = dbquery("SELECT count(nid) as count, nid FROM ".TABLEPREFIX."fanfiction_comments GROUP BY nid");
 	while($n = dbassoc($news)) {
-		dbquery("UPDATE ".TABLEPREFIX."fanfiction_news SET comments = '".$n['count']."' WHERE nid = '".$n['nid']."' LIMIT 1");
+		e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_news SET comments = '".$n['count']."' WHERE nid = '".$n['nid']."' LIMIT 1");
 	}
 	$output .= write_message(_ACTIONSUCCESSFUL);
 }
@@ -174,7 +174,7 @@ else if($maint == "panels") {
 				$count = 1;
 				$plist = dbquery("SELECT panel_name, panel_id FROM ".TABLEPREFIX."fanfiction_panels WHERE panel_hidden = '0' AND panel_type = '".$ptype['panel_type']."' AND panel_level = '$x' ORDER BY panel_level, panel_order");
 				while($p = dbassoc($plist)) {
-					dbquery("UPDATE ".TABLEPREFIX."fanfiction_panels SET panel_order = '$count' WHERE panel_id = '".$p['panel_id']."' LIMIT 1");
+					e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_panels SET panel_order = '$count' WHERE panel_id = '".$p['panel_id']."' LIMIT 1");
 					$count++;
 				}
 			}
@@ -183,7 +183,7 @@ else if($maint == "panels") {
 			$count = 1;
 			$plist = dbquery("SELECT panel_name, panel_id FROM ".TABLEPREFIX."fanfiction_panels WHERE panel_hidden = '0' AND panel_type = '".$ptype['panel_type']."' ORDER BY ".($ptype['panel_type'] == "A" ? "panel_level," : "")."panel_order");
 			while($p = dbassoc($plist)) {
-				dbquery("UPDATE ".TABLEPREFIX."fanfiction_panels SET panel_order = '$count' WHERE panel_id = '".$p['panel_id']."' LIMIT 1");
+				e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_panels SET panel_order = '$count' WHERE panel_id = '".$p['panel_id']."' LIMIT 1");
 				$count++;
 			}
 		}

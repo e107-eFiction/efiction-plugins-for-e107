@@ -48,11 +48,11 @@ if(isset($_GET['delete'])) {
 		$class = $thisclass['class_id'];
 		$stories = dbquery("SELECT sid, classes FROM ".TABLEPREFIX."fanfiction_stories WHERE FIND_IN_SET('$class', classes) > 0");
 		while($s = dbassoc($stories)) {
-			dbquery("UPDATE ".TABLEPREFIX."fanfiction_stories SET classes = '".implode(",", array_diff(explode(",", $s['classes']), array($class)))."' WHERE sid = '$s[sid]' LIMIT 1");
+			e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET classes = '".implode(",", array_diff(explode(",", $s['classes']), array($class)))."' WHERE sid = '$s[sid]' LIMIT 1");
 		}  
 		$series = dbquery("SELECT seriesid, classes FROM ".TABLEPREFIX."fanfiction_series WHERE FIND_IN_SET('$class', classes) > 0");
 		while($s = dbassoc($series)) {
-			dbquery("UPDATE ".TABLEPREFIX."fanfiction_series SET classes = '".implode(",", array_diff(explode(",", $s['classes']), array($class)))."' WHERE seriesid = '$s[seriesid]' LIMIT 1");
+			e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_series SET classes = '".implode(",", array_diff(explode(",", $s['classes']), array($class)))."' WHERE seriesid = '$s[seriesid]' LIMIT 1");
 		}
 		$code = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'delclass'");
 		while($c = dbassoc($code)) {
@@ -105,7 +105,7 @@ if(isset($_GET['type']) && empty($_GET['delete'])) {
 	if(isset($_POST['submit'])) {
 		$type_name = escapestring(descript(strip_tags($_POST['type_name'])));
 		$type_title = escapestring(descript(strip_tags($_POST['type_title'])));
-		if(isset($_POST['type_id'])) $result = dbquery("UPDATE ".TABLEPREFIX."fanfiction_classtypes SET classtype_name = '$type_name', classtype_title = '$type_title' WHERE classtype_id = '".$_POST['type_id']."' LIMIT 1");
+		if(isset($_POST['type_id'])) $result = e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_classtypes SET classtype_name = '$type_name', classtype_title = '$type_title' WHERE classtype_id = '".$_POST['type_id']."' LIMIT 1");
 		else {
 			$result = dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_classtypes(classtype_name, classtype_title) VALUES('$type_name', '$type_title')");
 			$id = dbinsertid($result);
@@ -133,7 +133,7 @@ if(isset($_GET['class']) && empty($_GET['delete'])) {
 		if(isset($_GET['class']) && isNumber($_GET['class'])) $class_id = $_GET['class'];
 		$class_name = escapestring(descript(strip_tags($_POST['class_name'])));
 		$class_type = isNumber($_POST['type_id']) ? $_POST['type_id'] : false;
-		if(isset($class_id)) $result = dbquery("UPDATE ".TABLEPREFIX."fanfiction_classes SET class_name = '$class_name', class_type = '$class_type' WHERE class_id = '$class_id' LIMIT 1");
+		if(isset($class_id)) $result = e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_classes SET class_name = '$class_name', class_type = '$class_type' WHERE class_id = '$class_id' LIMIT 1");
 		if($result) $output .= write_message(_ACTIONSUCCESSFUL);
 		else $output .= write_error(_ERROR);
 	}

@@ -462,8 +462,10 @@ define ("LAN_EFICTION_AUTHOR_PROFILE", "Author profile");
 
 // Hardcoded in .tpl 
 define ("LAN_EFICTION_MEMBER_SINCE", "Member Since");
+define ("LAN_EFICTION_REAL_NAME", "Real name");
 define ("LAN_EFICTION_MEMBERSHIP_STATUS", "Membership status");
-
+define ("LAN_EFICTION_BIO", "Bio")
+ 
 
 define ("LAN_EFICTION_BY", "By");
 

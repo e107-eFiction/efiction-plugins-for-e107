@@ -30,7 +30,7 @@ if(!defined("_CHARSET")) exit( );
 		if(isset($_GET["confirm"])) {
 			$output .= "<div id='pagetitle'>"._REVOKEADMIN."</div>";
 			if($_GET["confirm"] == "yes" && USERUID != $_GET['revoke']) {
-				$result = dbquery("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET level = '0' WHERE uid = '".$_GET['revoke']."'");
+				$result = e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET level = '0' WHERE uid = '".$_GET['revoke']."'");
 				if($result) $output .=  write_message(_ACTIONSUCCESSFUL);
 				else {
 					$result = dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_authorprefs(`level`, `uid`) VALUES ('0', '".$_GET['revoke']."')"); // shouldn't be possible, but better safe than sorry.
@@ -49,7 +49,7 @@ if(!defined("_CHARSET")) exit( );
 			$contact = (isset($_POST['contact']) && $_POST['contact'] == "on" ? "1" : "0");
 			if($_POST['catid']) $categories = $_POST['catid'];
 			else $categories = "0";
-			if(check_prefs($_POST['uid'])) $result = dbquery("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET level = '".$_POST['adlevel']."', contact = '$contact', categories = '$categories' WHERE uid = '".$_POST['uid']."'");
+			if(check_prefs($_POST['uid'])) $result = e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET level = '".$_POST['adlevel']."', contact = '$contact', categories = '$categories' WHERE uid = '".$_POST['uid']."'");
 			else $result = dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_authorprefs(`level`, `contact`, `categories`,  `uid`) VALUES ('".$_POST['adlevel']."', '$contact', '$categories', '".$_POST['uid']."')");
 			if($result) $output .= write_message(_ACTIONSUCCESSFUL._BACK2ADMIN);
 			else $output .= write_message(_ERROR);
@@ -68,9 +68,12 @@ if(!defined("_CHARSET")) exit( );
 				<div><label for=\"uid\">"._PENNAME.": </label>";
 			if($do == "new") {
                
-				$query = dbquery(_MEMBERLIST);
+				$query = _MEMBERLIST;
+                $users_array = e107::getDb()->retrieve($query, true);
+                e107::getMessage()->addDebug($countquery);
 				$output .= "<select name=\"uid\">";
-				while($users = dbassoc($query)) {
+                foreach($users_array AS $user)
+				{
 					if(!$users['level']) $output .= "<option value=\"".$users['uid']."\"".($uid == $users['uid'] ? " selected" : "").">".$users['penname']."</option>";
 				}	
 				$output .= "</select></div>";

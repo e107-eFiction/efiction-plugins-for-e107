@@ -21,7 +21,7 @@ include("blocks/".$blocks['poll']['file']);
 			$n = $num + 1;
 			$final .= (isset($results[$n]) ? $results[$n] : "0");
 		}
-		$closepoll =dbquery("UPDATE ".TABLEPREFIX."fanfiction_poll SET poll_results = '$final', poll_end = ".time()." WHERE poll_id = '".$currentpoll['poll_id']."'");
+		$closepoll =e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_poll SET poll_results = '$final', poll_end = ".time()." WHERE poll_id = '".$currentpoll['poll_id']."'");
 		if($closepoll) $emptyvotes = dbquery("TRUNCATE TABLE `".TABLEPREFIX."fanfiction_poll_votes`");
 		$output .= write_message(_ACTIONSUCCESSFUL);
 	}

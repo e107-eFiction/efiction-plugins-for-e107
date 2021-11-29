@@ -24,7 +24,8 @@
 if(!defined("e107_INIT")) exit( );
 	if(!isset($count)) $count = 0;
 	$adminlinks = "";
-	$tpl->newBlock("seriesblock");
+
+    $tpl->newBlock("seriesblock");
 	$tpl->assign("seriesid", $stories['seriesid']);
 	$tpl->assign("author", "<a href=\""._BASEDIR."viewuser.php?uid=".$stories['uid']."\">".stripslashes($stories['penname'])."</a>");
 	$tpl->assign("title", "<a href=\""._BASEDIR."viewseries.php?seriesid=".$stories['seriesid']."\">".stripslashes($stories['title'])."</a>");
@@ -33,7 +34,7 @@ if(!defined("e107_INIT")) exit( );
 	$tpl->assign("numstories", $stories['numstories']);
 	if($reviewsallowed == "1") {
 		$tpl->assign("reviews", "<a href=\""._BASEDIR."reviews.php?type=SE&amp;item=".$stories['seriesid']."\">"._REVIEWS."</a>");
-		$tpl->assign("numreviews", "<a href=\""._BASEDIR."reviews.php?type=SE&amp;item=".$stories['seriesid']."\">$stories[reviews]</a>");
+		$tpl->assign("numreviews", "<a href=\""._BASEDIR."reviews.php?type=SE&amp;item=".$stories['seriesid']."\">".$stories['reviews']."</a>");
 	}
 	$tpl->assign("category", ($stories['catid'] ? catlist($stories['catid']) : _NONE));
 	$tpl->assign("characters", $stories['characters'] ? charlist($stories['characters']) : _NONE);
@@ -85,4 +86,5 @@ if(!defined("e107_INIT")) exit( );
 	else if($stories['isopen'] == 2 && USERUID) $tpl->assign("adminoptions", "[<a href=\""._BASEDIR."series.php?action=add&amp;add=stories&amp;seriesid=".$stories['seriesid']."\">"._ADD2SERIES."</a>] ".(!empty($adminlinks) ? " ".$adminlinks : ""));
 	$tpl->assign("reportthis", "[<a href=\""._BASEDIR."report.php?action=report&amp;url=series.php?seriesid=".$stories['seriesid']."\">"._REPORTTHIS."</a>]");
 	$count++;
+    
 ?>
