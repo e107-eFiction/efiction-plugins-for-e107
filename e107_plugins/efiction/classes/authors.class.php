@@ -147,6 +147,23 @@ if (!class_exists('efiction_authors')) {
            
           return $avatar;
         }
+        
+        
+       /* used in admin_config.php for OptArray*/
+       public function get_authors_list() {
+ 
+		$values = array();
+		$result = e107::getDb()->retrieve("SELECT penname, uid FROM #fanfiction_authors ORDER BY penname", true);
+ 
+		$values[0] = _NONE;
+		foreach ($result AS $row)
+		{
+			$values[$row['uid']] = $row['penname']. " [" . $row['uid'] . "]";;
+		}
+ 
+		return $values;    
+  
+      }
  
         
     }

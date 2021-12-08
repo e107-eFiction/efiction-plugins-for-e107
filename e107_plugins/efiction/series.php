@@ -23,6 +23,13 @@
 
 //Begin basic page setup
 $current = "series";
+
+if (!e107::isInstalled('efiction_series'))
+{
+	e107::redirect();
+	exit;
+}
+
 if($_GET['action'] == "add" || $_GET['action'] == "edit") $displayform = 1;
 
 include ("header.php");  //$action and HEADERF */

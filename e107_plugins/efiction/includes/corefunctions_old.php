@@ -478,4 +478,6 @@ function search($storyquery, $countquery, $pagelink = "searching.php?", $pagetit
 	$tpl->gotoBlock("_ROOT");
 	return $numrows;
 }
+ 
+
 ?>

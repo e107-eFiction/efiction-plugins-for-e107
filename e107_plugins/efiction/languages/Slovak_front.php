@@ -95,10 +95,10 @@ define('_RATING', 'Prístupnosť');
 define('_RATINGS', 'Prístupnosť');
 define('_REMOVE', 'Odstrániť');
 define('_REQUIREDINFO', 'Chýbajú niektoré z požadovaných informácií.  Skontrolujte, prosím, svoj vstup.');
-define('_REVIEW', 'Hodnotenie');
-define('_REVIEWNOTE', '<span style="text-decoration: underline; font-weight: bold;">Poznámka:</span> Môžete zadať buď hodnotenie, alebo recenziu, alebo oboje.');
-define('_REVIEWRATING', _RATING);
-define('_REVIEWS', 'Hodnotenia');
+define('_REVIEW', 'Komentár');
+define('_REVIEWNOTE', '<span style="text-decoration: underline; font-weight: bold;">Poznámka:</span> Môžete zadať buď komentár alebo hodnotenie alebo oboje.');
+define('_REVIEWRATING', "Hodnotenie");
+define('_REVIEWS', 'Komentáre');
 define('_RETIRE', 'Retire');
 define('_RETIRED', 'Retired');
 define('_RUSERSONLY', 'Len registrovaní užívatelia');
@@ -149,16 +149,17 @@ define('_SITEADMINS', 'Site Admins');
 
 // News
 define('_COMMENTS', 'Komentár');
+define('_COMMENT_POSTED_ON', 'Posted on');
  
 
 // Reviews
-define('_ALREADYRESPONDED', 'You have already responded to that review!');
-define('_BACKTOSTORY', 'Back to story.');
-define('_DELETEREVIEW', 'Delete Review');
+define('_ALREADYRESPONDED', 'Na tento komentár ste už odpovedali!');
+define('_BACKTOSTORY', 'Späť k poviedke.');
+define('_DELETEREVIEW', 'Vymazanie komentára');
 define('_DISLIKED', 'Disliked');
 define('_LIKED', 'Liked');
-define('_MISSINGINFO', 'You must supply either a review or rating.');
-define('_MISSINGINFO2', 'Rating a story without writing a review is not allowed.  You must write a review.');
+define('_MISSINGINFO', 'Nemôžete odoslať prázdny formulár. Zadajte alebo komentár alebo hodnotenie.');
+define('_MISSINGINFO2', 'Nie je dovolené odoslať hodnotenie poviedky bez komentára.  Komentár musíte napísať.');
 define('_OPINION', 'Opinion');
 define('_RESPECTNOTE', ' Please be respectful and polite when contacting an author.');
 define('_RESPOND', 'Respond');
@@ -167,10 +168,9 @@ define('_REVEMAIL2', "Hello,
   You have received a new review at $sitename.\r\n You can view your new review at <a href='$url/reviews.php?%1\$s'>$url/reviews.php?%1\$s</a>.
 If you no longer wish to receive e-mails such as this, please go to <a href='$url/user.php'>your account</a>\r\n
 on $sitename, and edit your profile."); // Modified 11-12-05
-define('_REVIEWSFOR', 'Hodnotenia k');
-define('_COMMENTSFOR', 'Komentáre k');
-define('_REVTHANKYOU', 'Thank you for your review!');
-define('_SIGNED', 'Signed');
+define('_REVIEWSFOR', 'Komentáre k');
+define('_REVTHANKYOU', 'Ďakujeme za váš komentár!');
+define('_SIGNED', 'Prihlásený');
 define('_VIEWALLREVIEWS', 'Zobraziť hodnotenia');
 define('_VIEWALLSERRIEREVIEWS', 'Zobraziť hodnotenia k sérii');
 define('_VIEWALLSTORYREVIEWS', 'Zobraziť hodnotenia k poviedke');
@@ -224,6 +224,7 @@ define('_SERIESTYPE', 'Series Type'); // Added 02-10-07
 define('_SERIESTITLEREQUIRED', 'A title for the series is required!');
 define('_NEWSERIESITEMS', "New items have been submitted to your series, %1\$s, at $sitename.  To validate these additions log in to your account.");
 define('_SERIESITEMSSUBS', "New items for %1\$s at $sitename");
+define('_SERIE_MANAGER', "Správca série");  //just new label for author uid
 
 // Stories
 
@@ -384,8 +385,8 @@ define('_BACK2INDEX', 'Back to index');
 define('_CONTINUE', 'Continue');
 define('_CONTRIBUTE2RR', 'Contribute to Round Robin');
 define('_INVALIDSTORY', "That story does not exist on this archive.  You may <a href='searching.php'>search</a> for it or return to <a href='index.php'>the home page.</a>");
-define('_LOGINTOREVIEW', 'You must %1$s (%2$s) to review.');
-define('_SUBMITREVIEW', 'Pridať hodnotenie');
+define('_LOGINTOREVIEW', 'Musíte sa prihlásiť, ak chcete odoslať komentár.');
+define('_SUBMITREVIEW', 'Pridať komentár');
 define('_TEXTSIZE', 'Text Size');
 
 // View User
@@ -465,3 +466,10 @@ define ("_PUBLISHED", "Vydané");
 define ("_UPDATED", "Aktualizované");
 define ("_WORDCOUNT", "Počet slov");
 define ("_COMPLETED", "Dokončené");
+
+
+/* reviewblock.tpl */
+define("LAN_REVIEW_AUTHOR","Autor komentára");
+define("LAN_REVIEW_TITLE","Komentár k");
+
+ 

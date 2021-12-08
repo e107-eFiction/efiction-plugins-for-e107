@@ -163,7 +163,7 @@ define('_SITEADMINS', 'Site Admins');
 
 // News
 define('_COMMENTS', 'Comments');
- 
+define('_COMMENT_POSTED_ON', 'Posted on');
 
 // Reviews
 define('_ALREADYRESPONDED', 'You have already responded to that review!');
@@ -236,6 +236,8 @@ define('_SERIESTYPE', 'Series Type'); // Added 02-10-07
 define('_SERIESTITLEREQUIRED', 'A title for the series is required!');
 define('_NEWSERIESITEMS', "New items have been submitted to your series, %1\$s, at $sitename.  To validate these additions log in to your account.");
 define('_SERIESITEMSSUBS', "New items for %1\$s at $sitename");
+define('_SERIE_MANAGER', "Series's owner");  //just new label for author uid
+
 
 // Stories
 
@@ -464,7 +466,7 @@ define ("LAN_EFICTION_AUTHOR_PROFILE", "Author profile");
 define ("LAN_EFICTION_MEMBER_SINCE", "Member Since");
 define ("LAN_EFICTION_REAL_NAME", "Real name");
 define ("LAN_EFICTION_MEMBERSHIP_STATUS", "Membership status");
-define ("LAN_EFICTION_BIO", "Bio")
+define ("LAN_EFICTION_BIO", "Bio");
  
 
 define ("LAN_EFICTION_BY", "By");

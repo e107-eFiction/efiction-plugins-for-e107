@@ -1,5 +1,6 @@
 <!-- START BLOCK : series -->
 <div class="card mb-3 serie_title">
+    {seriesimage}
     <div class="card-header text-white bg-info text-center">
 		<div id="pagetitle">{pagetitle} {rating} </div>
 		<div id="titleinfo"> [{reviews} - {numreviews}]</div>

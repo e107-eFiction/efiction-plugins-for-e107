@@ -121,9 +121,10 @@ function accessDenied($str = ""){
 }
 
 
-// Formats the text of the story when displayed on screen.
-function format_story($text) {
+// Formats the text of the story when displayed on screen.  
+function format_story($text = '') {
       $text = e107::getParser()->toHTML($text, true, "DESCRIPTION"); 
+ 
       /*
       $text = trim($text);
       if(strpos($text, "<br>") === false && strpos($text, "<p>") === false && strpos($text, "<br />") === false) $text = nl2br2($text);
@@ -135,6 +136,22 @@ function format_story($text) {
       return $text;
 }
 
+
+
+function saveformat_story($text) {
+     $text = e107::getParser()->toDb($text); 
+     return $text;
+}
+
+function format_title($text) {
+     $text = e107::getParser()->toHTML($text, true, "TITLE"); 
+     return $text;
+}
+
+function format_summary($text) {
+     $text = e107::getParser()->toHTML($text, true, "SUMMARY"); 
+     return $text;
+}
 
 // Because this is used in places other than the listings of stories, we're setting it up as a function to be called as needed.
 function title_link($stories, $parm = NULL) {
@@ -295,4 +312,54 @@ function build_pagelinks($url, $total, $offset = 0, $columns = 1) {
 	if($stoprange < $totpages && $linkstyle > 0) $pages .= "<span class='ellipses'>...</span> <a href='".$url."offset=".(($totpages - 1) * $itemsperpage)."'>$totpages</a>\n";
 	if ($curpage < $totpages && $linkstyle != 1) $pages .=  " <a href='".$url."offset=".($offset+$itemsperpage)."' id='plnext'>["._NEXT."]</a>";
 	return "<div id=\"pagelinks\">$pages</div>";
+}
+
+
+//original solution fails on national characters
+function e107_wordscount($title = '') {
+  $tp = e107::getParser();
+ 
+  //see application title2sef helper
+  //$title = $tp->toText($title);
+  //it can't be used because strip_tags() in toText() fails on <p><strong>Kapitola 8 3/3</strong></p> 
+  
+  //replace national stuff otherwise str_word_count() fails
+  $storytext = $tp->toASCII($title);
+  
+  //$storytext = str_replace("><", '> <', $storytext);
+ 
+  //to make it one word
+  $storytext = str_replace(array("https://www.youtube.com/watch?v="), 'x', $storytext); 
+   // issue #3245: strip all html and bbcode before processing 
+  $words_to_count = flame_strip_tags($storytext );    
+   
+  $words = str_word_count($words_to_count, 1 , "1234567890/" );
+    
+ 
+  return $words  ;
+}
+
+function flame_strip_tags($html, $allowed_tags=array()) {
+  $allowed_tags=array_map(strtolower,$allowed_tags);
+  $rhtml=preg_replace_callback('/<\/?([^>\s]+)[^>]*>/i', function ($matches) use (&$allowed_tags) {       
+    return in_array(strtolower($matches[1]),$allowed_tags)?$matches[0]:'';
+  },$html);
+  return $rhtml;
+}
+ 
+function rip_tags_better($string, $rep = ' ') {
+   
+    // ----- remove HTML TAGs -----
+    $string = preg_replace ('/<[^>]*>/', $rep, $string);
+   
+    // ----- remove control characters -----
+    $string = str_replace("\r", '', $string);    // --- replace with empty space
+    $string = str_replace("\n", $rep, $string);   // --- replace with space
+    $string = str_replace("\t", $rep, $string);   // --- replace with space
+   
+    // ----- remove multiple spaces -----
+    $string = trim(preg_replace('/ {2,}/', $rep, $string));
+   
+    return $string;
+
 }

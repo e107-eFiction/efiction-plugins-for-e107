@@ -65,6 +65,7 @@ if (!class_exists('efiction_ratings')) {
 		/* used for ratings select in storyform */
 		/* ID => NAME */
 		// used in story_shortcodes.php, series_shortcodes.php
+        /* used in admin_config.php for OptArray*/
 		public function get_ratings_list()
 		{
 			$authors = array();

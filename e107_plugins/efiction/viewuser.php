@@ -44,7 +44,7 @@ $favorites = e107::getSingleton('efiction_settings')->getPref('favorites');
 $alertson = e107::getSingleton('efiction_settings')->getPref('alertson'); 
 $agestatement =  e107::getSingleton('efiction_settings')->getPref('agestatement'); 
 $displayprofile =  e107::getSingleton('efiction_settings')->getPref('displayprofile');
-
+ 
 if($displayprofile) {
   include(_BASEDIR."user/profile.php");
   $tpl->assign("profile_block", $profile_text);
@@ -85,14 +85,27 @@ foreach ($codes as $code) {
 }
 /* End of custom code */   
  
-foreach($panels_array AS $panel) {      
+
+$paneltabs_template =  e107::getSingleton("efiction_core")->getTpl("user_paneltabs.tpl");
+
+foreach($panels_array AS $panel) {   
 	$panellink = "";
 	if(substr($panel['panel_name'], -2, 2) == "by") {
 		$itemcount = 0;
 		if($panel['panel_name'] == "storiesby") {
 			$itemcount =  e107::getDb()->retrieve("SELECT stories FROM ".TABLEPREFIX."fanfiction_authorprefs WHERE uid = '$uid'");
 		}
+		elseif($panel['panel_name'] == "seriesby") {
+			$query = _SERIESCOUNT." WHERE uid = '$uid'";
+			$itemcount =  e107::getDb()->retrieve($query); 
+		}
+		elseif($panel['panel_name'] == "reviewsby") {
+			$query = "SELECT COUNT(comment_author_id) FROM ".TABLEPREFIX."fanfiction_comments WHERE comment_author_id  = '$uid'";
+			$itemcount =  e107::getDb()->retrieve($query); 
+		}	
+		/*	
 		else {
+ 
 			if(substr($panel['panel_name'], 0, 3) == "val") {
 				$table = substr($panel['panel_name'], 3);
 				$table = substr($table, 0, strlen($table) - 2);
@@ -103,9 +116,11 @@ foreach($panels_array AS $panel) {
 				if(substr($panel['panel_name'], 0, strlen($panel['panel_name']) - 2) == "stories") $valid = 1;
 				else $valid = 0;
 			}
+			$query = "SELECT COUNT(uid) FROM ".TABLEPREFIX."fanfiction_".substr($table, 0, strlen($panel['panel_name']) - 2)." WHERE (uid = '$uid'".($panel['panel_name'] == "storiesby" ? " OR FIND_IN_SET($uid, coauthors) > 0" : "").")".($valid ? " AND validated > 0" : "").($panel['panel_name'] == "reviewsby" ? " AND review != 'No Review'" : "");
+ 
 			$itemcount =  e107::getDb()->retrieve("SELECT COUNT(uid) FROM ".TABLEPREFIX."fanfiction_".substr($table, 0, strlen($panel['panel_name']) - 2)." WHERE (uid = '$uid'".($panel['panel_name'] == "storiesby" ? " OR FIND_IN_SET($uid, coauthors) > 0" : "").")".($valid ? " AND validated > 0" : "").($panel['panel_name'] == "reviewsby" ? " AND review != 'No Review'" : ""));
 		}
- 
+        */
 	}
 	if(substr($panel['panel_name'], 0, 3) == "fav" && $type = substr($panel['panel_name'], 3)) {
 		$itemcount = 0;
@@ -123,7 +138,7 @@ foreach($panels_array AS $panel) {
     $panellinkplus = "<a href=\"viewuser.php?action=".$panel['panel_name']."&amp;uid=$uid\">".preg_replace("<\{author\}>", $penname, stripslashes($panel['panel_title'])).(isset($itemcount) ? " [$itemcount]" : "")."</a>\n";
 	$panellink = "<a href=\"viewuser.php?action=".$panel['panel_name']."&amp;uid=$uid\">".preg_replace("<\{author\}>", $penname, stripslashes($panel['panel_title']))."</a>\n";
 	
-    $paneltabs_template =  e107::getSingleton("efiction_core")->getTpl("user_paneltabs.tpl");
+
     $paneltabs_vars = array(); 
  
     $paneltabs_vars["tabwidth"] = $tabwidth;
@@ -132,15 +147,17 @@ foreach($panels_array AS $panel) {
     $paneltabs_vars["linkcount"] = $panellinkplus;
     $paneltabs_vars["count"] = (isset($itemcount) ? " [$itemcount]" : "");
     
-    $paneltabs_vars = array_change_key_case($paneltabs_vars,CASE_UPPER);
-    $paneltabs_text = e107::getParser()->simpleParse($paneltabs_template, $paneltabs_vars, false);
-    $paneltabs_text = e107::getParser()->parseTemplate($paneltabs_text, true); //to fix LANs. remove empty shortcodes
-    
-    $tpl->assign("paneltabs", $paneltabs_text);
-          
-    unset($panellink, $panellinkplus, $itemcount, $paneltabs_vars,  $paneltabs_text, $paneltabs_template);
+    $paneltab_vars = array_change_key_case($paneltabs_vars,CASE_UPPER);
+    $paneltab_text = e107::getParser()->simpleParse($paneltabs_template, $paneltab_vars, false);
+    $paneltab_text = e107::getParser()->parseTemplate($paneltab_text, true); //to fix LANs. remove empty shortcodes
  
+    $paneltabs_text .= $paneltab_text;
+          
+    unset($panellink, $panellinkplus, $itemcount, $paneltabs_vars,  $paneltab_text);
+    
 }
+
+$tpl->assign("paneltabs", $paneltabs_text);
 $tpl->gotoBlock("_ROOT");	
 $tpl->assign( "output", $output );
 

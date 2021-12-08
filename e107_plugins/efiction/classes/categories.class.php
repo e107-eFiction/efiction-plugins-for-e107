@@ -53,6 +53,7 @@ if (!class_exists('efiction_categories')) {
         }
 
         /* ID => NAME */
+        /* TODO: replace with get_categories_list() */
         public static function get_categories() {
         
           $catlist = self::get_catlist();
@@ -64,6 +65,21 @@ if (!class_exists('efiction_categories')) {
 		  return $category;
         
         }
+        
+        /* used in admin_config.php for OptArray*/
+       public function get_categories_list() {
+ 
+		$values = array();
+ 
+        $catlist = self::get_catlist();
+          
+        foreach($catlist AS $cat) {
+              $values[$cat['catid']] = $cat["name"];
+        }
+ 
+		return $values;    
+  
+      }
         
     }
     new efiction_categories();

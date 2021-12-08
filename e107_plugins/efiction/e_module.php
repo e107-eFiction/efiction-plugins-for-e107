@@ -6,7 +6,18 @@ if (!defined('SITEKEY'))  define('SITEKEY', $e107->site_path);
  
 require_once(_BASEDIR."includes/dbfunctions.php");
  
-if(e_ADMIN_AREA === true)  {}  //USER_AREA is not defined
+
+//needed for admin too
+e107::getSingleton('efiction_stories', e_PLUGIN.'efiction/classes/stories.class.php'); 
+e107::getSingleton('efiction_authors', e_PLUGIN.'efiction/classes/authors.class.php'); 
+e107::getSingleton('efiction_categories', e_PLUGIN.'efiction/classes/categories.class.php'); 
+e107::getSingleton('efiction_ratings', e_PLUGIN.'efiction/classes/ratings.class.php'); 
+e107::getSingleton('efiction_characters', e_PLUGIN.'efiction/classes/characters.class.php');   
+     
+if(e_ADMIN_AREA === true)  {
+  //needed for admin too
+  
+}  //USER_AREA is not defined
 else { 
      
   e107::lan('efiction');
@@ -16,14 +27,14 @@ else {
   e107::getSingleton('efiction_blocks', e_PLUGIN.'efiction/classes/blocks.class.php');
   e107::getSingleton('efiction_pagelinks', e_PLUGIN.'efiction/classes/pagelinks.class.php');  
   e107::getSingleton('efiction_settings', e_PLUGIN.'efiction/classes/settings.class.php');
-  e107::getSingleton('efiction_authors', e_PLUGIN.'efiction/classes/authors.class.php');  
+ 
   e107::getSingleton('efiction_panels', e_PLUGIN.'efiction/classes/panels.class.php'); 
-  e107::getSingleton('efiction_categories', e_PLUGIN.'efiction/classes/categories.class.php'); 
+
   e107::getSingleton('efiction_classes', e_PLUGIN.'efiction/classes/classes.class.php');   
-  e107::getSingleton('efiction_ratings', e_PLUGIN.'efiction/classes/ratings.class.php'); 
-  e107::getSingleton('efiction_stories', e_PLUGIN.'efiction/classes/stories.class.php'); 
-  e107::getSingleton('efiction_series', e_PLUGIN.'efiction/classes/series.class.php'); 
-  e107::getSingleton('efiction_characters', e_PLUGIN.'efiction/classes/characters.class.php'); 
+
+  
+ 
+
   
     /**************  LOAD EFICTION SETTINGS ***************************************/    
   $settings = efiction_settings::get_settings();

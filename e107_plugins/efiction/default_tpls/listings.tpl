@@ -3,7 +3,11 @@
 <!-- START BLOCK : seriesblock -->
  
 <div class="card mt-4 listbox {oddeven}">
-<div class="card-header text-dark bg-info mb-3 text-center"><div class="title">{title} by {author}{score} [{reviews} - {numreviews}]</div></div>
+{seriesimage} 
+<div class="card-header text-dark bg-info mb-3 text-center"><div class="title">{title} [Admin: {author}] {score} [{reviews} - {numreviews}]</div>
+
+</div>
+
 <div class="card-body content"><span class="label">Summary: </span>{summary}<br />
 <span class="label">Parent Series:</span> {parentseries}<br />
 <span class="label">Categories:</span> {category}<br />

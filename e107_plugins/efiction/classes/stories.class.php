@@ -94,6 +94,22 @@ if (!class_exists('efiction_stories')) {
          return $count;
       }
       
+     /* used in admin_config.php for OptArray*/
+    
+     function get_full_stories_list() {
+    
+        $values = array();
+		$result = e107::getDb()->retrieve("SELECT sid, title  FROM #fanfiction_stories ORDER BY title", true);
+ 
+		$values[0] = "No story";
+		foreach ($result AS $row)
+		{
+			$values[$row['sid']] = $row['title']. " [" . $row['sid'] . "]";;
+		}
+ 
+		return $values;    
+    }
+      
       
       
       

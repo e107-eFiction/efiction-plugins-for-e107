@@ -113,17 +113,25 @@ class efiction_url // plugin-folder + '_url'
 		$config['viewseries'] = array(
             'alias'         => 'viewseries.php',
 			'regex'			=> '^{alias}\/?([\?].*)?\/?$', 
-			'sef'			=> '{alias}', 
+			'sef'			=> '{alias}?viewseries.php?seriesid={seriesid}', 
 			'redirect'		=> '{e_PLUGIN}efiction/viewseries.php$1', 	 		 
 		);   
  
 		$config['viewstory'] = array(
             'alias'         => 'viewstory.php',
 			'regex'			=> '^{alias}\/?([\?].*)?\/?$', 
-			'sef'			=> '{alias}', 
+			'sef'			=> '{alias}?sid={sid}', 
 			'redirect'		=> '{e_PLUGIN}efiction/viewstory.php$1', 	 		 
 		);   
  
+ 		$config['viewchapter'] = array(
+            'alias'         => 'viewstory.php',
+			'regex'			=> '^{alias}\/?([\?].*)?\/?$', 
+			'sef'			=> '{alias}?sid={sid}&chapid={inorder}', 
+            'legacy'		=> '{e_PLUGIN}efiction/viewstory.php?sid={sid}&chapid={inorder}',
+			'redirect'		=> '{e_PLUGIN}efiction/viewstory.php$1', 	 		 
+		);  
+        
         $config['admin'] = array(
             'alias'         => 'admin.php',
 			'regex'			=> '^{alias}\/?([\?].*)?\/?$', 

@@ -25,11 +25,33 @@ if(!defined("e107_INIT")) exit( );
 	if(!isset($count)) $count = 0;
 	$adminlinks = "";
 
+
+/*
+     {SERIES_IMAGE}  
+    public function sc_series_image($parm = null)
+    {
+ 
+        $serie_icon = $this->var['image']; 
+        $icon = e107::getParser()->toImage($serie_icon, $parm); 
+        return $icon; 
+    }
+*/
+    
     $tpl->newBlock("seriesblock");
+ 
 	$tpl->assign("seriesid", $stories['seriesid']);
-	$tpl->assign("author", "<a href=\""._BASEDIR."viewuser.php?uid=".$stories['uid']."\">".stripslashes($stories['penname'])."</a>");
-	$tpl->assign("title", "<a href=\""._BASEDIR."viewseries.php?seriesid=".$stories['seriesid']."\">".stripslashes($stories['title'])."</a>");
-	$tpl->assign("summary", stripslashes($stories['summary']));
+    /* image temp quick fix */
+    $serie_image = '';
+    $serie_image = $stories['image']; 
+    $serie_image = $src =  e107::getParser()->replaceConstants($serie_image, 'full');
+    if($serie_image) {
+      $serie_image = "<img src=".$serie_image." class='img-fluid card-img-top'>";
+    }
+    $tpl->assign("seriesimage", $serie_image );
+    /* end of change */    
+	$tpl->assign("author", "<a href=\""._BASEDIR."viewuser.php?uid=".$stories['uid']."\">".format_title($stories['penname'])."</a>");
+	$tpl->assign("title", "<a href=\""._BASEDIR."viewseries.php?seriesid=".$stories['seriesid']."\">".format_title($stories['title'])."</a>");
+	$tpl->assign("summary", format_summary($stories['summary']));
 	$tpl->assign("score", ratingpics($stories['rating']));
 	$tpl->assign("numstories", $stories['numstories']);
 	if($reviewsallowed == "1") {

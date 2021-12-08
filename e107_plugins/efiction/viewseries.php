@@ -31,23 +31,30 @@ if(file_exists( "$skindir/default.tpl")) $tpl = new TemplatePower("$skindir/defa
 else $tpl = new TemplatePower(_BASEDIR."default_tpls/default.tpl");
 if(file_exists("$skindir/listings.tpl")) $tpl->assignInclude( "listings", "$skindir/listings.tpl" );
 else $tpl->assignInclude( "listings", _BASEDIR."default_tpls/listings.tpl" );
-$tpl->assignInclude( "header", "$skindir/header.tpl" );
-$tpl->assignInclude( "footer", "$skindir/footer.tpl" );
+ 
 include(_BASEDIR."includes/pagesetup.php");
 
 
-$seriestemplate = file_get_contents(_BASEDIR."default_tpls/series_block.tpl");
-$seriesvars = array();
- 
-
 $seriesid = (isset($_GET['seriesid']) && is_numeric($_GET['seriesid'])) ? escapestring($_GET['seriesid']) : false;
-$sresult = dbquery(_SERIESQUERY." AND seriesid = '$seriesid' LIMIT 1");
-$series = dbassoc($sresult);
+$series = e107::getDb()->retrieve(_SERIESQUERY." AND seriesid = '$seriesid' LIMIT 1");
+ 
 if(file_exists("$skindir/series_title.tpl")) $titleblock = new TemplatePower( "$skindir/series_title.tpl" );
 else $titleblock = new TemplatePower( "default_tpls/series_title.tpl" );
+
 $titleblock->prepare( );
 $titleblock->newBlock("series");
-$titleblock->assign("pagetitle", stripslashes($series['title'])." "._BY." <a href=\"viewuser.php?uid=".$series['uid']."\">".$series['penname']."</a>");
+
+    /* image temp quick fix */
+    $serie_image = '';
+    $serie_image = $series['image']; 
+    $serie_image = $src =  e107::getParser()->replaceConstants($serie_image, 'full');
+    if($serie_image) {
+      $serie_image = "<img src=".$serie_image." class='img-fluid card-img-top'>";
+    }
+    $titleblock->assign("seriesimage", $serie_image );
+    /* end of change */ 
+    
+$titleblock->assign("pagetitle", stripslashes($series['title'])." [Admin: <a href=\"viewuser.php?uid=".$series['uid']."\">".$series['penname']."</a> ]");
 $titleblock->assign("summary", stripslashes($series['summary']));
 $titleblock->assign("category", $series['catid'] ? catlist($series['catid']) : _NONE);
 $titleblock->assign("characters", $series['characters'] ? charlist($series['characters']) : _NONE);
@@ -58,12 +65,6 @@ if($series['classes']) {
 		$classes[$classlist[$c]['type']][] = "<a href='browse.php?type=class&amp;type_id=".$classlist["$c"]['type']."&amp;classid=$c'>".$classlist[$c]['name']."</a>";
 	}
 }
-
-$seriesvars['title'] = stripslashes($series['title'])." "._BY." <a href=\"viewuser.php?uid=".$series['uid']."\">".$series['penname']."</a>";
-print_a($seriesvars);
-$text = e107::getParser()->simpleParse($seriestemplate,$seriesvars,false);
-e107::getRender()->tablerender("", $text, "seriesblock");
-
 $allclasslist = "";
 foreach($classtypelist as $num => $c) {
 	if(isset($classes[$num])) {
@@ -77,8 +78,9 @@ foreach($classtypelist as $num => $c) {
 }
 $seriesType = array(_CLOSED, _MODERATED, _OPEN);
 $titleblock->assign("open", $seriesType[$series['isopen']]);
-$codeblocks = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'seriestitle'");
-while($code = dbassoc($codeblocks)) {
+$codeblocks = e107::getDb()->retrieve("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'seriestitle'", true);
+foreach($codeblocks AS $code) 
+{
 	eval($code['code_text']);
 }
 $titleblock->assign("classifications", $allclasslist);
@@ -106,36 +108,44 @@ if($series['isopen'] && isMEMBER) {
 $jumpmenu = "<form name=\"jump2\" action=\"\"><select name=\"jump2\" onchange=\"if(this.selectedIndex.value != 'false') document.location = document.jump2.jump2.options[document.jump2.jump2.selectedIndex].value\"><option value=\"false\">"._OPTIONS."</option>".$jumpmenu."</select></form>";
 $titleblock->assign("jumpmenu", $jumpmenu);
 if(isset($addtofaves)) $titleblock->assign("addtofaves", $addtofaves);
-$parents = dbquery("SELECT s.title, s.seriesid FROM ".TABLEPREFIX."fanfiction_inseries as i, ".TABLEPREFIX."fanfiction_series as s WHERE s.seriesid = i.seriesid AND i.subseriesid = '$seriesid'");
+$parents = e107::getDb()->retrieve("SELECT s.title, s.seriesid FROM ".TABLEPREFIX."fanfiction_inseries as i, ".TABLEPREFIX."fanfiction_series as s WHERE s.seriesid = i.seriesid AND i.subseriesid = '$seriesid'", true);
 $plinks = array( );
-while($p = dbassoc($parents)) {
+foreach($parents AS $p)
+{
 	$plinks[] = "<a href='series.php?seriesid=".$p['seriesid']."'>".$p['title']."</a>";
 }
 $titleblock->assign("parentseries", count($plinks) ? implode(", ", $plinks) : _NONE);
-$codeblocks = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'seriestitle'");
-while($code = dbassoc($codeblocks)) {
+$codeblocks = e107::getDb()->retrieve("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'seriestitle'", true);
+foreach($codeblocks AS $code)
+{
 	eval($code['code_text']);
 }
 $output = $titleblock->getOutputContent( );
-$cquery = dbquery("SELECT subseriesid, sid, inorder FROM ".TABLEPREFIX."fanfiction_inseries WHERE seriesid = '$seriesid' AND confirmed = 1");
-$scount = dbnumrows($cquery);
+$cquery = "SELECT subseriesid, sid, inorder FROM ".TABLEPREFIX."fanfiction_inseries WHERE seriesid = '$seriesid' AND confirmed = 1";
+$inserieslist = e107::getDb()->retrieve($cquery, true);
+$scount = count($inserieslist);
+ 
 $serieslist = array( );
 if($scount) {
 	$subs = array( );
 	$stories = array( );
-	while($item = dbassoc($cquery)) {
+	foreach($inserieslist AS $item ) 
+	{   
 		if($item['subseriesid']) $subs[$item['inorder']] = $item['subseriesid'];
 		else $stories[$item['inorder']] = $item['sid'];
-	}
+	} 
+	
 	if(count($subs) > 0) {
-		$subsquery = dbquery(_SERIESQUERY." AND FIND_IN_SET(seriesid, '".implode(",", $subs)."') > 0");
-		while($sub = dbassoc($subsquery)) {
+		$subsquery = e107::getDb()->retrieve(_SERIESQUERY." AND FIND_IN_SET(seriesid, '".implode(",", $subs)."') > 0", true);
+		foreach($subsquery AS $sub)
+		{	
 			$serieslist[array_search($sub['seriesid'], $subs)] = $sub;
 		}
 	}
 	if(count($stories)) {
-		$seriesstoryquery = dbquery(_STORYQUERY." AND FIND_IN_SET(sid, '".implode(",", $stories)."') > 0");
-		while($story = dbassoc($seriesstoryquery)) {
+		$seriesstoryquery = e107::getDb()->retrieve(_STORYQUERY." AND FIND_IN_SET(sid, '".implode(",", $stories)."') > 0", true);
+		foreach($seriesstoryquery AS $story)
+		{
 			$serieslist[array_search($story['sid'], $stories)] = $story;
 		}
 	}

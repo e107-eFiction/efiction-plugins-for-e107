@@ -1,11 +1,17 @@
 <!-- INCLUDE BLOCK : header -->
-<div id="profile">
+ 
 {profile_block}
 {adminoptions}
-<div id="sort">{sort}</div>
+ 
+<div class="card border-0"> 
+<div id="sort" class="card-body">{sort}</div>
 </div>
-{paneltabs}
-
+<div class="card border-0">
+<div id="tabs" class="card-body">
+ {paneltabs}
+<div class='cleaner' style='clear: both;'>&nbsp;</div>
+</div>
+</div>
 {output}
 <!-- INCLUDE BLOCK : listings -->
 <!-- INCLUDE BLOCK : footer -->

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e107Plugin name="Series" lan="LAN_UN_PLUGIN_SERIES" version="1.0" date="2022-01-01" compatibility="2.3.1" installRequired="true" >
+	<author name="Jimako" url="https://www.e107sk.com/" />
+	<summary lan="LAN_SERIES">eFiction Series</summary>
+	<description lan="">eFiction Series</description>
+	<keywords>
+		<word>information</word>
+		<word>content</word>
+		<word>fanfiction</word>
+	</keywords>
+	<category>content</category>
+	<copyright>hpkizi.sk</copyright>
+	<adminLinks>
+		<link url="admin/admin_config.php" description="" icon="images/plugin_64.png" iconSmall="images/plugin_32.png" icon128="images/plugin_128.png" primary="true" >LAN_CONFIGURE</link>
+	</adminLinks>
+	
+</e107Plugin>
