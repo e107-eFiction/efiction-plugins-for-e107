@@ -28,57 +28,110 @@ $maint = isset($_GET['maint']) ? $_GET['maint'] : false;
 $output .= "<div id='pagetitle'>"._ARCHIVEMAINT."</div>";
  
 if($maint == "reviews") {
-	e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET rating = '0', reviews = '0'"); // Set them all to 0 before we re-insert.
-	$stories = dbquery("SELECT AVG(rating) as average, item FROM ".TABLEPREFIX."fanfiction_reviews WHERE type = 'ST' AND rating != '-1' GROUP BY item");
-	while($s = dbassoc($stories)) {
-		e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET rating = '".round($s['average'])."' WHERE sid = '".$s['item']."'");
+
+    e107::getMessage()->addInfo("Reviews recalculation started. For more info set debug mode on.") ;
+
+$query =  "UPDATE ".TABLEPREFIX."fanfiction_stories SET rating = '0', reviews = '0'";  /* NOTE: access rating is field rid */  // Set them all to 0 before we re-insert. 
+    e107::getDb()->gen($query);
+    e107::getMessage()->addDebug($query);
+          
+    $query = "SELECT AVG(rating) as average, item FROM ".MPREFIX."fanfiction_reviews WHERE type = 'ST' AND rating != '-1' GROUP BY item";
+	$stories = e107::getDb()->retrieve($query, true);
+    e107::getMessage()->addDebug($query);
+    
+    foreach($stories AS $s)  {
+        $query = "UPDATE ".TABLEPREFIX."fanfiction_stories SET rating = '".round($s['average'])."' WHERE sid = '".$s['item']."'";
+        e107::getDb()->gen($query);
+        e107::getMessage()->addDebug($query);
 	}
-	$stories = dbquery("SELECT COUNT(reviewid) as count, item FROM ".TABLEPREFIX."fanfiction_reviews WHERE type = 'ST' AND review != 'No Review' GROUP BY item");
-	while($s = dbassoc($stories)) {
-		e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET reviews = '".$s['count']."' WHERE sid = '".$s['item']."'");
+ 
+    $query = "SELECT COUNT(reviewid) as count, item FROM ".TABLEPREFIX."fanfiction_reviews WHERE type = 'ST' AND review != 'No Review' GROUP BY item";
+	$stories = e107::getDb()->retrieve($query, true);
+    e107::getMessage()->addDebug($query);
+    
+    foreach($stories AS $s)  {
+        $query = "UPDATE ".TABLEPREFIX."fanfiction_stories SET reviews = '".$s['count']."' WHERE sid = '".$s['item']."'";
+        e107::getDb()->gen($query);
+        e107::getMessage()->addDebug($query);
 	}
-	e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_chapters SET rating = '0', reviews = '0'");
-	$chapters = dbquery("SELECT AVG(rating) as average, chapid FROM ".TABLEPREFIX."fanfiction_reviews WHERE type = 'ST' AND rating != '-1' GROUP BY chapid");
-	while($c = dbassoc($chapters)) {
-		e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_chapters SET rating = '".round($c['average'])."' WHERE chapid = '".$c['chapid']."'");
+    
+    $query =  "UPDATE ".TABLEPREFIX."fanfiction_chapters SET rating = '0', reviews = '0'";
+    e107::getDb()->gen($query);
+    e107::getMessage()->addDebug($query);
+    
+    $query = "SELECT AVG(rating) as average, chapid FROM ".TABLEPREFIX."fanfiction_reviews WHERE type = 'ST' AND rating != '-1' GROUP BY chapid";
+    $chapters = e107::getDb()->retrieve($query, true);
+    e107::getMessage()->addDebug($query);
+
+    foreach($chapters AS $c)  {
+        $query = "UPDATE ".TABLEPREFIX."fanfiction_chapters SET rating = '".round($c['average'])."' WHERE chapid = '".$c['chapid']."'";
+		e107::getDb()->gen($query);
+        e107::getMessage()->addDebug($query);
 	}
-	$chapters = dbquery("SELECT COUNT(reviewid) as count, chapid FROM ".TABLEPREFIX."fanfiction_reviews WHERE type = 'ST' AND review != 'No Review' GROUP BY chapid");
-	while($c = dbassoc($chapters)) {
-		e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_chapters SET reviews = '".$c['count']."' WHERE chapid = '".$c['chapid']."'");
+    
+    $query =  "SELECT COUNT(reviewid) as count, chapid FROM ".TABLEPREFIX."fanfiction_reviews WHERE type = 'ST' AND review != 'No Review' GROUP BY chapid";
+    $chapters = e107::getDb()->retrieve($query, true);
+    e107::getMessage()->addDebug($query);
+        
+    foreach($chapters AS $c)  {
+        $query = "UPDATE ".TABLEPREFIX."fanfiction_chapters SET reviews = '".$c['count']."' WHERE chapid = '".$c['chapid']."'";
+		e107::getDb()->gen($query);
+        e107::getMessage()->addDebug($query);
 	}
-	e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_series SET rating = '0', reviews = '0'");
-	$series = dbquery("SELECT seriesid FROM ".TABLEPREFIX."fanfiction_series");
-	while($s = dbassoc($series)) {
+    
+    $query =  "UPDATE ".TABLEPREFIX."fanfiction_series SET rating = '0', reviews = '0'";
+    e107::getDb()->gen($query);
+    e107::getMessage()->addDebug($query);
+        
+    $query = "SELECT seriesid FROM ".TABLEPREFIX."fanfiction_series";
+    $series = e107::getDb()->retrieve($query, true);
+    e107::getMessage()->addDebug($query);
+        
+	foreach($series AS $s)  {
 		$thisseries = $s['seriesid'];
 		include(_BASEDIR."includes/seriesreviews.php");
 	}
-	// For modules which may allow reviews.
-	$codequery = dbquery("SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'revfix'");
-	while($code = dbassoc($codequery)) {
+ 
+	// For modules which may allow reviews.    
+    $query = "SELECT * FROM ".TABLEPREFIX."fanfiction_codeblocks WHERE code_type = 'revfix'";
+    $codequery  = e107::getDb()->retrieve($query, true);
+    e107::getMessage()->addDebug($query);
+    
+    foreach($codequery AS $code) {
 		$eval($code['code_text']);
 	}
-	if($logging) dbquery("INSERT INTO ".TABLEPREFIX."fanfiction_log (`log_action`, `log_uid`, `log_ip`, `log_type`) VALUES('".escapestring(sprintf(_LOG_RECALCREVIEWS, USERPENNAME, USERUID))."', '".USERUID."', INET_ATON('".$_SERVER['REMOTE_ADDR']."'), 'AM')");
-	$output .= write_message(_ACTIONSUCCESSFUL);
+ 
+    $output .= e107::getMessage()->render();
+        
+    $output .= write_message(_ACTIONSUCCESSFUL);
 }
 else if($maint == "stories") {
-		$authors = dbquery("SELECT uid, count(uid) AS count FROM ".TABLEPREFIX."fanfiction_stories WHERE validated > 0 GROUP BY uid");
-        
-		while($a = dbassoc($authors)) {
+		$authors = e107::getDb()->retrieve("SELECT uid, count(uid) AS count FROM ".TABLEPREFIX."fanfiction_stories WHERE validated > 0 GROUP BY uid", true);
+ 
+        foreach($authors AS $a)   {   
 			$alist[$a['uid']] = $a['count'];
 		}
-		$coauthors = dbquery("SELECT uid, count(sid) AS count FROM ".TABLEPREFIX."fanfiction_coauthors GROUP BY uid");
-		while($ca = dbassoc($coauthors)) {
+        $query = "SELECT uid, count(sid) AS count FROM ".TABLEPREFIX."fanfiction_coauthors GROUP BY uid";
+		$coauthors = e107::getDb()->retrieve($query, true);
+        e107::getMessage()->addDebug($query);   
+        foreach($coauthors AS $ca)   {  
 			if(isset($alist[$ca['uid']])) $alist[$ca['uid']] = $alist[$ca['uid']] + $ca['count'];
 			else $alist[$ca['uid']] = $ca['count'];
 		}
+        
 		foreach($alist AS $a => $s) {
-			e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET stories = '$s' WHERE uid = '$a' LIMIT 1");
+            $query = "UPDATE ".TABLEPREFIX."fanfiction_authorprefs SET stories = '$s' WHERE uid = '$a' LIMIT 1"; 
+            e107::getDb()->gen($query);
+            e107::getMessage()->addDebug($query);
 		}
-		$count =  dbquery("SELECT SUM(wordcount) as count, sid FROM ".TABLEPREFIX."fanfiction_chapters WHERE validated = '1' GROUP BY sid");
-		while($c = dbassoc($count)) {
-			e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_stories SET wordcount = '".$c['count']."' WHERE sid = '".$c['sid']."'");
+		$count =   e107::getDb()->retrieve("SELECT SUM(wordcount) as count, sid FROM ".TABLEPREFIX."fanfiction_chapters WHERE validated = '1' GROUP BY sid");
+        foreach($count AS $c)  {
+            $query = "UPDATE ".TABLEPREFIX."fanfiction_stories SET wordcount = '".$c['count']."' WHERE sid = '".$c['sid']."'";
+            e107::getDb()->gen($query);
+            e107::getMessage()->addDebug($query);
 		}
-	$output .= write_message(_ACTIONSUCCESSFUL);
+	$output .= e107::getMessage()->render();
+    $output .= write_message(_ACTIONSUCCESSFUL);
 }
 else if($maint == "categories") {
 	e107::getDb()->gen("UPDATE ".TABLEPREFIX."fanfiction_categories SET numitems = '0'");
