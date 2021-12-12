@@ -87,7 +87,7 @@ function preview_story($stories)
 {
     global $current, $new, $extendcats, $skindir,   $classlist, $featured, $retired, $rr, $reviewsallowed, $star, $halfstar, $classtypelist, $dateformat, $ratingslist, $recentdays;
 
-    $catlist = efiction_categories::get_catlist();
+    $catlist = efiction_categories::catlist();
     $charlist = efiction_characters::charlist();
     
     $count = 0;

@@ -110,8 +110,7 @@ class efiction_comments_event // plugin-folder + '_event'
 			$id = intval($data['comment_item_id']);
 			e107::getDb()->update("fanfiction_series", "reviews=reviews+1 WHERE seriesid=".$id);
 		}
-
- print_a($data);  die;
+ 
 	}
  
 

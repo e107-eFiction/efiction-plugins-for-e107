@@ -80,7 +80,7 @@ $LISTINGS_TEMPLATE['browse']['item'] =  '
                 </dd>       
                 <dt class="col-5">{LAN=_CATEGORIES}     
                 </dt>       
-                <dd class="col-7">             {STORY_CATEGORY}      
+                <dd class="col-7">{STORY_CATEGORY}      
                 </dd>       
                 <dt class="col-5">{LAN=_NUMCHAPTERS}     
                 </dt>       

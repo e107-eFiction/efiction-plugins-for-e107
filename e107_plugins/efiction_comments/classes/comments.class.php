@@ -1435,7 +1435,7 @@ if (!class_exists('efiction_comments')) {
 			 WHERE c.comment_id!='' ".$qry1." ORDER BY c.comment_datestamp DESC LIMIT ".intval($from1).",".intval($amount1)." ";
 			 */
 			$query = "
-		SELECT c.*, u.*, ue.* FROM ".MPREFIX."fanfiction_comments AS c
+		SELECT c.*, u.*  FROM ".MPREFIX."fanfiction_comments AS c
 		LEFT JOIN ".MPREFIX."user AS u ON c.comment_author_id = u.user_id
 		WHERE c.comment_id!='' AND c.comment_blocked = 0 ".$qry1." ORDER BY c.comment_datestamp DESC LIMIT ".intval($from1).",".intval($amount1)." ";
  
@@ -1458,9 +1458,7 @@ if (!class_exists('efiction_comments')) {
 					$ret['comment_comment'] = $tp->toHTML($comment, FALSE, "", "", $pref['main_wordwrap']);
 					//subject
 					$ret['comment_subject'] = $tp->toHTML($row['comment_subject'], TRUE);
-
-					print_a($row['comment_type']);
-
+ 
 					switch ($row['comment_type'])
 					{
 					 
@@ -1468,56 +1466,43 @@ if (!class_exists('efiction_comments')) {
 							if ($sql2->select("fanfiction_stories", "*", "sid='".$row['comment_item_id']."'  "))
 							{
 								$row2 = $sql2->fetch();
-								 
-								$ret['comment_type'] = COMLAN_TYPE_1;
-								$ret['comment_title'] = $tp->toHTML($row2['story_title'], TRUE, 'emotes_off, no_make_clickable');
-								$ret['comment_url'] = e107::getUrl()->create('news/view/item', $row2);//e_HTTP."comment.php?comment.news.".$row['comment_item_id'];
-								$ret['comment_category_heading'] = COMLAN_TYPE_1;
-								$ret['comment_category_url'] = e107::getUrl()->create('news');//e_HTTP."news.php";
+						 
+								$ret['comment_type'] = _STORY;
+								$ret['comment_title'] = $tp->toHTML($row2['title'], TRUE, 'emotes_off, no_make_clickable');
+								$ret['comment_url'] = e107::url('efiction', 'viewstory', $row2);  
+ 
+							 
 							}
 							break;
-						
-						default:
-							if (isset($e_comment[$row['comment_type']]) && is_array($e_comment[$row['comment_type']]))
+						case 'SE': // news
+							if ($sql2->select("fanfiction_series", "*", "seriesid='".$row['comment_item_id']."'  "))
 							{
-								$var = $e_comment[$row['comment_type']];
-								$qryp = '';
-								//new method must use the 'qry' variable
-								if (isset($var) && $var['qry'] != '')
-								{
-									if ($installed = isset($pref['plug_installed'][$var['plugin_path']]))
-									{
-										$qryp = str_replace("{NID}", $row['comment_item_id'], $var['qry']);
-										if ($sql2->gen($qryp))
-										{
-											$row2 = $sql2->fetch();
-											$ret['comment_type'] = $var['plugin_name'];
-											$ret['comment_title'] = $tp->toHTML($row2[$var['db_title']], TRUE, 'emotes_off, no_make_clickable');
-											$ret['comment_url'] = str_replace("{NID}", $row['comment_item_id'], $var['reply_location']);
-											$ret['comment_category_heading'] = $var['plugin_name'];
-											$ret['comment_category_url'] = e_PLUGIN_ABS.$var['plugin_name'].'/'.$var['plugin_name'].'.php';
-										}
-									}
-									print_a($ret);
-									//old method
-								}
-								else
-								{
-									if ($sql2->select($var['db_table'], $var['db_title'], $var['db_id']." = '".$row['comment_item_id']."' "))
-									{
-										$row2 = $sql2->fetch();
-										$ret['comment_type'] = $var['plugin_name'];
-										$ret['comment_title'] = $tp->toHTML($row2[$var['db_title']], TRUE, 'emotes_off, no_make_clickable');
-										$ret['comment_url'] = str_replace("{NID}", $row['comment_item_id'], $var['reply_location']);
-										$ret['comment_category_heading'] = $var['plugin_name'];
-										$ret['comment_category_url'] = e_PLUGIN_ABS.$var['plugin_name'].'/'.$var['plugin_name'].'.php';
-									}
-								}
+								$row2 = $sql2->fetch();
+								 
+								$ret['comment_type'] = _SERIES1;
+								$ret['comment_title'] = $tp->toHTML($row2['title'], TRUE, 'emotes_off, no_make_clickable');
+								$ret['comment_url'] = e107::url('efiction', 'viewseries', $row2);  
+ 
+							 
 							}
+							break;                            
+                            
+ 						case 'CH': // news
+							if ($sql2->select("fanfiction_chapters", "*", "chapid='".$row['comment_item_id']."'  "))
+							{
+								$row2 = $sql2->fetch();
+		 
+								$ret['comment_type'] = _CHAPTER;
+								$ret['comment_title'] = $tp->toHTML($row2['title'], TRUE, 'emotes_off, no_make_clickable');
+								$ret['comment_url'] = e107::url('efiction', 'viewchapter', $row2);  
+ 
+							 
+							}
+							break;                              
+ 
 					} // End Switch
-
-					print_a($ret);
-					print_a($ret['comment_title']);
+ 
+ 
 				if (varset($ret['comment_title']))
 				{
 					$reta[] = $ret;
@@ -1529,7 +1514,7 @@ if (!class_exists('efiction_comments')) {
 				}
 			}
 
-			print_a($ret);
+ 
 			//loop if less records found than given $amount - probably because we discarded some
 			if ($amount && ($valid < $amount))
 			{

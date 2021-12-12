@@ -72,6 +72,22 @@ if (!class_exists('efiction_characters')) {
 			return $characters;
 
 		}
+ 
+        // This function builds the list of character links
+        /* e107::getSingleton('efiction_characters')->get_charlist($this->var['characters']); */   
+        public function get_charlist($characters = '') 
+        {          
+           $charlist = self::charlist(); 
+           if(!is_array($characters)) $characters = explode(",", $characters);
+        	$charlinks = array( );
+        	foreach($characters as $c) {
+        		if(empty($charlist[$c]['name'])) continue;
+        		if($action != "printable") $charlinks[] = "<a href='"._BASEDIR."browse.php?type=characters&amp;charid=$c'>".$charlist[$c]['name']."</a>";
+        		else $charlinks[] = $charlist[$c]['name'];
+        	}
+        	return implode(", ", $charlinks);
+        }           
+        
        
 
     }

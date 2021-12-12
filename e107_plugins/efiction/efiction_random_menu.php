@@ -63,6 +63,7 @@ if (class_exists('efiction_blocks')) {
 	$sumlength  = isset($blocks['recent']['sumlength']) && $blocks['recent']['sumlength'] > 0 ? $blocks['recent']['sumlength'] :75;
 
     $query = _STORYQUERY." ORDER BY rand( ) DESC LIMIT $limit";
+ 
     $result = e107::getDb()->retrieve($query, true);
  
 	$start = $template['start']; 
@@ -70,7 +71,7 @@ if (class_exists('efiction_blocks')) {
     $tablerender= varset($template['tablerender'], '');
  
 
-    foreach ($result as $stories) {
+    foreach ($result as $stories) { 
         if (!isset($blocks['recent']['allowtags'])) {
             $stories['summary'] = e107::getParser()->toText($stories['summary']);
         } else {

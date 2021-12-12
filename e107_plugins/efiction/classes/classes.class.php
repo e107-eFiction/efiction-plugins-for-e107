@@ -61,7 +61,18 @@ if (!class_exists('efiction_classes')) {
             }
             return $classlist;
         }
-    
+        
+        /* e107::getSingleton('efiction_classes')->get_classlist(); */
+        public function get_classlist() 
+        {          
+           return self::classlist(); 
+        }
+   
+        /* e107::getSingleton('efiction_classes')->get_classtypelist(); */   
+        public function get_classtypelist() 
+        {          
+           return self::classtypelist(); 
+        }   
     }
     
     

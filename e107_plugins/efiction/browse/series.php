@@ -25,7 +25,8 @@ if(!defined("e107_INIT")) exit( );
 // Page Setup
 $current = "series";
  
-$output .= "<div id=\"pagetitle\">"._SERIES.($let ? " - $let" : "")."</div>".build_alphalinks("browse.php?$terms&amp;", $let);
+$caption  = "<div id=\"pagetitle\">"._SERIES.($let ? " - $let" : "")."</div>"; 
+$output .= build_alphalinks("browse.php?$terms&amp;", $let);
 
 if($let) {
 	$seriesquery .= (empty($seriesquery) ? "" : " AND ").($let == _OTHER ? " series.title REGEXP '^[^a-z]'" : "series.title LIKE '$let%'");

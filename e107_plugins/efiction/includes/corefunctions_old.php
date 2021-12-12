@@ -51,7 +51,7 @@ function categoryitems($catid, $value)
 // Function to recurse through categories to build a list of the category and all it's sub-categories.
 function recurseCategories($catid) {
  
-    $catlist = efiction_categories::get_catlist();
+    $catlist = efiction_categories::catlist();
         
 	$$catid = $catlist;
 	$categorylist[] = $catid;
@@ -213,17 +213,7 @@ function title_link($stories) {
 }
 */
 
-// Same with the author list
-function author_link($stories) {
-	if(is_array($stories['coauthors'])) {
-		$authlink[] = "<a href=\""._BASEDIR."viewuser.php?uid=".$stories['uid']."\">".$stories['penname']."</a>";
-		$coauth = dbquery("SELECT "._PENNAMEFIELD." as penname, co.uid FROM ".TABLEPREFIX."fanfiction_coauthors AS co LEFT JOIN "._AUTHORTABLE." ON co.uid = "._UIDFIELD." WHERE co.sid = '".$stories['sid']."'");
-		foreach($stories['coauthors'] AS $k => $v) {
-			$authlink[] = "<a href=\""._BASEDIR."viewuser.php?uid=".$k."\">".$v."</a>";
-		}
-	}
-	return isset($authlink) ? implode(", ", $authlink) : "<a href=\""._BASEDIR."viewuser.php?uid=".$stories['uid']."\">".$stories['penname']."</a>";
-}
+
 
 // Used to truncate text (summaries in blocks for example) to a set length.  An improvement on the old version as this keeps words intact
 function truncate_text($str, $n = 75, $delim='...') { 
@@ -358,79 +348,11 @@ function check_prefs($uid) {
 	if(dbnumrows($test)) return true;
 	else return false;
 }
+ 
 
 
 
 
-
-// Function that returns the ratings picks 
-function ratingpics($rating) {
-	global $ratings, $like, $dislike, $star, $halfstar;
-	$ratingpics = "";
-	if($ratings == "2") {
-		if($rating >= 0.5)
-			$ratingpics = ($like ? $like : "<img src=\""._BASEDIR."images/like.gif\" alt=\""._LIKED."\">");
-		else if(($rating < 0.5) && ($rating > 0))
-			$ratingpics = ($dislike ? $dislike :"<img src=\""._BASEDIR."images/dislike.gif\" alt=\""._DISLIKED."\">");
-		else $ratingpics = "";
-	}
-	if($ratings == "1") {
-		global $star, $halfstar;
-		if($rating > 0) {
-			for($x = 0; $x < ($rating / 2) - .5; $x++) {
-				$ratingpics .= ($star ? $star  : "<img src=\""._BASEDIR."images/star.gif\" alt=\"star\">");
-			}
-			if($rating % 2 != 0) $ratingpics .= ($halfstar ? $halfstar  : "<img src=\""._BASEDIR."images/starhalf.gif\" alt=\"half-star\">");
-		}
-		else $ratingpics = "";
-	}
-	if(!empty($ratingpics)) return "<span style='white-space: nowrap;'>$ratingpics</span>"; // the no-wrap style will keep the stars together
-	else return;
-}
-
-// This function builds the list of category links (including the breadcrumb depending on settings)
-function catlist($catid) {
-	global $extendcats,  $action;
-
-    $catlist = efiction_categories::get_catlist();
-    
-	if(!is_array($catid)) $catid = explode(",", $catid);
-	$categorylinks = array();
-	foreach($catid as $cat) {
-		if(empty($catlist[$cat])) continue;
-		if($extendcats) {
-			unset($link);
-			$thiscat = $cat;
-			while(isset($thiscat)) {
-				if(isset($link)) $link = " > ".$link;
-				else $link = "";
-				if($action != "printable") $link = "<a href='"._BASEDIR."browse.php?type=categories&amp;catid=$thiscat'>".$catlist[$thiscat]['name']."</a>".$link;
-				else $link = $catlist[$thiscat]['name'].$link;
-				if($catlist[$thiscat]['pid'] == -1) unset($thiscat);
-				else $thiscat = $catlist[$thiscat]['pid'];
-			}
-			$categorylinks[] = $link;
-		}
-		else $categorylinks[] = "<a href='"._BASEDIR."browse.php?type=categories&amp;catid=$cat'>".$catlist[$cat]['name']."</a>";
-	}
-	return implode(", ", $categorylinks);
-}
-
-// This function builds the list of character links
-function charlist($characters) {
-	global $action;
-
-    $charlist = efiction_characters::charlist(); 
-
-	if(!is_array($characters)) $characters = explode(",", $characters);
-	$charlinks = array( );
-	foreach($characters as $c) {
-		if(empty($charlist[$c]['name'])) continue;
-		if($action != "printable") $charlinks[] = "<a href='"._BASEDIR."browse.php?type=characters&amp;charid=$c'>".$charlist[$c]['name']."</a>";
-		else $charlinks[] = $charlist[$c]['name'];
-	}
-	return implode(", ", $charlinks);
-}
 
 // Most of the pages that list stories and series use this fuction.  This handles showing the series and stories and pagination of the two together when needed
 function search($storyquery, $countquery, $pagelink = "searching.php?", $pagetitle = 0) {

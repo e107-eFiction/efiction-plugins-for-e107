@@ -131,21 +131,22 @@ class plugin_efiction_chapter_shortcodes extends e_shortcode
     /* {STORY_IMAGE} */
     public function sc_story_image($parm)
     {
-             
-            $category_icon = $this->var['topicimage'];  
-            if($category_icon != '' ) {
-                $settings =  array('w'=> 0, 'h'=>0);
-             
-        		$src =  e107::getParser()->replaceConstants($category_icon, 'full');		
-                $icon = e107::getParser()->toImage($src, $settings); 
-            }
-            else {
-               $sitetheme = e107::getPref('sitetheme');
-               $path = e_THEME_ABS.$sitetheme.'/' ;
-               $src = $path."images/book-magic.jpg";
-               $icon = e107::getParser()->parseTemplate($src, true);  
-            }      	 
-            return $src; 
+ 
+        $story_image = $this->var['image'];
+        
+        if ($story_image) {
+            $src =  e107::getParser()->replaceConstants($story_image, 'full');
+            return $src;
+        }
+ 
+        else {
+           $sitetheme = e107::getPref('sitetheme');
+           $path = e_THEME_ABS.$sitetheme.'/' ;
+           $src = $path."images/nobanner.jpg";
+           $icon = e107::getParser()->parseTemplate($src, true);  
+        }      	 
+        return $src; 
+   
     }
     
             /* {STORY_TITLE} {title}  */

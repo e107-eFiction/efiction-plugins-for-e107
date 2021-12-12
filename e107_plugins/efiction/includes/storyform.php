@@ -32,7 +32,6 @@ function storyform($stories, $preview = 0){
 
 	global $admin, $action, $sid;
  
-    $catlist = efiction_categories::get_catlist();
     $multiplecats = efiction_settings::get_single_setting('multiplecats');
 	$roundrobins = efiction_settings::get_single_setting('roundrobins');
 	$coauthallowed = efiction_settings::get_single_setting('coauthallowed');
@@ -133,7 +132,9 @@ function storyform($stories, $preview = 0){
         $text  = '<div class="row mb-3">';
         $text .= "<label class=\"col-sm-2 col-form-label fw-bold\" for=\"catid\">"._CATOPTIONS.":</label>";
         $text .= '<div class="col-sm-10">';
-        $categories = efiction_categories::get_categories();
+        
+        $categories = e107::getSingleton('efiction_categories')->get_categories_list();   
+        
         $options = array('title' => _SELECTCATS, 'inline' => true,  'useKeyValues' => 1  );
         $text .= e107::getForm()->checkboxes('catid', $categories, $catid, $options);
          $text .= '</div>';

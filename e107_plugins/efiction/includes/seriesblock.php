@@ -50,7 +50,7 @@ if(!defined("e107_INIT")) exit( );
     $tpl->assign("seriesimage", $serie_image );
     /* end of change */    
 	$tpl->assign("author", "<a href=\""._BASEDIR."viewuser.php?uid=".$stories['uid']."\">".format_title($stories['penname'])."</a>");
-	$tpl->assign("title", "<a href=\""._BASEDIR."viewseries.php?seriesid=".$stories['seriesid']."\">".format_title($stories['title'])."</a>");
+    $tpl->assign("title", "<a href=\"". e107::url("efiction_series",  "viewseries", $stories)."\">".format_title($stories['title'])."</a>");
 	$tpl->assign("summary", format_summary($stories['summary']));
 	$tpl->assign("score", ratingpics($stories['rating']));
 	$tpl->assign("numstories", $stories['numstories']);
@@ -80,10 +80,10 @@ if(!defined("e107_INIT")) exit( );
 	if(!isset($seriesType)) $seriesType = array(_CLOSED, _MODERATED, _OPEN);			
 	$tpl->assign("open", $seriesType[$stories['isopen']]);
 	$tpl->assign("oddeven", ($count % 2 ? "odd" : "even"));
-	$parents = dbquery("SELECT s.title, s.seriesid FROM ".TABLEPREFIX."fanfiction_inseries as i, ".TABLEPREFIX."fanfiction_series as s WHERE s.seriesid = i.seriesid AND i.subseriesid = '".$stories['seriesid']."'");
+	$parents = dbquery("SELECT s.title, s.seriesid, s.seriesef FROM ".TABLEPREFIX."fanfiction_inseries as i, ".TABLEPREFIX."fanfiction_series as s WHERE s.seriesid = i.seriesid AND i.subseriesid = '".$stories['seriesid']."'");
 	$plinks = array( );
 	while($p = dbassoc($parents)) {
-		$plinks[] = "<a href='"._BASEDIR."viewseries.php?seriesid=".$p['seriesid']."'>".$p['title']."</a>";
+		$plinks[] = "<a href='".e107::url("efiction_series",  "viewseries", $p)."'>".$p['title']."</a>";
 	}
 	$tpl->assign("parentseries", count($plinks) ? implode(", ", $plinks) : _NONE);
 	if(!isset($seriescode)) {

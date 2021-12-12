@@ -54,7 +54,7 @@ $titleblock->newBlock("series");
     $titleblock->assign("seriesimage", $serie_image );
     /* end of change */ 
     
-$titleblock->assign("pagetitle", stripslashes($series['title'])." [Admin: <a href=\"viewuser.php?uid=".$series['uid']."\">".$series['penname']."</a> ]");
+$titleblock->assign("pagetitle", stripslashes($series['title'])." [Admin: <a href=\"".SITEURL."viewuser.php?uid=".$series['uid']."\">".$series['penname']."</a> ]");
 $titleblock->assign("summary", stripslashes($series['summary']));
 $titleblock->assign("category", $series['catid'] ? catlist($series['catid']) : _NONE);
 $titleblock->assign("characters", $series['characters'] ? charlist($series['characters']) : _NONE);
@@ -84,26 +84,26 @@ foreach($codeblocks AS $code)
 	eval($code['code_text']);
 }
 $titleblock->assign("classifications", $allclasslist);
-if(isADMIN) $titleblock->assign("adminoptions", "<div class=\"adminoptions\">"._ADMINOPTIONS.": [<a href=\"series.php?action=add&amp;add=stories&amp;seriesid=$seriesid\">"._ADD2SERIES."</a>] [<a href=\"series.php?action=edit&amp;seriesid=$seriesid\">"._EDIT."</a>] [<a href=\"series.php?action=delete&amp;seriesid=$seriesid\">"._DELETE."</a>]</div>");
+if(isADMIN) $titleblock->assign("adminoptions", "<div class=\"adminoptions\">"._ADMINOPTIONS.": [<a href=\"".SITEURL."series.php?action=add&amp;add=stories&amp;seriesid=$seriesid\">"._ADD2SERIES."</a>] [<a href=\"".SITEURL."series.php?action=edit&amp;seriesid=$seriesid\">"._EDIT."</a>] [<a href=\"series.php?action=delete&amp;seriesid=$seriesid\">"._DELETE."</a>]</div>");
 $jumpmenu = "";
 if($reviewsallowed && (isMEMBER || $anonreviews)) {
 	$titleblock->assign("score", ratingpics($series['rating']));
-	$titleblock->assign("reviews", "<a href=\"reviews.php?type=SE&amp;item=$seriesid\">"._REVIEWS."</a>");
-	$titleblock->assign("numreviews", "<a href=\"reviews.php?type=SE&amp;item=$seriesid\">".$series['reviews']."</a>");
-	$titleblock->assign("submitreviews", "<a href=\"reviews.php?action=add&amp;type=SE&amp;item=$seriesid\">"._SUBMITREVIEW."</a>");
-	$jumpmenu .= "<option value=\"reviews.php?action=add&amp;type=SE&amp;item=$seriesid\">"._SUBMITREVIEW."</option>";
+	$titleblock->assign("reviews", "<a href=\"".SITEURL."reviews.php?type=SE&amp;item=$seriesid\">"._REVIEWS."</a>");
+	$titleblock->assign("numreviews", "<a href=\"".SITEURL."reviews.php?type=SE&amp;item=$seriesid\">".$series['reviews']."</a>");
+	$titleblock->assign("submitreviews", "<a href=\"".SITEURL."reviews.php?action=add&amp;type=SE&amp;item=$seriesid\">"._SUBMITREVIEW."</a>");
+	$jumpmenu .= "<option value=\"".SITEURL."reviews.php?action=add&amp;type=SE&amp;item=$seriesid\">"._SUBMITREVIEW."</option>";
 }
 if(isMEMBER && $favorites) {
-	$addtofaves = "[<a href=\"member.php?action=favse&amp;uid=".USERUID."&amp;add=$seriesid\">"._ADDSERIES2FAVES."</a>]";
-	$jumpmenu .= "<option value=\"member.php?action=favse&amp;uid=".USERUID."&amp;add=$seriesid\">"._ADDSERIES2FAVES."</option>";
+	$addtofaves = "[<a href=\"".SITEURL."member.php?action=favse&amp;uid=".USERUID."&amp;add=$seriesid\">"._ADDSERIES2FAVES."</a>]";
+	$jumpmenu .= "<option value=\"".SITEURL."member.php?action=favse&amp;uid=".USERUID."&amp;add=$seriesid\">"._ADDSERIES2FAVES."</option>";
 	if($series['isopen'] == 0) { // Only closed series.
-		$addtofaves .= " [<a href=\"member.php?action=favau&amp;uid=".USERUID."&amp;add=".$series['uid']."\">"._ADDAUTHOR2FAVES."</a>]";
-		$jumpmenu .= "<option value=\"member.php?action=favau&amp;uid=".USERUID."&amp;add=".$series['uid']."\">"._ADDAUTHOR2FAVES."</option>";
+		$addtofaves .= " [<a href=\"".SITEURL."member.php?action=favau&amp;uid=".USERUID."&amp;add=".$series['uid']."\">"._ADDAUTHOR2FAVES."</a>]";
+		$jumpmenu .= "<option value=\"".SITEURL."member.php?action=favau&amp;uid=".USERUID."&amp;add=".$series['uid']."\">"._ADDAUTHOR2FAVES."</option>";
 	}
 }
 if($series['isopen'] && isMEMBER) {
-	$jumpmenu .= "<option value=\"series.php?action=add&amp;add=stories&amp;seriesid=".$seriesid."&amp;stories=".USERUID."\">"._ADD2SERIES."</option>";
-	$titleblock->assign("addtoseries", "[<a href='series.php?action=add&amp;add=stories&seriesid=$seriesid&amp;stories=".USERUID."'>"._ADD2SERIES."</a>]");
+	$jumpmenu .= "<option value=\"".SITEURL."series.php?action=add&amp;add=stories&amp;seriesid=".$seriesid."&amp;stories=".USERUID."\">"._ADD2SERIES."</option>";
+	$titleblock->assign("addtoseries", "[<a href='".SITEURL."series.php?action=add&amp;add=stories&seriesid=$seriesid&amp;stories=".USERUID."'>"._ADD2SERIES."</a>]");
 }
 $jumpmenu = "<form name=\"jump2\" action=\"\"><select name=\"jump2\" onchange=\"if(this.selectedIndex.value != 'false') document.location = document.jump2.jump2.options[document.jump2.jump2.selectedIndex].value\"><option value=\"false\">"._OPTIONS."</option>".$jumpmenu."</select></form>";
 $titleblock->assign("jumpmenu", $jumpmenu);
@@ -121,20 +121,21 @@ foreach($codeblocks AS $code)
 	eval($code['code_text']);
 }
 $output = $titleblock->getOutputContent( );
-$cquery = "SELECT subseriesid, sid, inorder FROM ".TABLEPREFIX."fanfiction_inseries WHERE seriesid = '$seriesid' AND confirmed = 1";
+$cquery = "SELECT subseriesid, sid, inorder FROM ".TABLEPREFIX."fanfiction_inseries WHERE seriesid = '$seriesid' AND confirmed = 1"; 
+
 $inserieslist = e107::getDb()->retrieve($cquery, true);
 $scount = count($inserieslist);
- 
+
 $serieslist = array( );
-if($scount) {
+if($scount) {   
 	$subs = array( );
-	$stories = array( );
+	$stories = array( ); 
 	foreach($inserieslist AS $item ) 
 	{   
 		if($item['subseriesid']) $subs[$item['inorder']] = $item['subseriesid'];
 		else $stories[$item['inorder']] = $item['sid'];
 	} 
-	
+ 
 	if(count($subs) > 0) {
 		$subsquery = e107::getDb()->retrieve(_SERIESQUERY." AND FIND_IN_SET(seriesid, '".implode(",", $subs)."') > 0", true);
 		foreach($subsquery AS $sub)
@@ -150,7 +151,7 @@ if($scount) {
 		}
 	}
 }
-ksort($serieslist);
+ksort($serieslist);   
 $count = 0;
 for($a = $offset + 1; $a <= $itemsperpage + $offset; $a++) {
 	$tpl->newBlock("listings");
@@ -165,10 +166,13 @@ for($a = $offset + 1; $a <= $itemsperpage + $offset; $a++) {
 // print_r($stories);
 	}
 	$tpl->gotoBlock("_ROOT");
-}
+} 
+
+ 
 if($scount > $itemsperpage) {
 	$tpl->gotoBlock("listings");
-	$tpl->assign("pagelinks", build_pagelinks("viewseries.php?seriesid=$seriesid&amp;", $scount, $offset));
+    $url = e107::url("efiction_series",  "viewseries", $series);
+	$tpl->assign("pagelinks",  build_pagelinks($url."&amp;", $scount, $offset));
 }
 $tpl->gotoBlock( "_ROOT" );
 $tpl->assign("output", $output);

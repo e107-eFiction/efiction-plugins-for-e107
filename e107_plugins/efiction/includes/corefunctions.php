@@ -153,6 +153,44 @@ function format_summary($text) {
      return $text;
 }
 
+// Same with the author list
+function author_link($stories) {
+	if(is_array($stories['coauthors'])) {
+		$authlink[] = "<a href=\""._BASEDIR."viewuser.php?uid=".$stories['uid']."\">".$stories['penname']."</a>";
+		$coauth = dbquery("SELECT "._PENNAMEFIELD." as penname, co.uid FROM ".TABLEPREFIX."fanfiction_coauthors AS co LEFT JOIN "._AUTHORTABLE." ON co.uid = "._UIDFIELD." WHERE co.sid = '".$stories['sid']."'");
+		foreach($stories['coauthors'] AS $k => $v) {
+			$authlink[] = "<a href=\""._BASEDIR."viewuser.php?uid=".$k."\">".$v."</a>";
+		}
+	}
+	return isset($authlink) ? implode(", ", $authlink) : "<a href=\""._BASEDIR."viewuser.php?uid=".$stories['uid']."\">".$stories['penname']."</a>";
+}
+
+
+// Function that returns the ratings picks 
+function ratingpics($rating) {
+	global $ratings, $like, $dislike, $star, $halfstar;
+	$ratingpics = "";
+	if($ratings == "2") {
+		if($rating >= 0.5)
+			$ratingpics = ($like ? $like : "<img src=\"".e_PLUGIN_ABS."efiction/images/like.gif\" alt=\""._LIKED."\">");
+		else if(($rating < 0.5) && ($rating > 0))
+			$ratingpics = ($dislike ? $dislike :"<img src=\"".e_PLUGIN_ABS."efiction/dislike.gif\" alt=\""._DISLIKED."\">");
+		else $ratingpics = "";
+	}
+	if($ratings == "1") {
+		global $star, $halfstar;
+		if($rating > 0) {
+			for($x = 0; $x < ($rating / 2) - .5; $x++) {
+				$ratingpics .= ($star ? $star  : "<img src=\"".e_PLUGIN_ABS."efiction/star.gif\" alt=\"star\">");
+			}
+			if($rating % 2 != 0) $ratingpics .= ($halfstar ? $halfstar  : "<img src=\"".e_PLUGIN_ABS."efiction/starhalf.gif\" alt=\"half-star\">");
+		}
+		else $ratingpics = "";
+	}
+	if(!empty($ratingpics)) return "<span style='white-space: nowrap;'>$ratingpics</span>"; // the no-wrap style will keep the stars together
+	else return;
+}
+
 // Because this is used in places other than the listings of stories, we're setting it up as a function to be called as needed.
 function title_link($stories, $parm = NULL) {
     
@@ -165,8 +203,8 @@ function title_link($stories, $parm = NULL) {
 	$rating = $stories['rid'];
 	$warningtext = !empty($ratingslist[$rating]['warningtext']) ? addslashes(strip_tags($ratingslist[$rating]['warningtext'])) : "";
 		if(empty($ratingslist[$rating]['ratingwarning'])) {
-            $link = "viewstory.php?sid=".$stories['sid'];
-			$title = "<a class=\"".$class."\" href=\"viewstory.php?sid=".$stories['sid']."\">".$stories['title']."</a>";
+            $link = SITEURL."viewstory.php?sid=".$stories['sid'];
+			$title = "<a class=\"".$class."\" href=\"".$link."\">".$stories['title']."</a>";
         }    
 		else {
 			$warning = "";
@@ -314,6 +352,51 @@ function build_pagelinks($url, $total, $offset = 0, $columns = 1) {
 	return "<div id=\"pagelinks\">$pages</div>";
 }
 
+/* USE:  e107::getSingleton('efiction_characters')->get_charlist($this->var['characters']);  */
+// This function builds the list of character links
+function charlist($characters) {
+	global $action;
+
+    $charlist = efiction_characters::charlist(); 
+
+	if(!is_array($characters)) $characters = explode(",", $characters);
+	$charlinks = array( );
+	foreach($characters as $c) {
+		if(empty($charlist[$c]['name'])) continue;
+		if($action != "printable") $charlinks[] = "<a href='"._BASEDIR."browse.php?type=characters&amp;charid=$c'>".$charlist[$c]['name']."</a>";
+		else $charlinks[] = $charlist[$c]['name'];
+	}
+	return implode(", ", $charlinks);
+}
+
+// This function builds the list of category links (including the breadcrumb depending on settings)
+function catlist($catid) {
+	global $extendcats,  $action;
+
+    $catlist = efiction_categories::catlist();
+    
+	if(!is_array($catid)) $catid = explode(",", $catid);
+	$categorylinks = array();
+	foreach($catid as $cat) {
+		if(empty($catlist[$cat])) continue;
+		if($extendcats) {
+			unset($link);
+			$thiscat = $cat;
+			while(isset($thiscat)) {
+				if(isset($link)) $link = " > ".$link;
+				else $link = "";
+				if($action != "printable") $link = "<a href='"._BASEDIR."browse.php?type=categories&amp;catid=$thiscat'>".$catlist[$thiscat]['name']."</a>".$link;
+				else $link = $catlist[$thiscat]['name'].$link;
+				if($catlist[$thiscat]['pid'] == -1) unset($thiscat);
+				else $thiscat = $catlist[$thiscat]['pid'];
+			}
+			$categorylinks[] = $link;
+		}
+		else $categorylinks[] = "<a href='"._BASEDIR."browse.php?type=categories&amp;catid=$cat'>".$catlist[$cat]['name']."</a>";
+	}
+	return implode(", ", $categorylinks);
+}
+
 
 //original solution fails on national characters
 function e107_wordscount($title = '') {
@@ -363,3 +446,25 @@ function rip_tags_better($string, $rep = ' ') {
     return $string;
 
 }
+
+
+    /* get story authors */
+    /* used in story_block */
+    function get_stories_coauthors($sid = NULL) 
+    {
+        	if($stories['coauthors'] == 1) {
+    		$coauthors = array();
+    		$coauth = dbquery("SELECT "._PENNAMEFIELD." as penname, co.uid FROM ".TABLEPREFIX."fanfiction_coauthors AS co LEFT JOIN "._AUTHORTABLE." ON co.uid = "._UIDFIELD." WHERE co.sid = '".$stories['sid']."'");
+    		while($c = dbassoc($coauth)) {
+    			$coauthors[$c['uid']] = $c['penname'];
+    		}
+    		$stories['coauthors'] = $coauthors;
+ 
+    	}
+    	else if(empty($stories['coauthors'])) $coauthors = array( );	
+        
+        return $coauthors;
+        
+    }  
+      
+      

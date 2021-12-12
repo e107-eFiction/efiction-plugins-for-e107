@@ -27,6 +27,7 @@ CREATE TABLE `fanfiction_series` (
  `challenges` varchar(200) NOT NULL default '',
  `genres` varchar(250) NOT NULL default '',
  `image` varchar(100) NOT NULL,
+ `seriessef` varchar(200) NOT NULL default '', 
  PRIMARY KEY (`seriesid`),
  KEY `catid` (`catid`),
  KEY `characters` (`characters`),

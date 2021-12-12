@@ -17,7 +17,8 @@ e107::lan('efiction', true);
 
 //fix for checkboxes look */
 
-$ret  ="  .checkbox-inline {min-width: 300px;}
+$ret  ="  
+#admin-ui-edit .checkbox-inline {min-width: 300px;}
 #characters-container .checkbox-inline  {margin-left: 20px!important; } 
 #catid-container .checkbox-inline  {margin-left: 20px!important; }  
 #classes-container .checkbox-inline  {margin-left: 20px!important; } 
@@ -101,6 +102,9 @@ class fanfiction_series_ui extends e_admin_ui
 
 			'title'                   => array (  'title' => LAN_TITLE,  'type' => 'text',  'data' => 'str',  'width' => 'auto',  'inline' => true,  'help' => '',  'readParms' =>  array (),  
 			'writeParms' =>  array ('size'=>'block-level'),  'class' => 'left',  'thclass' => 'left',),
+
+			'seriessef' => array('title' => LAN_SEFURL, 'batch'=>1,  'type' => 'text',  'data' => 'str',   'writeParms'=>array('size'=>'xxlarge', 'show'=>1, 'sef'=>'title')),
+
 
 			'summary'                 => array (  'title' => LAN_SUMMARY,  'type' => 'textarea',  'data' => 'str',  'width' => 'auto',  'inline' => true,  'help' => '',  'readParms' =>  array (),  
 			'writeParms' =>  array ('size'=>'block-level'),  'class' => 'left',  'thclass' => 'left',),
@@ -319,12 +323,20 @@ class fanfiction_inseries_ui extends e_admin_ui
 			'checkboxes'              => array (  'title' => '',  'type' => null,  'data' => null,  'width' => '5%',  'thclass' => 'center',  'forced' => true,  'class' => 'center',  'toggle' => 'e-multiselect',  'readParms' =>  array (),  'writeParms' =>  array (),),
 
 			
-			'seriesid'                => array (  'title' => _SERIES,  'type' => 'dropdown',  'data' => 'int',  'width' => 'auto',  'filter' => true,  'validate' => true,  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array ('size'=>'block-level'),  'class' => 'left',  'thclass' => 'left',  'batch' => false,),
+			'seriesid'                => array (  'title' => _PARENT_SERIES,  'type' => 'dropdown',  'data' => 'int',  'width' => 'auto',  'filter' => true,  'validate' => true,  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array ('size'=>'block-level'),  'class' => 'left',  'thclass' => 'left',  'batch' => false,),
 			
-			'sid'                     => array (  'title' => _STORY,  'type' => 'dropdown',  'data' => 'int',  'width' => 'auto',  'filter' => true,  'validate' => true,  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array ('size'=>'block-level'),  'class' => 'left',  'thclass' => 'left',  'batch' => false,),
+			'sid'                     => array (  'title' => _STORY,  'type' => 'dropdown',  'data' => 'int',  'width' => 'auto',  'filter' => true,     'help' => '',  'readParms' =>  array (),  'writeParms' =>  array ('size'=>'block-level'),  'class' => 'left',  'thclass' => 'left',  'batch' => false,),
 			
-			 
+	
+			'subseriesid'                => array (  'title' => _SERIES,  'type' => 'dropdown',  'data' => 'int',  'width' => 'auto',  'filter' => true,    'help' => '',  'readParms' =>  array (),  'writeParms' =>  array ('size'=>'block-level'),  'class' => 'left',  'thclass' => 'left',  'batch' => false,),
+
 			'confirmed'               => array (  'title' => _VALIDATE,  'type' => 'boolean',  'data' => 'int',  'width' => 'auto',  'filter' => true,  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',),
+
+			'external'               => array (  'title' => "Story on other site",  'type' => 'boolean',  'data' => 'int',  'width' => 'auto',  'filter' => true,  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',),
+
+			'storylink'               => array (  'title' => "Link to the story",  'type' => 'url',  'data' => 'str',  'width' => 'auto',  'filter' => true,  'help' => 'This link overrides standard title link',  
+			'readParms' =>  array (),  'writeParms' =>  array ('size'=>'block-level'),  'class' => 'left',  'thclass' => 'left',),			
+
 			
 			'inorder'                 => array (  'title' => _ORDER,  'type' => 'number',  'data' => 'int',  'width' => 'auto',  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',),
 			 
@@ -345,6 +357,7 @@ class fanfiction_inseries_ui extends e_admin_ui
  
 			// Set drop-down values (if any). 
 		 	$this->fields['seriesid']['writeParms']['optArray'] =  e107::getSingleton('efiction_series')->get_series_list();
+			$this->fields['subseriesid']['writeParms']['optArray'] =  e107::getSingleton('efiction_series')->get_series_list();
 			 
 		 	$this->fields['sid']['writeParms']['optArray'] =  e107::getSingleton('efiction_stories')->get_full_stories_list();
  
@@ -362,6 +375,8 @@ class fanfiction_inseries_ui extends e_admin_ui
 		public function afterCreate($new_data, $old_data, $id)
 		{
 			// do something
+			/* TO DO CHECK either sid or subseriesid mandatory */
+			/* subseriesid != parent */
 		}
 
 		public function onCreateError($new_data, $old_data)

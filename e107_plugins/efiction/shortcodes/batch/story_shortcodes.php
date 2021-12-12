@@ -236,12 +236,24 @@
           }
           return $text;     
         }
+        
+        /* {STORY_AUTHOR_NAME_SHORT} */
+        public function sc_story_author_name_short($parm = null)
+    	{
+          $stories = $this->var;
+          $text = $stories['penname'];
+          if ($stories['coauthors'] > 0) {
+            $text .= " + ". LAN_OTHERS ;
+          } 
+  
+          return $text;     
+        }
               
         
         /* {STORY_CATEGORY} {category} */
         public function sc_story_category($parm = null)
     	{
-            $catlist = efiction_categories::get_catlist();
+            $catlist = efiction_categories::catlist();
             $category =    $this->var['catid'] == '-1' || !$this->var['catid'] ? _NONE :  $catlist[$this->var['catid']]['name'] ;
             //serie:  $category = $this->var['catid'] ? catlist($this->var['catid']) : _NONE;
             
@@ -250,7 +262,9 @@
         /* {STORY_CHARACTERS} {characters} */
         public function sc_story_characters($parm = null)
     	{
-            $characters = $this->var['characters'] ? charlist($this->var['characters']) : _NONE;
+ 
+           // $characters = $this->var['charid'] ? charlist($this->var['charid']) : _NONE;
+            $characters =  e107::getSingleton('efiction_characters')->get_charlist($this->var['charid']);
             return $characters;   
         }
         
@@ -649,21 +663,20 @@
     /* {STORY_IMAGE} */
     public function sc_story_image($parm)
     {
-             
-            $category_icon = $this->var['topicimage'];  
-            if($category_icon != '' ) {
-                $settings =  array('w'=> 0, 'h'=>0);
-             
-        		$src =  e107::getParser()->replaceConstants($category_icon, 'full');		
-                $icon = e107::getParser()->toImage($src, $settings); 
-            }
-            else {
-               $sitetheme = e107::getPref('sitetheme');
-               $path = e_THEME_ABS.$sitetheme.'/' ;
-               $src = $path."images/book-magic.jpg";
-               $icon = e107::getParser()->parseTemplate($src, true);  
-            }      	 
-            return $src; 
+        $story_image = $this->var['image'];
+        
+        if ($story_image) {
+            $src =  e107::getParser()->replaceConstants($story_image, 'full');
+            return $src;
+        }
+ 
+        else {
+           $sitetheme = e107::getPref('sitetheme');
+           $path = e_THEME_ABS.$sitetheme.'/' ;
+           $src = $path."images/nobanner.jpg";
+           $icon = e107::getParser()->parseTemplate($src, true);  
+        }      	 
+        return $src; 
     }
     
     

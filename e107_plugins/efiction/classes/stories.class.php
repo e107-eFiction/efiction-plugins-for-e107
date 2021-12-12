@@ -109,9 +109,8 @@ if (!class_exists('efiction_stories')) {
  
 		return $values;    
     }
-      
-      
-      
+    
+
       
       
     

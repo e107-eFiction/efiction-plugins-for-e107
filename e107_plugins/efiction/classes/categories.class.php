@@ -40,7 +40,7 @@ if (!class_exists('efiction_categories')) {
     class efiction_categories
     {
         /* ID => array */   
-        public static function get_catlist() {
+        public static function catlist() {
         
           $catquery =  "SELECT * FROM ".TABLEPREFIX."fanfiction_categories ORDER BY leveldown, displayorder";
           $records = e107::getDb()->retrieve($catquery, true);
@@ -56,7 +56,7 @@ if (!class_exists('efiction_categories')) {
         /* TODO: replace with get_categories_list() */
         public static function get_categories() {
         
-          $catlist = self::get_catlist();
+          $catlist = self::catlist();
           
           foreach($catlist AS $cat) {
                 $category[$cat['catid']] = $cat["name"];
@@ -70,9 +70,9 @@ if (!class_exists('efiction_categories')) {
        public function get_categories_list() {
  
 		$values = array();
- 
-        $catlist = self::get_catlist();
-          
+
+        $catlist = self::catlist();
+     
         foreach($catlist AS $cat) {
               $values[$cat['catid']] = $cat["name"];
         }
@@ -80,6 +80,36 @@ if (!class_exists('efiction_categories')) {
 		return $values;    
   
       }
+      
+      /* e107::getSingleton('efiction_categories')->get_catlist($this->var['catid']); */  
+      // This function builds the list of category links (including the breadcrumb depending on settings)
+      function get_catlist($catid = NULL) {
+      	global $extendcats,  $action;
+      
+        $catlist = efiction_categories::catlist();
+          
+      	if(!is_array($catid)) $catid = explode(",", $catid);
+      	$categorylinks = array();
+      	foreach($catid as $cat) {
+      		if(empty($catlist[$cat])) continue;
+      		if($extendcats) {
+      			unset($link);
+      			$thiscat = $cat;
+      			while(isset($thiscat)) {
+      				if(isset($link)) $link = " > ".$link;
+      				else $link = "";
+      				if($action != "printable") $link = "<a href='"._BASEDIR."browse.php?type=categories&amp;catid=$thiscat'>".$catlist[$thiscat]['name']."</a>".$link;
+      				else $link = $catlist[$thiscat]['name'].$link;
+      				if($catlist[$thiscat]['pid'] == -1) unset($thiscat);
+      				else $thiscat = $catlist[$thiscat]['pid'];
+      			}
+      			$categorylinks[] = $link;
+      		}
+      		else $categorylinks[] = "<a href='"._BASEDIR."browse.php?type=categories&amp;catid=$cat'>".$catlist[$cat]['name']."</a>";
+      	}
+      	return implode(", ", $categorylinks);
+      }
+
         
     }
     new efiction_categories();

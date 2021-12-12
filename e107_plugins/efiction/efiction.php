@@ -74,7 +74,7 @@ LEFT JOIN ".UN_TABLENAME_TOPICS." t ON t.topicid = s.topic WHERE s.sid = '".$sid
 
     $query = _STORYQUERY." ORDER BY stories.updated DESC LIMIT 0, $limit";
 
-    $query = "SELECT author.penname, author.email, chapter.*,  t.title AS topicname,  t.summary, t.storynotes FROM ".MPREFIX."fanfiction_chapters as chapter 
+    $query = "SELECT author.penname, author.email, chapter.*,  t.title AS topicname,  t.summary, t.storynotes, t.image FROM ".MPREFIX."fanfiction_chapters as chapter 
     LEFT JOIN "._AUTHORTABLE." ON  "._UIDFIELD." = chapter.uid 
     LEFT JOIN ".MPREFIX."fanfiction_stories AS t ON t.sid = chapter.sid 
     WHERE chapter.validated > 0 ORDER BY chapter.chapter_datestamp DESC " ;

@@ -27,7 +27,7 @@ if (!defined('e107_INIT')) { exit; }
 function build_cat_row($thiscat, $thiscatinfo) {
 	global  $oddeven, $onpic, $down, $up;
     
-    $catlist = efiction_categories::get_catlist();
+    $catlist = efiction_categories::catlist();
         
 	$space = "";
 	if($thiscatinfo['leveldown'] % 2) $class = "odd";

@@ -33,9 +33,7 @@ if (!empty(e107::getPref('comments_disabled')))
 {
 	exit;
 }
-
-print_a($_GET);
-
+ 
 if(e_AJAX_REQUEST) // TODO improve security
 {
 

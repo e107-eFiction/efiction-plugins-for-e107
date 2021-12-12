@@ -29,7 +29,7 @@ function preview_story($stories) {
     
 		$count = 0;
 
-        $catlist = efiction_categories::get_catlist();
+        $catlist = efiction_categories::catlist();
     
 		if(isset($_GET['textsize'])) $textsize = $_GET['textsize'];
 		else $textsize = 0;

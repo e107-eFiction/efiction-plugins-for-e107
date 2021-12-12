@@ -99,6 +99,7 @@ define('_OPTIONS', 'Options');
 define('_OR', 'or');
 define('_ORPHAN', 'Orphan');
 define('_OTHERRESULTS', 'Other Results');
+define('_PARENT_SERIES', 'Parent Series');
 define('_PENNAME', 'Penname');
 define('_PFSTORY', 'Past Featured Story');
 define('_POSSIBLEHACK', 'A hacking attempt has been detected.');
@@ -123,10 +124,12 @@ define('_SERIES', 'Series');
 define('_SERIES1', 'Series');  //singular
 define('_SERIES2', 'Series');
 define('_SERIES3', 'Series');
+define('_SERIES_TYPE', 'Series Type');
 
 define('_SORT', 'Sort');
 define('_STAR', 'star');
 define('_STORIES', 'Stories');
+define('_STORIESNUMBER', 'Stories');
 define('_STORY', 'Story');
 define('_STORY2', 'Story');  //What?
 define('_STORY3', 'Story');   //To
@@ -282,6 +285,7 @@ define('_VALIDATED', 'Validated');
 define('_VIEWCHAPTERS', 'View Chapters');
 define('_WORDCOUNTFAILED', 'Your story failed to meet the required minimum or maximum word count for story submission on this site.  Each chapter must be'.($minwords ? ' no less than '.$minwords : '').($maxwords ? ($minwords ? ' and' : '')." no more than $maxwords " : '').' words long.');
 
+
 // User
 
 define('_USERACCOUNT', 'Member Account');
@@ -400,6 +404,11 @@ define('_INVALIDSTORY', "That story does not exist on this archive.  You may <a 
 define('_LOGINTOREVIEW', 'You must %1$s (%2$s) to review.');
 define('_SUBMITREVIEW', 'Submit a Review');
 define('_TEXTSIZE', 'Text Size');
+define('_PUBLISHED', 'Published');
+define('_UPDATED', 'Updated');
+define('_COMPLETED', 'Completed');
+
+
 
 // View User
 
@@ -468,6 +477,17 @@ define ("LAN_EFICTION_REAL_NAME", "Real name");
 define ("LAN_EFICTION_MEMBERSHIP_STATUS", "Membership status");
 define ("LAN_EFICTION_BIO", "Bio");
  
+define ("_NUMCHAPTERS", "Počet kapitol");
+define ("_RATED", "Hodnotenie");
+define ("_STATS", "Štatistika");
+define ("_HITS", "Zobrazené");
+define ("_PUBLISHED", "Vydané");
+define ("_UPDATED", "Aktualizované");
+define ("_WORDCOUNT", "Počet slov");
+define ("_COMPLETED", "Dokončené");
 
-define ("LAN_EFICTION_BY", "By");
+/* reviewblock.tpl */
+define("LAN_REVIEW_AUTHOR","Autor komentára");
+define("LAN_REVIEW_TITLE","Komentár k");
 
+define("LAN_OTHERS","Ostatní");

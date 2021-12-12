@@ -258,6 +258,7 @@ CREATE TABLE `fanfiction_stories` (
  `reviews` smallint(6) NOT NULL default '0',
  `count` int(11) NOT NULL default '0',
  `challenges` varchar(200) NOT NULL default '0',
+ `image` varchar(100) NOT NULL,
  PRIMARY KEY (`sid`),
  KEY `title` (`title`),
  KEY `catid` (`catid`),

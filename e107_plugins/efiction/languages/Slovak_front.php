@@ -23,7 +23,7 @@ define ("_BACK2PREVIOUS", "Späť na predchádzajúce.");
 define ("_BACK2STORY", "<a href='viewstory.php?sid=%s'>Späť na preklad.</a>");
 define ("_BACK2SERIES", "<a href='series.php?seriesid=%s'>Späť na preklady.</a>");
 define ("_BACK2REVIEWS", "<a href='reviews.php?%s'>Späť na hodnotenia.</a>");
-define ("_BY", "by");
+define ("_BY", "od");
 define ("_CAPTCHAFAIL", "The security code you entered did not match.  Please <a href=\"javascript: history.back(1)\">try again.</a>");
 define ("_CAPTCHANOTE", "Enter the security code shown below:");
 define ("_CATEGORIES", "Kategórie");
@@ -84,6 +84,8 @@ define('_OPTIONS', 'Možnosti');
 define('_OR', 'alebo');
 define('_ORPHAN', 'Opustené');
 define('_OTHERRESULTS', 'Ďalšie výsledky');
+define('_PARENT_SERIES', 'Nadradená séria');
+
 define('_PENNAME', 'Nick');
 define('_PFSTORY', 'Past Featured Story');
 define('_POSSIBLEHACK', 'Bol zistený pokus o hacking.');
@@ -108,6 +110,10 @@ define('_SERIES', 'Série');  //plural
 define('_SERIES1', 'séria');  //singular
 define('_SERIES2', 'sériu');
 define('_SERIES3', 'sérii');
+define('_SERIES_TYPE', 'Typ série');
+
+
+
  
 define('_SORT', 'Sort');
 define('_STAR', 'star');
@@ -115,6 +121,7 @@ define('_STORIES', 'Poviedky');
 define('_STORY', 'Poviedka');
 define('_STORY2', 'poviedku');  //What?
 define('_STORY3', 'poviedke');   //To
+define('_STORIESNUMBER', 'Počet poviedok v sérii');
 define('_SUBMIT', 'Odoslať');
 define('_SUMMARY', 'Zhrnutie');
 define('_TEXT', 'Text');
@@ -207,13 +214,13 @@ define('_ADDSERIES', 'Add New Series');
 define('_ADDSERIES2FAVES', 'Add Series to Favorites');
 define('_BACKTOSERIES', 'Back to the Series'); // Added 11-06-05
 define('_CHOOSEAUTHOR', 'Choose another author');
-define('_CLOSED', 'Closed'); // Added 02-10-07
+define('_CLOSED', 'Uzavretá séria'); // Added 02-10-07
 define('_CONFIRMREMOVE', 'Are you sure you want to remove this from the series?'); // Added 12-22-05
 define('_DELETESERIES', 'Delete Series');
 define('_EDITSERIES', 'Edit Series');
 define('_MANAGESERIES', 'Manage Series');
-define('_MODERATED', 'Moderated'); // Added 02-10-07
-define('_OPEN', 'Open');
+define('_MODERATED', 'Schvaľovaná správcom'); // Added 02-10-07
+define('_OPEN', 'Otvorená séria');
 define('_OPENNOTE', '<span style="font-weight: bold; text-decoration: underline;">Note:</span>  An open series is a shared universe (sometimes called a sandbox) in which other authors may add to the series.  
 By marking your series as open, <u>other authors will be able to add to the series.</u>  A moderated series will allow other authors to add to the series, but those entries must be approved by the series owner. 
 Only the series owner (and the site admins) may add to a closed series.');
@@ -388,6 +395,9 @@ define('_INVALIDSTORY', "That story does not exist on this archive.  You may <a 
 define('_LOGINTOREVIEW', 'Musíte sa prihlásiť, ak chcete odoslať komentár.');
 define('_SUBMITREVIEW', 'Pridať komentár');
 define('_TEXTSIZE', 'Text Size');
+define('_PUBLISHED', 'Vydané');
+define('_UPDATED', 'Aktualizované');
+define('_COMPLETED', 'Dokončené');
 
 // View User
 
@@ -455,9 +465,7 @@ define ("LAN_EFICTION_MEMBER_SINCE", "Člen od");
 define ("LAN_EFICTION_REAL_NAME", "Real name");
 define ("LAN_EFICTION_MEMBERSHIP_STATUS", "Membership status");
 define ("LAN_EFICTION_BIO", "Bio");
-
-define ("LAN_EFICTION_BY", "Od");
-
+ 
 define ("_NUMCHAPTERS", "Počet kapitol");
 define ("_RATED", "Hodnotenie");
 define ("_STATS", "Štatistika");
@@ -472,4 +480,4 @@ define ("_COMPLETED", "Dokončené");
 define("LAN_REVIEW_AUTHOR","Autor komentára");
 define("LAN_REVIEW_TITLE","Komentár k");
 
- 
+define("LAN_OTHERS","Ostatní"); 
