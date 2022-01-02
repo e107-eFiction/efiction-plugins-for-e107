@@ -20,7 +20,7 @@ if (!defined('e107_INIT')) { exit; }
 
 class efiction_series_url // plugin-folder + '_url'
 {
-	public $alias = 'efiction';
+	public $alias = 'efiction_series';
      
     function config() 
 	{
@@ -33,8 +33,14 @@ class efiction_series_url // plugin-folder + '_url'
 			'sef'			=> '{alias}/{seriessef}?seriesid={seriesid}', 
 			'redirect'		=> '{e_PLUGIN}efiction_series/viewseries.php?$2', 	 		 
 		); 
-        
-        
+ 
+		$config['browseseries'] = array(
+            'alias'         => 'browseseries.php',
+			'regex'			=> '^{alias}\/?([\?].*)?\/?$', 
+			'sef'			=> '{alias}', 
+			'redirect'		=> '{e_PLUGIN}efiction_series/browseseries.php$1', 	  
+		);
+       
     return $config;      
     }
     

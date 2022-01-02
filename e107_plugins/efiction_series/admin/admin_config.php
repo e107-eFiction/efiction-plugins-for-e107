@@ -98,6 +98,8 @@ class fanfiction_series_ui extends e_admin_ui
 
 			'seriesid'                => array (  'title' => 'Seriesid',  'data' => 'int',  'forced'=> TRUE, 
 			 'width' => 'auto',  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',),
+             
+             
 			 'image'                   => array (  'title' => LAN_IMAGE,  'type' => 'image',  'data' => 'str',  'width' => 'auto',  'help' => '',  'readParms' => 'thumb=80x80',  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',),
 
 			'title'                   => array (  'title' => LAN_TITLE,  'type' => 'text',  'data' => 'str',  'width' => 'auto',  'inline' => true,  'help' => '',  'readParms' =>  array (),  

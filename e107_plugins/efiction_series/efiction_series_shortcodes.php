@@ -6,6 +6,10 @@ if (!defined('e107_INIT')) {
 
 e107::lan('efiction');
 
+
+include_once(_BASEDIR."includes/queries.php");
+require_once(_BASEDIR."includes/get_session_vars.php");
+
 /*
 {ADDTOFAVES} 1
 {ADMINOPTIONS} 2
@@ -32,14 +36,17 @@ class efiction_series_shortcodes extends e_shortcode
     public function sc_addtofaves($parm = null)
     {
         $favorites =  efiction_settings::get_single_setting('favorites');
+    
         if (isMEMBER && $favorites) {
-            $addtofaves = "[<a href=\"".SITEURL."member.php?action=favse&amp;uid=".USERUID."&amp;add=".$this->var['seriesid']."\">"._ADDSERIES2FAVES."</a>]";
+            $addtofaves = " <a class='btn btn-outline-secondary' href=\"".SITEURL."member.php?action=favse&amp;uid=".USERUID."&amp;add=".$this->var['seriesid']."\">"._ADDSERIES2FAVES."</a> ";
             if ($this->var['isopen'] < 2) {
-                $addtofaves .= " [<a href=\"".SITEURL."viewuser.php?action=favau&amp;uid=".USERUID."&amp;author=".$this->var['uid']."\">"._ADDAUTHOR2FAVES."</a>]";
+                $addtofaves .= " <a class='btn btn-outline-success'  href=\"".SITEURL."viewuser.php?action=favau&amp;uid=".USERUID."&amp;author=".$this->var['uid']."\">"._ADDAUTHOR2FAVES."</a> ";
             }
         }
         return $addtofaves;
     }
+    
+    
     
     /* {ADMINOPTIONS} */
     public function sc_adminoptions($parm = null)
@@ -132,6 +139,25 @@ class efiction_series_shortcodes extends e_shortcode
         */
         return $serie_image;
     }
+    
+    /* {ADDCOMMENT} */
+    public function sc_addcomment() {
+    
+        $seriesid = $this->var['seriesid'];
+        
+        $reviewsallowed = e107::getSingleton('efiction_settings')->getPref('reviewsallowed');
+        $anonreviews = e107::getSingleton('efiction_settings')->getPref('anonreviews');
+        
+	    if($reviewsallowed) {
+    		if(isMEMBER || $anonreviews) {
+               $url = SITEURL."reviews.php?action=add&amp;type=SE&amp;item=".$seriesid;
+               $text = '<a class="btn btn-outline-info" href="'.$url.'">'._SUBMITREVIEW.'</a>';       
+            }
+        }
+        
+        return $text;
+     
+    }
 
 	/* {JUMPMENU} 7 */
 	public function sc_jumpmenu($parm = null)
@@ -168,7 +194,7 @@ class efiction_series_shortcodes extends e_shortcode
         $anonreviews   =  efiction_settings::get_single_setting('anonreviews');
          
         if ($reviewsallowed && (isMEMBER || $anonreviews)) {
-            $numreviews =  "<a href=\"".SITEURL."reviews.php?type=SE&amp;item=".$this->var['seriesid']."\">".$this->var['reviews']."</a>";
+            $numreviews =  $this->var['series_comment_total'];
         }
         return $numreviews;
     }
@@ -204,10 +230,10 @@ class efiction_series_shortcodes extends e_shortcode
     /* {PARENTSERIES} 12 */
     public function sc_parentseries($parm = null)
     {
-        print_a($this->var['seriesid']);
+ 
 		$query = "SELECT s.title, s.seriesid, s.seriessef FROM #fanfiction_inseries as i, 
 		#fanfiction_series as s WHERE s.seriesid = i.seriesid AND i.subseriesid = '".$this->var['seriesid']."'";
-		print_a($query);
+ 
 		$parents = e107::getDb()->retrieve("SELECT s.title, s.seriesid, s.seriesef FROM #fanfiction_inseries as i, 
 		  #fanfiction_series as s WHERE s.seriesid = i.seriesid AND i.subseriesid = '".$this->var['seriesid']."'", true);
  
@@ -223,7 +249,11 @@ class efiction_series_shortcodes extends e_shortcode
 	public function sc_rating($parm = null)
 	{
 		$ratingslist = efiction_ratings::get_ratings_list();
-		return  $ratingslist[$this->var['rid']];
+        
+        if($ratingslist[$this->var['rating']]) {
+            return $ratingslist[$this->var['rating']];
+        }    
+		return '';
 	}
 
     /* {REVIEWS} 14  */
@@ -234,7 +264,8 @@ class efiction_series_shortcodes extends e_shortcode
         $anonreviews =  efiction_settings::get_single_setting('anonreviews');
          
         if ($reviewsallowed && (isMEMBER || $anonreviews)) {
-            $reviews =  "<a href=\"".SITEURL."reviews.php?type=SE&amp;item=".$this->var['seriesid']."\">"._REVIEWS."</a>";
+            $url = $this->sc_serie_link; 
+            $reviews =  "<a href='".$url."#comments-container-fanfiction-series' >"._REVIEWS."</a>";
         }
         return $reviews;
     }
@@ -277,5 +308,10 @@ class efiction_series_shortcodes extends e_shortcode
         return $title;
     }
  
-
+    /* {SERIE_LINK} */
+    public function sc_serie_link($parm = null)
+    {
+        $url = e107::url('efiction_series', 'viewseries', $this->var);
+        return $url;
+    }
 }
