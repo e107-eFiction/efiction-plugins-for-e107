@@ -24,7 +24,7 @@
 if(!defined("e107_INIT")) exit( );
  
  $recentdays = efiction_settings::get_single_setting('recentdays');
- $title =  e107::getParser()->lanVars(_RECENTSTORIES, array($recentdays ), true);
+ $caption =  e107::getParser()->lanVars(_RECENTSTORIES, array($recentdays ), true);
  
  $output .=  ($recentdays ? $title : _MOSTRECENT)." ".efiction_pagelinks::get_single_link('rss') ;
 

@@ -7,3 +7,5 @@ e107_plugins/efiction/config.php
 e107_plugins/efiction/*.bkp
 
  
+e107_plugins/efiction/admin/featured.bak
+e107_plugins/efiction/blocks/menu/en.bak

@@ -71,7 +71,7 @@ define('_MULTIPLESELECT', 'Podržaním klávesy CTRL vykonáte viacero výberov.
 define('_NAME', 'Názov');
 define('_NAUGHTYWORDS', 'Zachytil vás náš filter neslušných slov.  Vyžadujeme, aby všetok obsah, ktorý nie je za varovaním o overení veku, bol vhodný pre všetky skupiny divákov.  To zahŕňa názvy, zhrnutia a mená (pre anonymné hodnotenie, výzvy atď.). Prosím, <a href="javascript: history.back(1)">skúšajte to znova.</a>');
 define('_NEXT', 'Ďalej');
-define('_NEW', '[Novinka!]');
+define('_NEW', '[Nová kapitola!]');
 define('_NO', 'Nie');
 define('_NODBFUNCTIONALITY', 'Zdá sa, že v konfigurácii php pre túto webovú stránku nebola povolená žiadna použiteľná funkcia databázy pre PHP.  Pozrite si prosím dokumentáciu PHP alebo sa opýtajte svojho poskytovateľa hostingu.');
 define('_NOMAILSENT', 'Vyskytla sa chyba. Nebol odoslaný žiadny e-mail.');
@@ -196,14 +196,14 @@ define('_10FAVSTORY', '10 najobľúbenejších poviedok');
 define('_10FAVAUTHOR', '10 najtvorivejších autorov');
 define('_10PROLIFICAUTHOR', '10 najobľúbenejších autorov');
 define('_10PROLIFICREVIEWER', '10 najaktívnejších komentujúcich');
-define('_ADVANCED', 'Advanced Search');
-define('_COMPLETEONLY', 'Completed Only');
-define('_EXCLUDE', 'to Exclude');
-define('_FULLTEXT', 'Full Text');
-define('_INCLUDE', 'to Include');
+define('_ADVANCED', 'Pokročilé vyhľadávanie');
+define('_COMPLETEONLY', 'Iba dokončené');
+define('_EXCLUDE', 'vylúčiť');
+define('_FULLTEXT', 'Fulltextové vyhľadávanie');
+define('_INCLUDE', 'zahrnúť');
 define('_RESULTS', 'Search Results');
-define('_SEARCHTERM', 'Search term');
-define('_SEARCHTERMTOOSHORT', "Your search term was too short.  Your search term must be a minimum of three characters long. <a href='searching.php'>Try again.</a>");
+define('_SEARCHTERM', 'Hľadaný výraz');
+define('_SEARCHTERMTOOSHORT', "Hľadaný výraz je príliš krátky.  Potrebujete zadať aspoň tri znaky.<a href='searching.php'>Skúste to znova.</a>");
 define('_SIMPLE', 'Jednoduché vyhľadávanie');
 define('_WORDCOUNT', 'Počet slov');
 define('_SEARCH', 'Hľadať');
@@ -211,7 +211,7 @@ define('_SEARCH', 'Hľadať');
 // Series
 define('_ADD2SERIES', 'Add to Series');
 define('_ADDSERIES', 'Add New Series');
-define('_ADDSERIES2FAVES', 'Add Series to Favorites');
+define('_ADDSERIES2FAVES', 'Pridať sériu k obľúbeným');
 define('_BACKTOSERIES', 'Back to the Series'); // Added 11-06-05
 define('_CHOOSEAUTHOR', 'Choose another author');
 define('_CLOSED', 'Uzavretá séria'); // Added 02-10-07

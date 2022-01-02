@@ -74,15 +74,21 @@ $listOpts = ""; $countquery = "";
 		$countquery = _MEMBERCOUNT.(isset($letter) ? " WHERE $letter" : "");
 		$authorquery = _MEMBERLIST.(isset($letter) ? " WHERE $letter" : "")." GROUP BY "._UIDFIELD;
 	}
- 
-	$output .= $pagetitle.$ptitle;
-	$output .= "<div style=\"text-align: center;\"><form name=\"list\" action=\"\"><select name=\"list\" onchange=\"if(this.selectedIndex.value != 'false') document.location = document.list.list.options[document.list.list.selectedIndex].value\">";
+    
+    $caption = $pagetitle.$ptitle; 
+	
+    $output .= "<div style=\"text-align: center;\"><form name=\"list\" action=\"\"><select name=\"list\" onchange=\"if(this.selectedIndex.value != 'false') document.location = document.list.list.options[document.list.list.selectedIndex].value\">";
 	$output .= "<option value=\"authors.php?".($let ? "let=$let&amp;" : "")."list=members\"".(empty($list) || $list == "members" ? " selected" : "").">"._ALLMEMBERS."</option>
 		<option value=\"authors.php?".($let ? "let=$let&amp;" : "")."list=authors\"".($list == "authors" ? " selected" : "").">"._AUTHORS."</option>
 		<option value=\"authors.php?".($let ? "let=$let&amp;" : "")."list=admins\"".($list == "admins" ? " selected" : "").">"._SITEADMINS."</option>$listOpts
 		</select></form></div>";
 	$pagelink="authors.php?list=".($list ? $list : "members")."&amp;".($let ? "let=$let&amp;" : "");
-	include(_BASEDIR."includes/members_list.php");
+ 
+    $output .= build_alphalinks($pagelink, $let);
+    e107::getRender()->tablerender($caption, $output, $current);
+    $caption = ''; $output = '';
+	
+    include(_BASEDIR."includes/members_list.php");
 
 	$tpl->assign( "output", $output );
 	//$tpl->xprintToScreen( );

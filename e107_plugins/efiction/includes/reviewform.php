@@ -79,27 +79,38 @@ else {
      
  
 if($ratings == "2"){
-	$form .= "<div><label for=\"rating\">"._OPINION."</label> <select id=\"rating\" name=\"rating\" class=\"textbox\">
-		<option value=\"1\"".($review['rating'] == 1 ? " selected" : "").">"._LIKED."</option><option value=\"0\"".($review['reviewid'] && !$review['rating'] ? " selected" : "").">"._DISLIKED."</option><option value=\"-1\"".($review['rating'] == -1 || $action == "add" ? " selected" : "").">"._NONE."</option></select></div>";
+	$form .= "<div>
+        <label for=\"rating\">"._OPINION."</label> <select id=\"rating\" name=\"rating\" class=\"textbox\">
+		<option value=\"1\"".($review['rating'] == 1 ? " selected" : "").">"._LIKED."</option><option value=\"0\"".($review['reviewid'] && !$review['rating'] ? " selected" : "").">"._DISLIKED."</option><option value=\"-1\"".($review['rating'] == -1 || $action == "add" ? " selected" : "").">"._NONE."</option></select>
+        </div>";
 }
 if($ratings == "1") {
-	$form .= "<div><label for=\"rating\">"._REVIEWRATING.":</label> <select name=\"rating\">";
-	for($x=10; $x > 0; $x--) {
-		$form .= "<option value=\"$x\"".($review['rating'] == $x ? " selected" : "").">$x</option>";
-	}
-	$form .= "<option value=\"-1\"".($review['rating'] == -1 || $action != "edit" ? " selected" : "").">"._NONE."</option></select></div>";
+	$form .= "<div>
+      <label for=\"rating\">"._REVIEWRATING.":</label> <select name=\"rating\">";
+  	for($x=10; $x > 0; $x--) {
+  		$form .= "<option value=\"$x\"".($review['rating'] == $x ? " selected" : "").">$x</option>";
+  	}
+  	$form .= "<option value=\"-1\"".($review['rating'] == -1 || $action != "edit" ? " selected" : "").">"._NONE."</option></select>
+      </div>";
 }
 
 /* captcha */
 if(!USERUID && !empty($captcha)) 
 {
-$form .= "<div><span class=\"label\">"._CAPTCHANOTE."</span><input MAXLENGTH=5 SIZE=5 name=\"userdigit\" type=\"text\" value=\"\"><br /><img width=120 height=30 src=\""._BASEDIR."includes/button.php\" style=\"border: 1px solid #111;\"></div>";
+$form .= "<div><span class=\"label\">"._CAPTCHANOTE."</span><input MAXLENGTH=5 SIZE=5 name=\"userdigit\" type=\"text\" value=\"\"><br />
+<img width=120 height=30 src=\""._BASEDIR."includes/button.php\" style=\"border: 1px solid #111;\"></div>";
 }
 
 
-$form .= "<INPUT type=\"hidden\" name=\"chapid\" value=\"".(isset($chapid) ? $chapid : "")."\"><div style=\"text-align: center; margin: 1ex;\">
-<INPUT type=\"submit\" class=\"button btn btn-success btn-submit\" name=\"submit\" value=\""._SUBMIT."\"></div>";
+$form .=    "<INPUT type=\"hidden\" name=\"chapid\" value=\"".(isset($chapid) ? $chapid : "")."\">
+            <div style=\"text-align: center; margin: 1ex;\">
+            <INPUT type=\"submit\" class=\"button btn btn-success btn-submit\" name=\"submit\" value=\""._SUBMIT."\">
+            </div>";
+
 if(!empty($rateonly)) $form .= "<div>"._REVIEWNOTE."</div>";
-$form .= "</div></form>";
+    
+$form .= "</form>";
+
+ 
  
 ?>

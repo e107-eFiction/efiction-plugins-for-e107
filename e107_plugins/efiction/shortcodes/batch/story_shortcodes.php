@@ -378,18 +378,19 @@
         public function sc_story_numreviews($parm = null)
     	{
   
-          $reviewsallowed=  efiction_settings::get_single_setting('reviewsallowed');
+          $reviewsallowed =  efiction_settings::get_single_setting('reviewsallowed');
           $text = $reviewsallowed == "1" ? "<a href=\"reviews.php?type=ST&amp;item=".$this->var['sid']."\">".$this->var['reviews']."</a>" : "" ;   
           return $text;     
         }
         /* {STORY_NEW} {new}  */
         public function sc_story_new($parm = null)
     	{
-        	$new =  e107::pref('theme', 'new');
+        	$new =  efiction_settings::get_single_setting('new');
             $recentdays =  efiction_settings::get_single_setting('recentdays');
             if(!empty($recentdays)) {
         		$recent = time( ) - ($recentdays * 24 * 60 *60);
-        		if($this->var['updated'] > $recent) $new =  isset($new) ? file_exists(_BASEDIR.$new) ? "<img src='$new' alt='"._NEW."'>" : $new : _NEW;
+             
+        		if($this->var['updated'] > $recent) $new =  '<span class="badge bg-success fs-6">'._NEW.'</span>' ;
         	}
    
           return $new;     

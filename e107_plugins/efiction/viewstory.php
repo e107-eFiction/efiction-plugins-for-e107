@@ -276,7 +276,7 @@ else {
 				$chapterpenname = $chap['penname'];
 				$valid = $chap['validated'];
 				$chaptertitle = stripslashes($chap['title']);
-			}
+  }
 		}
 		$jumpmenu .= "</select>";
 		if($chapter < $chapters) {
@@ -334,7 +334,7 @@ else {
 		}
 		else $reviewslink = write_message(sprintf(_LOGINTOREVIEW, strtolower($pagelinks['login']['link']), strtolower($pagelinks['register']['link'])));
 	}
-	$tpl->assign("reportthis", "[<a href=\""._BASEDIR."report.php?action=report&amp;url=viewstory.php?chapid=$chapid\">"._REPORTTHIS."</a>]");
+	$tpl->assign("reportthis", "<a  class='btn btn-outline-danger'  href=\""._BASEDIR."report.php?action=report&amp;url=viewstory.php?chapid=$chapid\">"._REPORTTHIS."</a>");
 	$jumpmenu2 .= "<option value=\"report.php?action=report&amp;url=viewstory.php?chapid=$chapid\">"._REPORTTHIS."</option>";
 	if($stories['rr']) {
 		$rr = "[<a href=\"stories.php?action=newchapter&amp;sid=".$sid."\">"._CONTRIBUTE2RR."</a>]";

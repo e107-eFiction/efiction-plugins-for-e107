@@ -23,6 +23,8 @@
 
 if(!defined("e107_INIT")) exit( );
 
+    $storyblock_vars = array();
+
 	if(!isset($count)) $count = 0;
 	$tpl->assign("sid", $stories['sid']);
     $storyblock_vars['sid'] = $stories['sid'];
@@ -54,7 +56,11 @@ if(!defined("e107_INIT")) exit( );
     $storyblock_vars['score'] = ratingpics($stories['rating']);
     $storyblock_vars['count'] = $stories['count'] ? $stories['count'] : "0";
     
-    
+  
+   /* e107::getRender()->tablerender($storyblock_vars['title'], $output, "series");
+    $caption = ''; $output = ''; */
+
+  
 	$allclasslist = "";
 	$adminlinks = "";
 	$storyclasses = array( );
@@ -103,7 +109,7 @@ if(!defined("e107_INIT")) exit( );
 	$tpl->assign("completed"   , ($stories['completed'] ? _YES : _NO) );
 	$tpl->assign("roundrobin"   , ($stories['rr'] ?  (!empty($roundrobin) ? $roundrobin : "<img src=\"".SITEURL."images/roundrobin.gif\" alt=\""._ROUNDROBIN."\">") : "") );
 	$tpl->assign("ratingpics"   , ratingpics($stories['rating']) );
-	$tpl->assign("reviews"   , ($reviewsallowed ? "<a href=\"".SITEURL."reviews.php?type=ST&amp;item=".$stories['sid']."\">"._REVIEWS."</a>" : "") );
+	$tpl->assign("reviews"   , ($reviewsallowed ? "<a class='btn btn-outline-success' href=\"".SITEURL."reviews.php?type=ST&amp;item=".$stories['sid']."\">"._REVIEWS. " [ ".$stories['reviews']." ] </a>" : "") );
     
     $storyblock_vars['serieslinks'] = (count($serieslinks) > 0 ? implode(", ", $serieslinks) : _NONE);
     $storyblock_vars['characters'] = ($stories['charid'] ? charlist($stories['charid']) : _NONE);
@@ -111,12 +117,15 @@ if(!defined("e107_INIT")) exit( );
     $storyblock_vars['completed'] = ($stories['completed'] ? _YES : _NO);
     $storyblock_vars['roundrobin'] = ($stories['rr'] ?  (!empty($roundrobin) ? $roundrobin : "<img src=\"".SITEURL."images/roundrobin.gif\" alt=\""._ROUNDROBIN."\">") : "");
     $storyblock_vars['ratingpics'] = ratingpics($stories['rating']);
-    $storyblock_vars['reviews']  = ($reviewsallowed ? "<a href=\"".SITEURL."reviews.php?type=ST&amp;item=".$stories['sid']."\">"._REVIEWS."</a>" : "");
+    $storyblock_vars['reviews']  = ($reviewsallowed ? "<a href=\"".SITEURL."reviews.php?type=ST&amp;item=".$stories['sid']."\">"._REVIEWS."[ ".$stories['reviews']." ]</a>" : "");
     
 	if(isMEMBER && !empty($favorites))  {
 		$tpl->assign("addtofaves", "[<a href=\"".SITEURL."member.php?action=favst&amp;add=1&amp;sid=".$stories['sid']."\">"._ADDSTORY2FAVES."</a>] [<a href=\"".SITEURL."member.php?action=favau&amp;add=".$stories['uid'].(count($stories['coauthors']) ? ",".implode(",", array_keys($stories['coauthors'])) : "")."\">"._ADDAUTHOR2FAVES."</a>]");    
         $storyblock_vars["addtofaves"] = "[<a href=\"".SITEURL."member.php?action=favst&amp;add=1&amp;sid=".$stories['sid']."\">"._ADDSTORY2FAVES."</a>] [<a href=\"".SITEURL."member.php?action=favau&amp;add=".$stories['uid'].(count($stories['coauthors']) ? ",".implode(",", array_keys($stories['coauthors'])) : "")."\">"._ADDAUTHOR2FAVES."</a>]" ;
     
+    }
+    else {
+        $storyblock_vars["addtofaves"] = '';
     }
 
 	
@@ -129,7 +138,7 @@ if(!defined("e107_INIT")) exit( );
     $storyblock_vars['numchapters'] = $chapters;
     $storyblock_vars['updated'] = e107::getDate()->convert_date($stories['updated'], 'short');   
     $storyblock_vars['published'] = e107::getDate()->convert_date($stories['date'], 'short');   
-    
+  
 	if(!empty($recentdays)) {
 		$recent = time( ) - ($recentdays * 24 * 60 *60);
 		if($stories['updated'] > $recent) {
@@ -138,7 +147,8 @@ if(!defined("e107_INIT")) exit( );
         }
 	}
 	$tpl->assign("wordcount"   , $stories['wordcount'] ? $stories['wordcount'] : "0" );
-	$tpl->assign("numreviews"   , ($reviewsallowed == "1" ? "<a href=\"".SITEURL."reviews.php?type=ST&amp;item=".$stories['sid']."\">".$stories['reviews']."</a>" : "") );
+//	$tpl->assign("numreviews"   , ($reviewsallowed == "1" ? "<a href=\"".SITEURL."reviews.php?type=ST&amp;item=".$stories['sid']."\">".$stories['reviews']."</a>" : "") );
+   
     $storyblock_vars['wordcount'] = $stories['wordcount'] ? $stories['wordcount'] : "0";
     $storyblock_vars['numreviews'] = ($reviewsallowed == "1" ? "<a href=\"".SITEURL."reviews.php?type=ST&amp;item=".$stories['sid']."\">".$stories['reviews']."</a>" : "");
     
@@ -160,13 +170,13 @@ if(!defined("e107_INIT")) exit( );
 		if(isADMIN && uLEVEL < 4) $adminlinks .= " [<a href=\"".SITEURL."admin.php?action=featured&amp;remove=".$stories['sid']."\">"._REMOVE."</a>]";
 	}
 	else if(isADMIN && uLEVEL < 4) $adminlinks .= " [<a href=\"".SITEURL."admin.php?action=featured&amp;feature=".$stories['sid']."\">"._FEATURED."</a>]";
-	$tpl->assign("toc", "<a href=\"".SITEURL."viewstory.php?sid=".$stories['sid']."&amp;index=1\">"._TOC."</a>");
+	$tpl->assign("toc", "<a class='btn btn-outline-primary' href=\"".SITEURL."viewstory.php?sid=".$stories['sid']."&amp;index=1\">"._TOC."</a>");
 	$tpl->assign("oddeven", ($count % 2 ? "odd" : "even"));
-	$tpl->assign("reportthis", "[<a href=\"".SITEURL."report.php?action=report&amp;url=viewstory.php?sid=".$stories['sid']."\">"._REPORTTHIS."</a>]");
+	$tpl->assign("reportthis", "[<a  class='btn btn-outline-danger'  href=\"".SITEURL."report.php?action=report&amp;url=viewstory.php?sid=".$stories['sid']."\">"._REPORTTHIS."</a>]");
     
     $storyblock_vars['toc'] = "<a href=\"".SITEURL."viewstory.php?sid=".$stories['sid']."&amp;index=1\">"._TOC."</a>";
     $storyblock_vars['oddeven'] = ($count % 2 ? "odd" : "even");
-    $storyblock_vars['reportthis'] = "[<a href=\"".SITEURL."report.php?action=report&amp;url=viewstory.php?sid=".$stories['sid']."\">"._REPORTTHIS."</a>]";
+    $storyblock_vars['reportthis'] = "[<a class='btn btn-outline-danger' href=\"".SITEURL."report.php?action=report&amp;url=viewstory.php?sid=".$stories['sid']."\">"._REPORTTHIS."</a>]";
     
 	if(isADMIN && uLEVEL < 4) {
       $tpl->assign("adminlinks", "<div class=\"adminoptions\"><span class='label'>"._ADMINOPTIONS.":</span> ".$adminlinks."</div>");

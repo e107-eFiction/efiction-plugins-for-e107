@@ -55,7 +55,7 @@ $searchtype = (isset($_REQUEST['searchtype']) ? $_REQUEST['searchtype'] : 'simpl
 $searchterm = (isset($_REQUEST['searchterm']) ? escapestring($_REQUEST['searchterm']) : false);
 
 if (isset($_POST['submit']) || isset($_GET['offset'])) {
-    $output .= '<div id="pagetitle">'._RESULTS.'</div>';
+    $caption = '<div id="pagetitle">'._RESULTS.'</div>';
     $query = array();
     $countquery = array();
     $scountquery = array();
@@ -295,8 +295,9 @@ if (isset($_POST['submit']) || isset($_GET['offset'])) {
     }
 } else {
     if ($searchtype == 'simple') {
-        $output .= '<div id="pagetitle">'._SIMPLE."</div><div style='text-align: center;'><form method=\"post\" enctype=\"multipart/form-data\" action=\"searching.php\">
-		<div class=\"tblborder\" style=\"width: 320px; padding: 5px; margin: 0 auto;\">
+        $caption = "<div id=\"pagetitle\">"._SIMPLE."</div>";
+        $output .= "<div style='text-align: center;'><form method=\"post\" enctype=\"multipart/form-data\" action=\"searching.php\">
+		<div class=\"tblborder\"  \">
 		<select name=\"searchtype\">
 		<option value=\"penname\">"._PENNAME.'</option>
 		<option value="title">'._TITLE.'</option>
@@ -305,10 +306,11 @@ if (isset($_POST['submit']) || isset($_GET['offset'])) {
             $output .= '<option value="fulltext">'._FULLTEXT.'</option>';
         }
         $output .= '</select> <INPUT type="text" class="textbox" name="searchterm" size="20"> ';
-        $output .= '<INPUT type="submit" class="button" name="submit" value="'._SUBMIT.'" size="20">
+        $output .= '<INPUT type="submit" class="button btn btn-success" name="submit" value="'._SUBMIT.'" size="20">
 		<div style="font-size: 8pt; text-align: right;"><a href="searching.php?searchtype=advanced">'._ADVANCED.'</a></div></div></form></div>';
     } else {
-        $output .= '<div id="pagetitle">'._ADVANCED.'</div><div>
+        $caption = '<div id="pagetitle">'._ADVANCED.'</div>';
+        $output = '<div>
 			<form method="POST" name="form" enctype="multipart/form-data" action="searching.php?searchtype=advanced">
 			<div class="tblborder" style="width: 90%; margin: 0 auto; padding: 10px;">';
         if ($multiplecats) {
@@ -351,7 +353,7 @@ if (isset($_POST['submit']) || isset($_GET['offset'])) {
 					 <select name="exclass_'.$type['classtype_id'].'[]"  id="exclass_'.$type['classtype_id']."\"  style=\"width: 95%;\" multiple size=\"5\">$select</select></div>
 				</div>";
         }
-        $output .= '</div><label for="completed">'._COMPLETEONLY.':</label> <input type="checkbox" class="checkbox" id="completed" name="completed" value="ON"><label for="wordlow">'._WORDCOUNT.":</label> <select size=\"1\" id=\"wordlow\" name=\"wordlow\">
+        $output .= '</div><label for="completed">'._COMPLETEONLY.':</label> <input type="checkbox" class="checkbox" id="completed" name="completed" value="ON"><br><label for="wordlow">'._WORDCOUNT.":</label> <select size=\"1\" id=\"wordlow\" name=\"wordlow\">
   <option value='-500'>&lt; 500</option>
   <option>1000</option>
   <option>5000</option>
@@ -374,7 +376,7 @@ if (isset($_POST['submit']) || isset($_GET['offset'])) {
         while ($code = dbassoc($codequery)) {
             eval($code['code_text']);
         }
-        $output .= "<div id='submitdiv'><input name=\"submit\" id=\"submit\" value=\""._SUBMIT.'" type="submit" class="button"></div></div></form></div>';
+        $output .= "<div id='submitdiv'><input name=\"submit\" id=\"submit\" value=\""._SUBMIT.'" type="submit" class="button btn btn-success"></div></div></form></div>';
     }
 }
 $tpl->assign('output', $output);

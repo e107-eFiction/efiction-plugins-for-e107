@@ -28,6 +28,9 @@ $current = "series";
 $caption  = "<div id=\"pagetitle\">"._SERIES.($let ? " - $let" : "")."</div>"; 
 $output .= build_alphalinks("browse.php?$terms&amp;", $let);
 
+e107::getRender()->tablerender($caption, $output, $current);
+$caption = ''; $output = ''; 
+
 if($let) {
 	$seriesquery .= (empty($seriesquery) ? "" : " AND ").($let == _OTHER ? " series.title REGEXP '^[^a-z]'" : "series.title LIKE '$let%'");
 }

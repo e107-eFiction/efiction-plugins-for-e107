@@ -26,6 +26,9 @@ if(!defined("e107_INIT")) exit( );
 $current = "titles";
 $caption =   _TITLES.($let ? " - $let" : "") ;
 $output .= build_alphalinks("browse.php?$terms&amp;", $let); 
+
+e107::getRender()->tablerender($caption, $output, $current);
+$caption = ''; $output = '';
   
 if($let == _OTHER) $storyquery .= " AND stories.title REGEXP '^[^a-z]'";
 else if(!empty($let)) $storyquery .= " AND stories.title LIKE '$let%'";

@@ -24,8 +24,11 @@ if(deftrue('USER_AREA') && (e_PAGE != "menus.php") )    // prevents inclusion of
     if(!$displaycolumns) $displaycolumns = 1;  //this is pref, fix me
     $colwidth = floor(100/$displaycolumns);
  
+ /* removed, use in theme style.css if this is needed */
+ 	#columncontainer { margin: 1em auto; width: auto; padding: 5%;}
+    
 	$inline_css = "
-		#columncontainer { margin: 1em auto; width: auto; padding: 5%;}
+	
 		#browseblock, #memberblock { width: 100%; padding: 0; margin: 0; float: left; border: 0px solid transparent; }
 		.column { float: left; width: ".($colwidth - 1)."%; }
 		html>body .column { width: $colwidth%; }

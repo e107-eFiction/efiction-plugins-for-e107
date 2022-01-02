@@ -22,7 +22,7 @@
 
 if(!defined("e107_INIT")) exit( );
 
-		$output .= build_alphalinks($pagelink, $let);
+		//$output .= build_alphalinks($pagelink, $let); moved to authors.php
  
 		$count = e107::getDb()->retrieve($countquery);
 		list($numrows)= dbrow($count);
